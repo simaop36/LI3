@@ -53,3 +53,9 @@ dkms.conf
 
 # Ignore CSV files
 *.csv
+
+#Ignore dataset
+Dados-fase1/
+
+#DS_Store
+.DS_Store
