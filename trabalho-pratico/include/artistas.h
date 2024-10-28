@@ -1,7 +1,7 @@
 #ifndef ARTISTAS_H
 #define ARTISTAS_H
 
-typedef struct artista artista;
+typedef struct artista *Artista;
 
 char* getId(Artista* a);
 char* getName(Artista* a);
