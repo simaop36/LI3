@@ -1,7 +1,7 @@
 #ifndef USERS_H
 #define USERS_H
 
-typedef struct utilizador utilizador;
+typedef struct utilizador *utilizador;
 
 utilizador create_utilizador();
 void build_utilizador(char *username,char *email,char *first_name,char *last_name,char *birth_date,char *country,char *subscription_style,char **liked_musics_id);
