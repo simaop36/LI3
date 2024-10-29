@@ -12,7 +12,7 @@ typedef struct musica
     char *lyrics;
 } *musica;
 
-musica create_Musica(void)
+musica create_Musica()
 {
     musica nova_musica = malloc(sizeof(struct musica));
     nova_musica->id = NULL;
@@ -29,15 +29,15 @@ musica create_Musica(void)
 void build_musica(char *id, char **id_musica, char *title, char *duration, char *genre, char *year, char *lyrics)
 {
 
-    musica musica = create_Musica();
+    musica m = create_Musica();
 
-    setId(id, musica);
-    setId_musica(id_musica, musica);
-    setTitle(title, musica);
-    setDuration(duration, musica);
-    setGenre(genre, musica);
-    setYear(year, musica);
-    setLyrics(lyrics, musica);
+    setId(id, m);
+    setId_musica(id_musica, m);
+    setTitle(title, m);
+    setDuration(duration, m);
+    setGenre(genre, m);
+    setYear(year, m);
+    setLyrics(lyrics, m);
 }
 
 char *getId(musica m)
@@ -76,7 +76,7 @@ char *getLyrics(musica m)
     return mCopy;
 }
 
-char **getId_Constituent(musica m)
+char **getId_Musica(musica m)
 {
     char **aCopy = g_strdupv(m->id_musica);
     return aCopy;
