@@ -166,11 +166,22 @@ int valida_email(const char *email) {
     return 1;
 }
 
-int valida_tipo(const char *tipo) {
+int valida_tipo_user(const char *tipo) {
     if (strcmp(tipo, "normal") == 0 || strcmp(tipo, "premium") == 0) {
         return 1;
     }
     return 0;
+}
+
+int valida_tipo_artista(const char *tipo, const char *id_Constituent) {
+    if(strcmp(tipo, "individual") == 0 ){
+        if(strcmp(id_Constituent,"[]") == 0) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 int valida_lista(const char *str) {
