@@ -1,12 +1,137 @@
 #include "musica.h"
+#include <stdlib.h>
 
 typedef struct musica
 {
     char *id;
     char *title;
-    char **id_artista;
+    char **id_musica;
     char *duration;
     char *genre;
     char *year;
     char *lyrics;
-} musica;
+} *musica;
+
+musica create_Musica()
+{
+    musica nova_musica = malloc(sizeof(struct musica));
+    nova_musica->id = NULL;
+    nova_musica->title = NULL;
+    nova_musica->id_musica = NULL;
+    nova_musica->duration = NULL;
+    nova_musica->genre = NULL;
+    nova_musica->year = NULL;
+    nova_musica->lyrics = NULL;
+
+    return nova_musica;
+}
+
+void build_musica(char *id, char **id_musica, char *title, char *duration, char *genre, char *year, char *lyrics)
+{
+
+    musica m = create_Musica();
+
+    setId(id, m);
+    setId_musica(id_musica, m);
+    setTitle(title, m);
+    setDuration(duration, m);
+    setGenre(genre, m);
+    setYear(year, m);
+    setLyrics(lyrics, m);
+}
+
+char *getId(musica m)
+{
+    char mCopy = strdup(m->id);
+    return mCopy;
+}
+
+char *getTitle(musica m)
+{
+    char mCopy = strdup(m->title);
+    return mCopy;
+}
+
+char *getDuration(musica m)
+{
+    char mCopy = strdup(m->duration);
+    return mCopy;
+}
+
+char *getGenre(musica m)
+{
+    char mCopy = strdup(m->genre);
+    return mCopy;
+}
+
+char *getYear(musica m)
+{
+    char mCopy = strdup(m->year);
+    return mCopy;
+}
+
+char *getLyrics(musica m)
+{
+    char mCopy = strdup(m->lyrics);
+    return mCopy;
+}
+
+char **getId_Musica(musica m)
+{
+    char **aCopy = g_strdupv(m->id_musica);
+    return aCopy;
+}
+
+void setId(char *id, musica m)
+{
+    char *copy = strdup(id);
+    m->id = copy;
+}
+
+void setTitle(char *title, musica m)
+{
+    char *copy = strdup(title);
+    m->id = copy;
+}
+
+void setId_Artist(char **id_musica, musica m)
+{
+    char **copy = g_strdupv(id_musica);
+    m->id_musica = copy;
+}
+
+void setDuration(char *duration, musica m)
+{
+    char *copy = strdup(duration);
+    m->duration = copy;
+}
+
+void setGenre(char *genre, musica m)
+{
+    char *copy = strdup(genre);
+    m->genre = copy;
+}
+
+void setYear(char *year, musica m)
+{
+    char *copy = strdup(year);
+    m->year = copy;
+}
+
+void setLyrics(char *lyrics, musica m)
+{
+    char *copy = strdup(lyrics);
+    m->lyrics = copy;
+}
+
+void free_musica(musica m)
+{
+    free(m->id);
+    free(m->title);
+    free(m->id_musica);
+    free(m->duration);
+    free(m->genre);
+    free(m->year);
+    free(m->lyrics);
+    free(m);
+}

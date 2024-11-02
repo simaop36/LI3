@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <glib.h>
 
+
 #include "artistas.h"
 #include "utils.h"
 #include "catalogo_artista.h"
@@ -15,7 +16,8 @@ typedef struct artista {
     char *type;
 } *Artista;
 
-Artista create_Artista() {
+Artista create_Artista()
+{
     Artista novo_artista = malloc(sizeof(struct artista));
     novo_artista->id = NULL;
     novo_artista->name = NULL;
@@ -23,9 +25,10 @@ Artista create_Artista() {
     novo_artista->id_constituent = NULL;
     novo_artista->country = NULL;
     novo_artista->type = NULL;
-    
+
     return novo_artista;
 }
+
 
 void build_Artista(char **linha,Catalogo_Artistas catalogo){
 
@@ -46,64 +49,77 @@ void build_Artista(char **linha,Catalogo_Artistas catalogo){
     }
 }
 
-char* getId(Artista a){
-    char* aCopy = strdup(a->id);
+char *getId(Artista a)
+{
+    char *aCopy = strdup(a->id);
     return aCopy;
 }
-char* getName(Artista a){
-    char* aCopy = strdup(a->name);
+char *getName(Artista a)
+{
+    char *aCopy = strdup(a->name);
     return aCopy;
 }
-char* getDescription(Artista a){
-    char* aCopy = strdup(a->description);
+char *getDescription(Artista a)
+{
+    char *aCopy = strdup(a->description);
     return aCopy;
 }
-double getRecipe_Per_Stream(Artista a){
+double getRecipe_Per_Stream(Artista a)
+{
     return a->recipe_per_stream;
 }
-char** getId_Constituent(Artista a){
-    char** aCopy = g_strdupv(a->id_constituent);
+char **getId_Constituent(Artista a)
+{
+    char **aCopy = g_strdupv(a->id_constituent);
     return aCopy;
 }
 
-char* getCountry(Artista a){
-    char* aCopy = strdup(a->country);
+char *getCountry(Artista a)
+{
+    char *aCopy = strdup(a->country);
     return aCopy;
 }
-char* getType(Artista a){
-    char* aCopy = strdup(a->type);
+char *getType(Artista a)
+{
+    char *aCopy = strdup(a->type);
     return aCopy;
 }
 
-
-
-void setId(char* id,Artista a){
-    char* copy = strdup(id);
+void setId(char *id, Artista a)
+{
+    char *copy = strdup(id);
     a->id = copy;
 }
-void setName(char* name,Artista a){
-    char* copy = strdup(name);
+void setName(char *name, Artista a)
+{
+    char *copy = strdup(name);
     a->name = copy;
 }
-void setDescription(char* description,Artista a){
-    char* copy = strdup(description);
+void setDescription(char *description, Artista a)
+{
+    char *copy = strdup(description);
     a->description = copy;
 }
-void setRecipe_Per_Stream(double recipe_per_stream,Artista a){
+void setRecipe_Per_Stream(double recipe_per_stream, Artista a)
+{
     a->recipe_per_stream = recipe_per_stream;
 }
-void setId_Constituent(char** id_constituent,Artista a){
-    char** copy = g_strdupv(id_constituent);
+void setId_Constituent(char **id_constituent, Artista a)
+{
+    char **copy = g_strdupv(id_constituent);
     a->id_constituent = copy;
 }
-void setCountry(char* country,Artista a){
-    char* copy = strdup(country);
+void setCountry(char *country, Artista a)
+{
+    char *copy = strdup(country);
     a->country = copy;
 }
-void setType(char* type,Artista a){
-    char* copy = strdup(type);
+void setType(char *type, Artista a)
+{
+    char *copy = strdup(type);
     a->type = copy;
 }
+
 
 int verifica_artistas(char **linha){
     //verifica se linha[x]==NULL
@@ -122,6 +138,7 @@ int verifica_artistas(char **linha){
 }
 
 void free_artista(Artista novo_artista) {
+
     free(novo_artista->id);
     free(novo_artista->name);
     free(novo_artista->description);
@@ -130,4 +147,3 @@ void free_artista(Artista novo_artista) {
     free(novo_artista->type);
     free(novo_artista);
 }
-
