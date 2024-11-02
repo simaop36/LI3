@@ -4,8 +4,7 @@
 typedef struct artista *Artista;
 
 Artista create_Artista();
-void build_Artista(char *id, char *name, char *description, double recipe_per_stream, char **id_constituent, char *country, char *type);
-
+void build_Artista(char **linha,Catalogo_Artistas catalogo);
 char* getId(Artista a);
 char* getName(Artista a);
 char* getDescription(Artista a);
@@ -20,6 +19,7 @@ void setRecipe_Per_Stream(double recipe_per_stream,Artista a);
 void setId_Constituent(char** id_constituent,Artista a);
 void setCountry(char* country,Artista a);
 void setType(char* type,Artista a);
+int verifica_artistas(char **linha);
 void free_artista(Artista novo_artista);
 
 #endif
