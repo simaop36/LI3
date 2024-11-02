@@ -1,9 +1,12 @@
-#include "artistas.h"
 #include <stdlib.h>
 #include <glib.h>
 
-typedef struct artista
-{
+
+#include "artistas.h"
+#include "utils.h"
+#include "catalogo_artista.h"
+
+typedef struct artista {
     char *id;
     char *name;
     char *description;
@@ -26,17 +29,24 @@ Artista create_Artista()
     return novo_artista;
 }
 
-void build_Artista(char *id, char *name, char *description, double recipe_per_stream, char **id_constituent, char *country, char *type)
-{
+
+void build_Artista(char **linha,Catalogo_Artistas catalogo){
 
     Artista artista = create_Artista();
+    
+    setId(linha[0],artista);
+    setName(linha[1],artista);
+    setDescription(linha[2],artista);
+    setRecipe_Per_Stream(strtod(linha[3],NULL),artista);//strtod converte char* em double, NULL é o apontador para o final do numero na string
+    setId_Constituent(linha[4],artista);
+    setCountry(linha[5],artista);
+    setType(linha[6],artista);
 
-    setId(id, artista);
-    setName(name, artista);
-    setDescription(description, artista);
-    setRecipe_Per_Stream(recipe_per_stream, artista);
-    setId_Constituent(id_constituent, artista);
-    setCountry(country, artista);
+    if(verifica_artistas(linha)){
+        add_artista_valido(catalogo,artista);
+    } else{
+        add_artista_invalido(catalogo,artista);
+    }
 }
 
 char *getId(Artista a)
@@ -110,8 +120,25 @@ void setType(char *type, Artista a)
     a->type = copy;
 }
 
-void free_artista(Artista novo_artista)
-{
+
+int verifica_artistas(char **linha){
+    //verifica se linha[x]==NULL
+    if(!(linha[0])) return 0;
+    if(!(linha[1])) return 0;
+    if(!(linha[2])) return 0;
+    if(!(linha[3])) return 0;
+    if(!(linha[4])) return 0;
+    if(!(linha[5])) return 0;
+    if(!(linha[6])) return 0;
+
+    if(!(valida_lista(linha[4]))) return 0;
+    if(!(valida_tipo_artista(linha[6],linha[4]))) return 0;
+
+    return 1;
+}
+
+void free_artista(Artista novo_artista) {
+
     free(novo_artista->id);
     free(novo_artista->name);
     free(novo_artista->description);

@@ -1,0 +1,13 @@
+#ifndef CATALOGO_ARTISTAS_H
+#define CATALOGO_ARTISTAS_H
+
+typedef struct catalogo_artistas *Catalogo_Artistas;
+
+Catalogo_Artistas create_catalogo_artistas();
+void add_artista_valido(Catalogo_Artistas catalogo, Artista artista);
+void add_artista_invalido(Catalogo_Artistas catalogo, Artista artista);
+Artista get_artista_valido(Catalogo_Artistas catalogo, char *id);
+Artista get_artista_invalido(Catalogo_Artistas catalogo, char *id);
+void free_catalogo_artistas(Catalogo_Artistas catalogo);
+
+#endif

@@ -63,3 +63,6 @@ Dados-fase1/
 #programas
 programa-principal
 programa-testes
+
+#Ignore .vscode
+/.vscode
