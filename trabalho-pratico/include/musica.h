@@ -3,7 +3,7 @@
 
 typedef struct musica *musica;
 musica create_Musica();
-void build_musica(char *id, char **id_musica, char *title, char *duration, char *genre, char *year, char *lyrics);
+void build_musica(char **linha, Catalogo_Musicas catalogo);
 char *getId(musica m);
 char *getTitle(musica m);
 char *getDuration(musica m);
@@ -19,5 +19,6 @@ void setGenre(char *genre, musica m);
 void setYear(char *year, musica m);
 void setLyrics(char *lyrics, musica m);
 void free_musica(musica m);
+int verifica_musicas(char **linha);
 
 #endif
