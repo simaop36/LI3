@@ -1,7 +1,7 @@
 #ifndef CATALOGO_USERS_H
 #define CATALOGO_USERS_H
 
-typedef struct catalogo_utilizadores;
+typedef struct catalogo_utilizadores *catalogo_utilizadores;
 
 catalogo_utilizadores create_catalogo_utilizadores();
 
