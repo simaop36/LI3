@@ -164,4 +164,7 @@ int verifica_musicas(char **linha)
     if (!(linha[6]))
         return 0;
     return 1;
+
+    if (!(valida_duracao(linha[3])))
+        return 0;
 }
