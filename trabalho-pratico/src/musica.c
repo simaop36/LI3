@@ -1,5 +1,6 @@
 #include "musica.h"
 #include <stdlib.h>
+#include "catalogo_musica.h"
 
 typedef struct musica
 {
@@ -26,18 +27,27 @@ musica create_Musica()
     return nova_musica;
 }
 
-void build_musica(char *id, char **id_musica, char *title, char *duration, char *genre, char *year, char *lyrics)
+void build_musica(char **linha, Catalogo_Musicas catalogo)
 {
 
     musica m = create_Musica();
 
-    setId(id, m);
-    setId_musica(id_musica, m);
-    setTitle(title, m);
-    setDuration(duration, m);
-    setGenre(genre, m);
-    setYear(year, m);
-    setLyrics(lyrics, m);
+    setId(linha[0], m);
+    setId_musica(linha[1], m);
+    setTitle(linha[2], m);
+    setDuration(linha[3], m);
+    setGenre(linha[4], m);
+    setYear(linha[5], m);
+    setLyrics(linha[6], m);
+
+    if (verifica_musicas(linha))
+    {
+        add_musica_valida(catalogo, m);
+    }
+    else
+    {
+        add_musica_invalida(catalogo, m);
+    }
 }
 
 char *getId(musica m)
@@ -134,4 +144,27 @@ void free_musica(musica m)
     free(m->year);
     free(m->lyrics);
     free(m);
+}
+
+int verifica_musicas(char **linha)
+{
+    // verifica se linha[x]==NULL
+    if (!(linha[0]))
+        return 0;
+    if (!(linha[1]))
+        return 0;
+    if (!(linha[2]))
+        return 0;
+    if (!(linha[3]))
+        return 0;
+    if (!(linha[4]))
+        return 0;
+    if (!(linha[5]))
+        return 0;
+    if (!(linha[6]))
+        return 0;
+    return 1;
+
+    if (!(valida_duracao(linha[3])))
+        return 0;
 }
