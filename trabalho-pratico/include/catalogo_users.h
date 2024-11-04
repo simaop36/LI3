@@ -13,6 +13,10 @@ utilizador get_utilizador_valido(catalogo_utilizadores catalogo, char *id);
 
 utilizador get_utilizador_invalido(catalogo_utilizadores catalogo, char *id);
 
+GHashTable *getUtilizadoresValidos(catalogo_utilizadores utilzadores);
+
+GHashTable *getUtilizadoresInvalidos(catalogo_utilizadores utilzadores);
+
 void free_catalogo_utilizadores(catalogo_utilizadores catalogo);
 
 #endif

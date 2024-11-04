@@ -8,6 +8,8 @@ void add_artista_valido(Catalogo_Artistas catalogo, Artista artista);
 void add_artista_invalido(Catalogo_Artistas catalogo, Artista artista);
 Artista get_artista_valido(Catalogo_Artistas catalogo, char *id);
 Artista get_artista_invalido(Catalogo_Artistas catalogo, char *id);
+GHashTable *getArtistasValidos(Catalogo_Artistas artistas);
+GHashTable *getArtistasInvalidos(Catalogo_Artistas artistas);
 void free_catalogo_artistas(Catalogo_Artistas catalogo);
 
 #endif

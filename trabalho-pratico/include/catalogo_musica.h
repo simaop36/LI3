@@ -10,6 +10,8 @@ void add_musica_valida(Catalogo_Musicas catalogo, musica musica);
 void add_musica_invalida(Catalogo_Musicas catalogo, musica musica);
 musica get_musica_valida(Catalogo_Musicas catalogo, char *id);
 musica get_musica_invalida(Catalogo_Musicas catalogo, char *id);
+GHashTable *getMusicasValidas(Catalogo_Musicas musicas);
+GHashTable *getMusicasInvalidas(Catalogo_Musicas musicas);
 void free_Catalogo_Musicas(Catalogo_Musicas catalogo);
 
 #endif
