@@ -1,5 +1,10 @@
 #include "joint.h"
 
+#include "catalogo_artista.h"
+#include "catalogo_musica.h"
+#include "catalogo_users.h"
+
+
 typedef struct joint
 {
     Catalogo_Artistas artista_c;
@@ -7,11 +12,15 @@ typedef struct joint
     Catalogo_Musicas musicas_c;
 } *Joint;
 
-Joint create_catalago_joint(catalogo_utilizadores users,
-                            Catalogo_Artistas artistas,
-                            Catalogo_Musicas musicas)
+
+Joint create_catalago_joint()
 {
-    Joint new_joint = malloc(sizeof(Joint));
+    Catalogo_Artistas artistas = create_catalogo_artistas();
+    Catalogo_Musicas musicas = create_Catalogo_Musicas();
+    catalogo_utilizadores users = create_catalogo_utilizadores();
+    
+    Joint new_joint = malloc(sizeof(struct joint));
+
 
     new_joint->artista_c = artistas;
     new_joint->musicas_c = musicas;

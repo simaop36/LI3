@@ -19,13 +19,13 @@ Catalogo_Musicas create_Catalogo_Musicas()
 
 void add_musica_valida(Catalogo_Musicas catalogo, musica musica)
 {
-    char *key = getId(musica);
+    char *key = getId_Musica(musica);
     g_hash_table_insert(catalogo->musicas_validas, key, musica);
 }
 
 void add_musica_invalida(Catalogo_Musicas catalogo, musica musica)
 {
-    char *key = getId(musica);
+    char *key = getId_Musica(musica);
     g_hash_table_insert(catalogo->musicas_invalidas, key, musica);
 }
 

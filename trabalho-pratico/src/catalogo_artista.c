@@ -20,12 +20,16 @@ Catalogo_Artistas create_catalogo_artistas()
 
 void add_artista_valido(Catalogo_Artistas catalogo, Artista artista)
 {
-    char *key = getId(artista);
+
+    char *key = getId_Artista(artista);
+
     g_hash_table_insert(catalogo->artistas_validos, key, artista);
 }
 void add_artista_invalido(Catalogo_Artistas catalogo, Artista artista)
 {
-    char *key = getId(artista);
+
+    char *key = getId_Artista(artista);
+
     g_hash_table_insert(catalogo->artistas_invalidos, key, artista);
 }
 

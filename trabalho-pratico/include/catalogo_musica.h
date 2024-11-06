@@ -2,8 +2,10 @@
 #define Catalogo_MusicasS_H
 
 #include "musica.h"
+#include <glib.h>
 
 typedef struct Catalogo_Musicas *Catalogo_Musicas;
+typedef struct musica *musica;
 
 Catalogo_Musicas create_Catalogo_Musicas();
 void add_musica_valida(Catalogo_Musicas catalogo, musica musica);
