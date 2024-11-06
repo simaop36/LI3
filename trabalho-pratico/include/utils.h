@@ -8,5 +8,6 @@ int valida_tipo(const char *tipo);
 int valida_tipo_user(const char *tipo);
 int valida_tipo_artista(const char *tipo, const char *id_Constituent);
 int valida_lista(const char *str);
+char **parse_lista(char *input);
 
 #endif

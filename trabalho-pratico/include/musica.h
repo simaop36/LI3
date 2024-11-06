@@ -12,7 +12,7 @@ char *getDuration(musica m);
 char *getGenre(musica m);
 char *getYear(musica m);
 char *getLyrics(musica m);
-char *getId_Artistas(musica m);
+char **getId_Artistas(musica m);
 void setId_Musica(char *id, musica m);
 void setTitle(char *title, musica m);
 void setId_Artistas(char *id_musica, musica m);
