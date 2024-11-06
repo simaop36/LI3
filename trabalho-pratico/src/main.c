@@ -1,10 +1,10 @@
 #include <stdio.h>
-
+#include "controller.h"
 
 int main(int argc, char *argv[]){
     if(argc == 3){  //programa-principal
 
-        //ler_csv(argv[1]);
+        run(argv);
 
         //executa_queries(argv[2])
         

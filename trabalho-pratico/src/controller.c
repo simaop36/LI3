@@ -2,8 +2,13 @@
 #include <stdlib.h>
 
 #include "input.h"
+#include "output.h"
+#include "joint.h"
 
 void run(char *argv[]){
 
-
+    Joint catalogo = create_catalago_joint();
+    ler_csvs(argv[1],catalogo);
+    //segunda_verificação(catalogo);
+    escreve_csv(argv[1],catalogo);
 }
