@@ -262,10 +262,10 @@ char **parse_lista(char *input) {
 }
 
 
-int valida_liked_music(utilizador *u, Catalogo_Musicas catalogo_m){
+int valida_liked_music(utilizador u, Catalogo_Musicas catalogo_m){
     int i = 0;
     while(get_liked_musics_id(u)+i != NULL){
-        if(g_hash_table_contains(get_musicas_validas(catalogo_m),get_liked_musics_id(u)+i)) return 0;
+        if(!(g_hash_table_contains(get_musicas_validas(catalogo_m),get_liked_musics_id(u)+i))) return 0;
         i++;
 
     }
