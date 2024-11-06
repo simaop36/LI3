@@ -2,6 +2,7 @@
 #define USERS_H
 
 #include "catalogo_users.h"
+#include "catalogo_musica.h"
 
 typedef struct utilizador *utilizador;
 
@@ -41,6 +42,7 @@ void set_subscription_style(char* subscription_style,utilizador u);
 
 void set_liked_musics_id(char* liked_musics_id,utilizador u);
 
+int valida_liked_music(utilizador u, Catalogo_Musicas catalogo_m);
 
 void free_utilizador(utilizador novo_utilizador);
 

@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "catalogo_musica.h"
+#include "catalogo_artista.h"
 #include "utils.h"
+#include "artistas.h"
 
 typedef struct musica
 {
@@ -159,6 +161,18 @@ void setLyrics(char *lyrics, musica m)
 {
     char *copy = strdup(lyrics);
     m->lyrics = copy;
+}
+
+int valida_artistasDamusica(musica m, Catalogo_Artistas a)
+{
+    int i = 0;
+    while (getId_Artistas(m) + i != NULL)
+    {
+        if (!(g_hash_table_contains(getArtistasValidos(a), getId_Artistas(m) + i)))
+            return 0;
+        i++;
+    }
+    return 1;
 }
 
 void free_musica(musica m)
