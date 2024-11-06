@@ -14,6 +14,8 @@ Artista get_artista_valido(Catalogo_Artistas catalogo, char *id);
 Artista get_artista_invalido(Catalogo_Artistas catalogo, char *id);
 GHashTable *getArtistasValidos(Catalogo_Artistas artistas);
 GHashTable *getArtistasInvalidos(Catalogo_Artistas artistas);
+void free_catalogo_artistas_invalidos(Catalogo_Artistas catalogo);
+void free_catalogo_artistas_validos(Catalogo_Artistas catalogo);
 void free_catalogo_artistas(Catalogo_Artistas catalogo);
 
 #endif
