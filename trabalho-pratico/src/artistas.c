@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <glib.h>
 
 
@@ -11,7 +12,7 @@ typedef struct artista {
     char *name;
     char *description;
     double recipe_per_stream;
-    char **id_constituent;
+    char *id_constituent;
     char *country;
     char *type;
 } *Artista;
@@ -29,12 +30,28 @@ Artista create_Artista()
     return novo_artista;
 }
 
+int verifica_artistas(char **linha){
+    //verifica se linha[x]==NULL
+    if(!(linha[0])) return 0;
+    if(!(linha[1])) return 0;
+    if(!(linha[2])) return 0;
+    if(!(linha[3])) return 0;
+    if(!(linha[4])) return 0;
+    if(!(linha[5])) return 0;
+    if(!(linha[6])) return 0;
 
-void build_Artista(char **linha,Catalogo_Artistas catalogo){
+    if(!(valida_lista(linha[4]))) return 0;
+    if(!(valida_tipo_artista(linha[6],linha[4]))) return 0;
+
+    return 1;
+}
+
+void build_Artista(char **linha,void *cat){
 
     Artista artista = create_Artista();
+    Catalogo_Artistas catalogo = (Catalogo_Artistas)cat;
     
-    setId(linha[0],artista);
+    setId_Artista(linha[0],artista);
     setName(linha[1],artista);
     setDescription(linha[2],artista);
     setRecipe_Per_Stream(strtod(linha[3],NULL),artista);//strtod converte char* em double, NULL é o apontador para o final do numero na string
@@ -49,7 +66,7 @@ void build_Artista(char **linha,Catalogo_Artistas catalogo){
     }
 }
 
-char *getId(Artista a)
+char *getId_Artista(Artista a)
 {
     char *aCopy = strdup(a->id);
     return aCopy;
@@ -68,9 +85,9 @@ double getRecipe_Per_Stream(Artista a)
 {
     return a->recipe_per_stream;
 }
-char **getId_Constituent(Artista a)
+char *getId_Constituent(Artista a)
 {
-    char **aCopy = g_strdupv(a->id_constituent);
+    char *aCopy = strdup(a->id_constituent);
     return aCopy;
 }
 
@@ -85,7 +102,7 @@ char *getType(Artista a)
     return aCopy;
 }
 
-void setId(char *id, Artista a)
+void setId_Artista(char *id, Artista a)
 {
     char *copy = strdup(id);
     a->id = copy;
@@ -104,9 +121,9 @@ void setRecipe_Per_Stream(double recipe_per_stream, Artista a)
 {
     a->recipe_per_stream = recipe_per_stream;
 }
-void setId_Constituent(char **id_constituent, Artista a)
+void setId_Constituent(char *id_constituent, Artista a)
 {
-    char **copy = g_strdupv(id_constituent);
+    char *copy = strdup(id_constituent);
     a->id_constituent = copy;
 }
 void setCountry(char *country, Artista a)
@@ -121,21 +138,7 @@ void setType(char *type, Artista a)
 }
 
 
-int verifica_artistas(char **linha){
-    //verifica se linha[x]==NULL
-    if(!(linha[0])) return 0;
-    if(!(linha[1])) return 0;
-    if(!(linha[2])) return 0;
-    if(!(linha[3])) return 0;
-    if(!(linha[4])) return 0;
-    if(!(linha[5])) return 0;
-    if(!(linha[6])) return 0;
 
-    if(!(valida_lista(linha[4]))) return 0;
-    if(!(valida_tipo_artista(linha[6],linha[4]))) return 0;
-
-    return 1;
-}
 
 void free_artista(Artista novo_artista) {
 

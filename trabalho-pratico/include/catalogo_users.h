@@ -1,7 +1,11 @@
 #ifndef CATALOGO_USERS_H
 #define CATALOGO_USERS_H
 
+#include "users.h"
+#include <glib.h>
+
 typedef struct catalogo_utilizadores *catalogo_utilizadores;
+typedef struct utilizador *utilizador;
 
 catalogo_utilizadores create_catalogo_utilizadores();
 

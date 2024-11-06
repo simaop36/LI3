@@ -4,8 +4,10 @@
 #include <dirent.h>
 
 #include "input.h"
+#include "joint.h"
+#include "parser.h"
 
-void ler_csvs(const char *dir_path, void *catalogo) {
+void ler_csvs(const char *dir_path, Joint catalogo) {
     char file_path[256]; // Buffer para armazenar o caminho completo
     FILE *csv_file;
 

@@ -1,12 +1,14 @@
 #include "musica.h"
 #include <stdlib.h>
+#include <string.h>
 #include "catalogo_musica.h"
+#include "utils.h"
 
 typedef struct musica
 {
     char *id;
     char *title;
-    char **id_musica;
+    char *id_artista;
     char *duration;
     char *genre;
     char *year;
@@ -18,7 +20,7 @@ musica create_Musica()
     musica nova_musica = malloc(sizeof(struct musica));
     nova_musica->id = NULL;
     nova_musica->title = NULL;
-    nova_musica->id_musica = NULL;
+    nova_musica->id_artista = NULL;
     nova_musica->duration = NULL;
     nova_musica->genre = NULL;
     nova_musica->year = NULL;
@@ -27,14 +29,38 @@ musica create_Musica()
     return nova_musica;
 }
 
-void build_musica(char **linha, Catalogo_Musicas catalogo)
+int verifica_musicas(char **linha)
+{
+    // verifica se linha[x]==NULL
+    if (!(linha[0]))
+        return 0;
+    if (!(linha[1]))
+        return 0;
+    if (!(linha[2]))
+        return 0;
+    if (!(linha[3]))
+        return 0;
+    if (!(linha[4]))
+        return 0;
+    if (!(linha[5]))
+        return 0;
+    if (!(linha[6]))
+        return 0;
+    return 1;
+
+    if (!(valida_duracao(linha[3])))
+        return 0;
+}
+
+void build_musica(char **linha, void *cat)
 {
 
     musica m = create_Musica();
+    Catalogo_Musicas catalogo = (Catalogo_Musicas)cat;
 
-    setId(linha[0], m);
-    setId_musica(linha[1], m);
-    setTitle(linha[2], m);
+    setId_Musica(linha[0], m);
+    setTitle(linha[1], m);
+    setId_Artistas(linha[2], m);
     setDuration(linha[3], m);
     setGenre(linha[4], m);
     setYear(linha[5], m);
@@ -50,49 +76,49 @@ void build_musica(char **linha, Catalogo_Musicas catalogo)
     }
 }
 
-char *getId(musica m)
+char *getId_Musica(musica m)
 {
-    char mCopy = strdup(m->id);
+    char *mCopy = strdup(m->id);
     return mCopy;
 }
 
 char *getTitle(musica m)
 {
-    char mCopy = strdup(m->title);
+    char *mCopy = strdup(m->title);
     return mCopy;
 }
 
 char *getDuration(musica m)
 {
-    char mCopy = strdup(m->duration);
+    char *mCopy = strdup(m->duration);
     return mCopy;
 }
 
 char *getGenre(musica m)
 {
-    char mCopy = strdup(m->genre);
+    char *mCopy = strdup(m->genre);
     return mCopy;
 }
 
 char *getYear(musica m)
 {
-    char mCopy = strdup(m->year);
+    char *mCopy = strdup(m->year);
     return mCopy;
 }
 
 char *getLyrics(musica m)
 {
-    char mCopy = strdup(m->lyrics);
+    char *mCopy = strdup(m->lyrics);
     return mCopy;
 }
 
-char **getId_Musica(musica m)
+char *getId_Artistas(musica m)
 {
-    char **aCopy = g_strdupv(m->id_musica);
+    char *aCopy = strdup(m->id_artista);
     return aCopy;
 }
 
-void setId(char *id, musica m)
+void setId_Musica(char *id, musica m)
 {
     char *copy = strdup(id);
     m->id = copy;
@@ -104,10 +130,10 @@ void setTitle(char *title, musica m)
     m->id = copy;
 }
 
-void setId_Artist(char **id_musica, musica m)
+void setId_Artistas(char *id_musica, musica m)
 {
-    char **copy = g_strdupv(id_musica);
-    m->id_musica = copy;
+    char *copy = strdup(id_musica);
+    m->id_artista = copy;
 }
 
 void setDuration(char *duration, musica m)
@@ -138,7 +164,7 @@ void free_musica(musica m)
 {
     free(m->id);
     free(m->title);
-    free(m->id_musica);
+    free(m->id_artista);
     free(m->duration);
     free(m->genre);
     free(m->year);
@@ -146,25 +172,3 @@ void free_musica(musica m)
     free(m);
 }
 
-int verifica_musicas(char **linha)
-{
-    // verifica se linha[x]==NULL
-    if (!(linha[0]))
-        return 0;
-    if (!(linha[1]))
-        return 0;
-    if (!(linha[2]))
-        return 0;
-    if (!(linha[3]))
-        return 0;
-    if (!(linha[4]))
-        return 0;
-    if (!(linha[5]))
-        return 0;
-    if (!(linha[6]))
-        return 0;
-    return 1;
-
-    if (!(valida_duracao(linha[3])))
-        return 0;
-}

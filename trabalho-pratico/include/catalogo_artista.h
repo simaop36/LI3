@@ -1,7 +1,11 @@
 #ifndef CATALOGO_ARTISTAS_H
 #define CATALOGO_ARTISTAS_H
 
+#include "artistas.h"
+#include <glib.h>
+
 typedef struct catalogo_artistas *Catalogo_Artistas;
+typedef struct artista *Artista;
 
 Catalogo_Artistas create_catalogo_artistas();
 void add_artista_valido(Catalogo_Artistas catalogo, Artista artista);

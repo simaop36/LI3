@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <glib.h>
+#include <string.h>
 
 #include "users.h"
 #include "catalogo_users.h"
@@ -13,7 +14,7 @@ typedef struct utilizador {
     char *birth_date;
     char *country;
     char *subscription_style;
-    char **liked_musics_id;
+    char *liked_musics_id;
 } *utilizador;
 
 utilizador create_utilizador(){
@@ -30,8 +31,29 @@ utilizador create_utilizador(){
     return novo_utilizador;
 }
 
-void build_utilizador(char **linha,catalogo_utilizadores catalogo){
+int verifica_utilizadores(char **linha){
+    //verifica se linha[x]==NULL
+    if(!(linha[0])) return 0;
+    if(!(linha[1])) return 0;
+    if(!(linha[2])) return 0;
+    if(!(linha[3])) return 0;
+    if(!(linha[4])) return 0;
+    if(!(linha[5])) return 0;
+    if(!(linha[6])) return 0;
+    if(!(linha[7])) return 0;
+
+    if(!(valida_email(linha[1]))) return 0;
+    if(!(valida_data(linha[4]))) return 0;
+    if(!(valida_tipo_user(linha[6]))) return 0;
+    if(!(valida_lista(linha[7]))) return 0;
+
+    return 1;
+}
+
+void build_utilizador(char **linha,void *cat){
     utilizador u = create_utilizador();
+
+    catalogo_utilizadores catalogo = (catalogo_utilizadores)cat;
 
     set_username(linha[0],u);
     set_email(linha[1],u);
@@ -84,8 +106,8 @@ char* get_subscription_style(utilizador u){
     return uCopy;
 }
 
-char** get_liked_musics_id(utilizador u){
-    char** uCopy = g_strdupv(u->liked_musics_id);
+char* get_liked_musics_id(utilizador u){
+    char* uCopy = strdup(u->liked_musics_id);
     return uCopy;
 }
 
@@ -124,29 +146,12 @@ void set_subscription_style(char* subscription_style,utilizador u){
     u->subscription_style = copy;
 }
 
-void set_liked_musics_id(char** liked_musics_id,utilizador u){
-    char** copy = g_strdupv(liked_musics_id);
+void set_liked_musics_id(char* liked_musics_id,utilizador u){
+    char* copy = strdup(liked_musics_id);
     u->liked_musics_id = copy;
 }
 
-int verifica_utilizadores(char **linha){
-    //verifica se linha[x]==NULL
-    if(!(linha[0])) return 0;
-    if(!(linha[1])) return 0;
-    if(!(linha[2])) return 0;
-    if(!(linha[3])) return 0;
-    if(!(linha[4])) return 0;
-    if(!(linha[5])) return 0;
-    if(!(linha[6])) return 0;
-    if(!(linha[7])) return 0;
 
-    if(!(valida_email(linha[1]))) return 0;
-    if(!(valida_data(linha[4]))) return 0;
-    if(!(valida_tipo_user(linha[6]))) return 0;
-    if(!(valida_lista(linha[7]))) return 0;
-
-    return 1;
-}
 
 void free_utilizador(utilizador novo_utilizador) {
 

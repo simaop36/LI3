@@ -1,11 +1,13 @@
 #ifndef USERS_H
 #define USERS_H
 
+#include "catalogo_users.h"
+
 typedef struct utilizador *utilizador;
 
 utilizador create_utilizador();
 
-void build_utilizador(char **linha,catalogo_utilizadores catalogo);
+void build_utilizador(char **linha,void *cat);
 
 char* get_username(utilizador u);
 
@@ -21,7 +23,7 @@ char* get_country(utilizador u);
 
 char* get_subscription_style(utilizador u);
 
-char** get_liked_musics_id(utilizador u);
+char* get_liked_musics_id(utilizador u);
 
 void set_username(char* username,utilizador u);
 
@@ -37,7 +39,7 @@ void set_country(char* country,utilizador u);
 
 void set_subscription_style(char* subscription_style,utilizador u);
 
-void set_liked_musics_id(char** liked_musics_id,utilizador u);
+void set_liked_musics_id(char* liked_musics_id,utilizador u);
 
 
 void free_utilizador(utilizador novo_utilizador);
