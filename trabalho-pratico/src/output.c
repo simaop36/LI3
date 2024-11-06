@@ -105,7 +105,7 @@ void escreve_user(gpointer key, gpointer value, gpointer user_data) {
             escreve_lista(get_liked_musics_id(u)));
 }
 
-int escreve_csv(Joint catalogo, const char *dir_path){
+int escreve_csv(const char *dir_path, Joint catalogo) {
     const char *file_Names[] = {"artists_errors.csv", "musics_errors.csv", "users_errors.csv"};
     const char *headers[] = {
     "\"id\";\"name\";\"description\";\"recipe_per_stream\";\"id_constituent\";\"country\";\"type\"", // artists
