@@ -4,7 +4,9 @@
 
 #include "users.h"
 #include "catalogo_users.h"
+#include "catalogo_musica.h"
 #include "utils.h"
+#include "musica.h"
 
 typedef struct utilizador {
     char *username;
@@ -152,7 +154,14 @@ void set_liked_musics_id(char* liked_musics_id,utilizador u){
     u->liked_musics_id = result;
 }
 
-
+int valida_liked_music(utilizador u, Catalogo_Musicas catalogo_m){
+    int i = 0;
+    while(get_liked_musics_id(u)+i != NULL){
+        if(!(g_hash_table_contains(getMusicasValidas(catalogo_m),get_liked_musics_id(u)+i))) return 0;
+        i++;
+    }
+    return 1;
+}
 
 void free_utilizador(utilizador novo_utilizador) {
 

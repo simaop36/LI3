@@ -3,6 +3,8 @@
 #include "catalogo_artista.h"
 #include "catalogo_musica.h"
 #include "catalogo_users.h"
+#include "musica.h"
+#include "users.h"
 
 
 typedef struct joint
@@ -42,6 +44,31 @@ Catalogo_Musicas get_catalogo_musicas(Joint j)
 Catalogo_Artistas get_catalogo_artistas(Joint j)
 {
     return j->artista_c;
+}
+
+void aux_user(gpointer key, gpointer value, gpointer user_data){
+    utilizador u = (utilizador)value;
+    Catalogo_Musicas catalogo_m = (Catalogo_Musicas)user_data;
+    valida_liked_music(u,catalogo_m);
+}
+
+void aux_musica(gpointer key, gpointer value, gpointer user_data){
+    musica m = (musica)value;
+    Catalogo_Artistas a = (Catalogo_Artistas)user_data;
+    valida_artistasDamusica(m,a);
+}
+
+void segunda_verificação(Joint catalogo){
+
+    Catalogo_Musicas catalogo_musica = get_catalogo_musicas(catalogo);
+    GHashTable *musicas_validas = getMusicasValidas(catalogo_musica);
+    g_hash_table_foreach(musicas_validas, aux_musica, get_catalogo_artistas(catalogo));
+
+    catalogo_utilizadores catalogo_users = get_catalogo_utilizadores(catalogo);
+    GHashTable *users_validos = getUtilizadoresValidos(catalogo_users);
+
+    g_hash_table_foreach(users_validos, aux_user, get_catalogo_musicas(catalogo));
+
 }
 
 void free_joint(Joint j)

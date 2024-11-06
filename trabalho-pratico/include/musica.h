@@ -2,6 +2,7 @@
 #define MUSICAS_H
 
 #include "catalogo_musica.h"
+#include "catalogo_artista.h"
 
 typedef struct musica *musica;
 musica create_Musica();
@@ -20,6 +21,7 @@ void setDuration(char *duration, musica m);
 void setGenre(char *genre, musica m);
 void setYear(char *year, musica m);
 void setLyrics(char *lyrics, musica m);
+int valida_artistasDamusica(musica u, Catalogo_Artistas a);
 void free_musica(musica m);
 int verifica_musicas(char **linha);
 
