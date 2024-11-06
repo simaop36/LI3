@@ -49,6 +49,14 @@ GHashTable *getUtilizadoresInvalidos(catalogo_utilizadores utilzadores)
     return utilzadores->utilizadores_invalidos;
 }
 
+void free_catalogo_users_invalidos(catalogo_utilizadores catalogo){
+    g_hash_table_destroy(catalogo->utilizadores_invalidos);
+}
+
+void free_catalogo_users_validos(catalogo_utilizadores catalogo){
+    g_hash_table_destroy(catalogo->utilizadores_validos);
+}
+
 void free_catalogo_utilizadores(catalogo_utilizadores catalogo)
 {
     g_hash_table_destroy(catalogo->utilizadores_validos);
