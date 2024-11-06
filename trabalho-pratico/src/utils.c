@@ -330,7 +330,7 @@ int valida_liked_music(utilizador u, Catalogo_Musicas catalogo_m){
     return 1;
 }
 
-int valida_liked_music(musica u, Catalogo_Artistas a)
+int valida_artistasDamusica(musica u, Catalogo_Artistas a)
 {
     int i = 0;
     while (getId_Artista(a) + i != NULL)
