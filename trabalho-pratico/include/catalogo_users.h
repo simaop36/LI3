@@ -21,6 +21,10 @@ GHashTable *getUtilizadoresValidos(catalogo_utilizadores utilzadores);
 
 GHashTable *getUtilizadoresInvalidos(catalogo_utilizadores utilzadores);
 
+void free_catalogo_users_invalidos(catalogo_utilizadores catalogo);
+
+void free_catalogo_users_validos(catalogo_utilizadores catalogo);
+
 void free_catalogo_utilizadores(catalogo_utilizadores catalogo);
 
 #endif

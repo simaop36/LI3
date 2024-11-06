@@ -53,6 +53,14 @@ GHashTable *getArtistasInvalidos(Catalogo_Artistas artistas)
     return artistas->artistas_invalidos;
 }
 
+void free_catalogo_artistas_invalidos(Catalogo_Artistas catalogo){
+    g_hash_table_destroy(catalogo->artistas_invalidos);
+}
+
+void free_catalogo_artistas_validos(Catalogo_Artistas catalogo){
+    g_hash_table_destroy(catalogo->artistas_validos);
+}
+
 void free_catalogo_artistas(Catalogo_Artistas catalogo)
 {
     g_hash_table_destroy(catalogo->artistas_validos);

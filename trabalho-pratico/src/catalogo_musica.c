@@ -49,6 +49,14 @@ GHashTable *getMusicasInvalidas(Catalogo_Musicas musicas)
     return musicas->musicas_invalidas;
 }
 
+void free_catalogo_musicas_invalidos(Catalogo_Musicas catalogo){
+    g_hash_table_destroy(catalogo->musicas_invalidas);
+}
+
+void free_catalogo_musicas_validos(Catalogo_Musicas catalogo){
+    g_hash_table_destroy(catalogo->musicas_validas);
+}
+
 void free_Catalogo_Musicas(Catalogo_Musicas catalogo)
 {
     g_hash_table_destroy(catalogo->musicas_validas);
