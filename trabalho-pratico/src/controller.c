@@ -11,4 +11,5 @@ void run(char *argv[]){
     ler_csvs(argv[1],catalogo);
     //segunda_verificação(catalogo);
     escreve_csv(argv[1],catalogo);
+    free_joint(catalogo);
 }
