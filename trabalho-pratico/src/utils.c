@@ -321,14 +321,20 @@ char **parse_lista(char *input)
 }
 
 
-int valida_liked_music(utilizador u, Catalogo_Musicas catalogo_m){
+void aux_valida_liked_music(utilizador u, catalogo_utilizadores catalogo_u, Catalogo_Musicas catalogo_m){
     int i = 0;
     while(get_liked_musics_id(u)+i != NULL){
-        if(!(g_hash_table_contains(get_musicas_validas(catalogo_m),get_liked_musics_id(u)+i))) return 0;
+        if(!(g_hash_table_contains(get_musicas_validas(catalogo_m),get_liked_musics_id(u)+i))){
+            add_utilizador_invalido(catalogo_u,u);
+            g_hash_table_remove(getUtilizadoresValidos(catalogo_u),u);
+            break;
+        }
         i++;
     }
-    return 1;
+    
 }
+
+
 
 int valida_artistasDamusica(musica u, Catalogo_Artistas a)
 {
