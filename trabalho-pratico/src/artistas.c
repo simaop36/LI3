@@ -12,7 +12,7 @@ typedef struct artista {
     char *name;
     char *description;
     double recipe_per_stream;
-    char *id_constituent;
+    char **id_constituent;
     char *country;
     char *type;
 } *Artista;
@@ -85,9 +85,9 @@ double getRecipe_Per_Stream(Artista a)
 {
     return a->recipe_per_stream;
 }
-char *getId_Constituent(Artista a)
+char **getId_Constituent(Artista a)
 {
-    char *aCopy = strdup(a->id_constituent);
+    char **aCopy = g_strdupv(a->id_constituent);
     return aCopy;
 }
 
@@ -124,7 +124,8 @@ void setRecipe_Per_Stream(double recipe_per_stream, Artista a)
 void setId_Constituent(char *id_constituent, Artista a)
 {
     char *copy = strdup(id_constituent);
-    a->id_constituent = copy;
+    char **result = parse_lista(copy);
+    a->id_constituent = result;
 }
 void setCountry(char *country, Artista a)
 {

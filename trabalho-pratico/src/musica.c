@@ -8,7 +8,7 @@ typedef struct musica
 {
     char *id;
     char *title;
-    char *id_artista;
+    char **id_artista;
     char *duration;
     char *genre;
     char *year;
@@ -112,9 +112,9 @@ char *getLyrics(musica m)
     return mCopy;
 }
 
-char *getId_Artistas(musica m)
+char **getId_Artistas(musica m)
 {
-    char *aCopy = strdup(m->id_artista);
+    char **aCopy = g_strdupv(m->id_artista);
     return aCopy;
 }
 
@@ -133,7 +133,8 @@ void setTitle(char *title, musica m)
 void setId_Artistas(char *id_musica, musica m)
 {
     char *copy = strdup(id_musica);
-    m->id_artista = copy;
+    char **result = parse_lista(copy);
+    m->id_artista = result;
 }
 
 void setDuration(char *duration, musica m)

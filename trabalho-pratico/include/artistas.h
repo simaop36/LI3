@@ -11,7 +11,7 @@ char* getId_Artista(Artista a);
 char* getName(Artista a);
 char* getDescription(Artista a);
 double getRecipe_Per_Stream(Artista a);
-char* getId_Constituent(Artista a);
+char **getId_Constituent(Artista a);
 char* getCountry(Artista a);
 char* getType(Artista a);
 void setId_Artista(char* id,Artista a);

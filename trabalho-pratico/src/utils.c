@@ -196,4 +196,66 @@ int valida_lista(const char *str) {
     return 0;
 }
 
+char **parse_lista(char *input) {
+    // Verifica se o input é nulo ou vazio, ou se contém apenas []
+    if (input == NULL || strcmp(input, "[]") == 0) {
+        return NULL; // Retorna NULL se não houver elementos
+    }
+
+    // Remove []
+    if (*input == '[') input++;
+    if (input[strlen(input) - 1] == ']') input[strlen(input) - 1] = '\0';
+
+    // Inicializa um array dinâmico para os tokens
+    char **result = NULL;
+    int num_tokens = 0;
+    char *token = strtok(input, ", ");
+    
+    // Percorre cada token separado por ", "
+    while (token != NULL) {
+        // Remove aspas simples, se existirem
+        if (*token == '\'') token++;
+        if (token[strlen(token) - 1] == '\'') token[strlen(token) - 1] = '\0';
+
+        // Redimensiona o array para adicionar mais um token
+        char **temp = realloc(result, (num_tokens + 1) * sizeof(char *));
+        if (!temp) {
+            perror("Erro ao realocar memória");
+            for (int i = 0; i < num_tokens; i++) {
+                free(result[i]);
+            }
+            free(result);
+            return NULL;
+        }
+        result = temp;
+
+        // Copia o token atual para o array
+        result[num_tokens] = strdup(token);
+        if (!result[num_tokens]) {
+            perror("Erro ao alocar memória para o token");
+            for (int i = 0; i < num_tokens; i++) {
+                free(result[i]);
+            }
+            free(result);
+            return NULL;
+        }
+
+        num_tokens++;
+        token = strtok(NULL, ", ");
+    }
+        // Adiciona um último elemento NULL para marcar o fim do array
+    char **final_result = realloc(result, (num_tokens + 1) * sizeof(char *));
+    if (!final_result) {
+        perror("Erro ao realocar memória final");
+        for (int i = 0; i < num_tokens; i++) {
+            free(result[i]);
+        }
+        free(result);
+        return NULL;
+    }
+    final_result[num_tokens] = NULL;
+
+    return final_result;
+}
+
 

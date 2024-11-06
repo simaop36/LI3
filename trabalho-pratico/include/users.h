@@ -23,7 +23,7 @@ char* get_country(utilizador u);
 
 char* get_subscription_style(utilizador u);
 
-char* get_liked_musics_id(utilizador u);
+char** get_liked_musics_id(utilizador u);
 
 void set_username(char* username,utilizador u);
 

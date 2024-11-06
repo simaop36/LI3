@@ -14,7 +14,7 @@ typedef struct utilizador {
     char *birth_date;
     char *country;
     char *subscription_style;
-    char *liked_musics_id;
+    char **liked_musics_id;
 } *utilizador;
 
 utilizador create_utilizador(){
@@ -106,8 +106,8 @@ char* get_subscription_style(utilizador u){
     return uCopy;
 }
 
-char* get_liked_musics_id(utilizador u){
-    char* uCopy = strdup(u->liked_musics_id);
+char** get_liked_musics_id(utilizador u){
+    char** uCopy = g_strdupv(u->liked_musics_id);
     return uCopy;
 }
 
@@ -148,7 +148,8 @@ void set_subscription_style(char* subscription_style,utilizador u){
 
 void set_liked_musics_id(char* liked_musics_id,utilizador u){
     char* copy = strdup(liked_musics_id);
-    u->liked_musics_id = copy;
+    char **result = parse_lista(copy);
+    u->liked_musics_id = result;
 }
 
 
