@@ -7,7 +7,9 @@
 
 typedef struct joint *Joint;
 
+
 Joint create_catalago_joint();
+
 
 catalogo_utilizadores get_catalogo_utilizadores(Joint j);
 
