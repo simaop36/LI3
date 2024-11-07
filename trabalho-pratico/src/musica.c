@@ -139,6 +139,7 @@ void setId_Artistas(char *id_musica, musica m)
 {
     char *copy = strdup(id_musica);
     char **result = parse_lista(copy);
+    free(copy);
     m->id_artista = result;
 }
 

@@ -56,8 +56,11 @@ char *escreve_lista(char **elems) {
         if (i < num_elems - 1) {
             strcat(resultado, ",");
         }
+        free(elems[i]);
     }
+    free(elems);
     strcat(resultado, "]");
+
 
     return resultado;
 }
@@ -66,43 +69,91 @@ void escreve_artista(gpointer key, gpointer value, gpointer user_data) {
     FILE *file = (FILE *)user_data;
     Artista artista = (Artista)value;
 
+    char *id = getId_Artista(artista);
+    char *name = getName(artista);
+    char *description = getDescription(artista);
+    char *recipe_per_stream = escreve_lista(getId_Constituent(artista));
+    char *country = getCountry(artista);
+    char *type = getType(artista);
+
     fprintf(file, "\"%s\";\"%s\";\"%s\";\"%.2f\";\"%s\";\"%s\";\"%s\"\n",
-            getId_Artista(artista),
-            getName(artista),
-            getDescription(artista),
+            id,
+            name,
+            description,
             getRecipe_Per_Stream(artista),
-            escreve_lista(getId_Constituent(artista)),
-            getCountry(artista),
-            getType(artista));
+            recipe_per_stream,
+            country,
+            type);
+
+    free(id);
+    free(name);
+    free(description);
+    free(recipe_per_stream);
+    free(country);
+    free(type);
 }
 
 void escreve_musica(gpointer key, gpointer value, gpointer user_data) {
     FILE *file = (FILE *)user_data;
     musica m = (musica)value;
 
-    fprintf(file, "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",// falta um ;\"%s\"
-            getId_Musica(m),
-            getTitle(m),
-            escreve_lista(getId_Artistas(m)),
-            getDuration(m),
-            //getGenre(m),
-            getYear(m),
-            getLyrics(m));
+    char *id = getId_Musica(m);
+    char *title = getTitle(m);
+    char *artists = escreve_lista(getId_Artistas(m));
+    char *duration = getDuration(m);
+    char *genre = getGenre(m);
+    char *year = getYear(m);
+    char *lyrics = getLyrics(m);
+
+    fprintf(file, "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+            id,
+            title,
+            artists,
+            duration,
+            genre,
+            year,
+            lyrics);
+
+    free(id);
+    free(title);
+    free(artists);
+    free(duration);
+    free(genre);
+    free(year);
+    free(lyrics);
 }
 
 void escreve_user(gpointer key, gpointer value, gpointer user_data) {
     FILE *file = (FILE *)user_data;
     utilizador u = (utilizador)value;
 
+    char *username = get_username(u);
+    char *email = get_email(u);
+    char *first_name = get_first_name(u);
+    char *last_name = get_last_name(u);
+    char *birth_date = get_birth_date(u);
+    char *country = get_country(u);
+    char *subscription_style = get_subscription_style(u);
+    char *liked_musics = escreve_lista(get_liked_musics_id(u));
+
     fprintf(file, "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
-            get_username(u),
-            get_email(u),
-            get_first_name(u),
-            get_last_name(u),
-            get_birth_date(u),
-            get_country(u),
-            get_subscription_style(u),
-            escreve_lista(get_liked_musics_id(u)));
+            username,
+            email,
+            first_name,
+            last_name,
+            birth_date,
+            country,
+            subscription_style,
+            liked_musics);
+
+    free(username);
+    free(email);
+    free(first_name);
+    free(last_name);
+    free(birth_date);
+    free(country);
+    free(subscription_style);
+    free(liked_musics);
 }
 
 int escreve_csv(const char *dir_path, Joint catalogo) {

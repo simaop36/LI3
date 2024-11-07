@@ -125,6 +125,7 @@ void setId_Constituent(char *id_constituent, Artista a)
 {
     char *copy = strdup(id_constituent);
     char **result = parse_lista(copy);
+    free(copy);
     a->id_constituent = result;
 }
 void setCountry(char *country, Artista a)

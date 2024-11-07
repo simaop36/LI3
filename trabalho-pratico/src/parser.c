@@ -53,6 +53,7 @@ char **parser_linha(char *line, int max_tokens) {
 
     // Processa o último token após o último separador
     token = line;
+
     if (*token == '"' && *(token + strlen(token) - 1) == '"') {
         token++;
         *(token + strlen(token) - 1) = '\0';
@@ -83,6 +84,7 @@ void file_reader(FILE *csv,const char *file_name, Joint catalogo) {
             linha[strlen(linha) - 1] = '\0'; // remove o \n e substitui por \0
             char **tokens = parser_linha(linha,7);
             build_Artista(tokens,get_catalogo_artistas(catalogo));
+            for(int i = 0; i < 7; i++) free(tokens[i]);
             free(tokens);
         }
         free(linha);
@@ -99,6 +101,7 @@ void file_reader(FILE *csv,const char *file_name, Joint catalogo) {
             linha[strlen(linha) - 1] = '\0'; // remove o \n e substitui por \0
             char **tokens = parser_linha(linha,7);
             build_musica(tokens,get_catalogo_musicas(catalogo));
+            for(int i = 0; i < 7; i++) free(tokens[i]);
             free(tokens);
         }
         free(linha);
@@ -115,6 +118,7 @@ void file_reader(FILE *csv,const char *file_name, Joint catalogo) {
             linha[strlen(linha) - 1] = '\0'; // remove o \n e substitui por \0
             char **tokens = parser_linha(linha,8);
             build_utilizador(tokens,get_catalogo_utilizadores(catalogo));
+            for(int i = 0; i < 8; i++) free(tokens[i]);
             free(tokens);
         }
         free(linha);

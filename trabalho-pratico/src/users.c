@@ -151,6 +151,7 @@ void set_subscription_style(char* subscription_style,utilizador u){
 void set_liked_musics_id(char* liked_musics_id,utilizador u){
     char* copy = strdup(liked_musics_id);
     char **result = parse_lista(copy);
+    free(copy);
     u->liked_musics_id = result;
 }
 /*
