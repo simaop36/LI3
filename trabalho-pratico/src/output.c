@@ -80,12 +80,12 @@ void escreve_musica(gpointer key, gpointer value, gpointer user_data) {
     FILE *file = (FILE *)user_data;
     musica m = (musica)value;
 
-    fprintf(file, "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+    fprintf(file, "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",// falta um ;\"%s\"
             getId_Musica(m),
             getTitle(m),
             escreve_lista(getId_Artistas(m)),
             getDuration(m),
-            getGenre(m),
+            //getGenre(m),
             getYear(m),
             getLyrics(m));
 }

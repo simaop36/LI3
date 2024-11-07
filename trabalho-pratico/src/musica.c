@@ -165,7 +165,7 @@ void setLyrics(char *lyrics, musica m)
     char *copy = strdup(lyrics);
     m->lyrics = copy;
 }
-
+/*
 int valida_artistasDamusica(musica m, Catalogo_Artistas a)
 {
     int i = 0;
@@ -177,12 +177,13 @@ int valida_artistasDamusica(musica m, Catalogo_Artistas a)
     }
     return 1;
 }
+*/
 
 void free_musica(musica m)
 {
     free(m->id);
     free(m->title);
-    free(m->id_artista);
+    free_lista_strings(m->id_artista);
     free(m->duration);
     free(m->genre);
     free(m->year);

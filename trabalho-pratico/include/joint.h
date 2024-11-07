@@ -17,9 +17,9 @@ Catalogo_Musicas get_catalogo_musicas(Joint j);
 
 Catalogo_Artistas get_catalogo_artistas(Joint j);
 
-void aux_user(gpointer key, gpointer value, gpointer user_data);
+//void aux_user(gpointer key, gpointer value, gpointer user_data);
 
-void aux_musica(gpointer key, gpointer value, gpointer user_data);
+//void aux_musica(gpointer key, gpointer value, gpointer user_data);
 
 void segunda_verificação(Joint catalogo);
 

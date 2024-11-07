@@ -60,10 +60,10 @@ void free_catalogo_users_validos(catalogo_utilizadores catalogo){
 void free_catalogo_utilizadores(catalogo_utilizadores catalogo)
 {
     if (catalogo->utilizadores_validos) {
-        g_hash_table_unref(catalogo->utilizadores_validos);
+        g_hash_table_destroy(catalogo->utilizadores_validos);
     }
     if (catalogo->utilizadores_invalidos) {
-        g_hash_table_unref(catalogo->utilizadores_invalidos);
+        g_hash_table_destroy(catalogo->utilizadores_invalidos);
     }
     free(catalogo);
 }
