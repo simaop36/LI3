@@ -59,7 +59,11 @@ void free_catalogo_musicas_validos(Catalogo_Musicas catalogo){
 
 void free_Catalogo_Musicas(Catalogo_Musicas catalogo)
 {
-    g_hash_table_destroy(catalogo->musicas_validas);
-    g_hash_table_destroy(catalogo->musicas_invalidas);
+    if (catalogo->musicas_validas) {
+        g_hash_table_unref(catalogo->musicas_validas);
+    }
+    if (catalogo->musicas_invalidas) {
+        g_hash_table_unref(catalogo->musicas_invalidas);
+    }
     free(catalogo);
 }

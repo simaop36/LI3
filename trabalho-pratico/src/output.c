@@ -106,7 +106,7 @@ void escreve_user(gpointer key, gpointer value, gpointer user_data) {
 }
 
 int escreve_csv(const char *dir_path, Joint catalogo) {
-    const char *file_Names[] = {"artists_errors.csv", "musics_errors.csv", "users_errors.csv"};
+    const char *file_Names[] = {"/artists_errors.csv", "/musics_errors.csv", "/users_errors.csv"};
     const char *headers[] = {
     "\"id\";\"name\";\"description\";\"recipe_per_stream\";\"id_constituent\";\"country\";\"type\"", // artists
     "\"id\";\"title\";\"artist_id\";\"duration\";\"genre\";\"year\";\"lyrics\"", // musics
@@ -132,7 +132,6 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
 
     fclose(file_artists);
 
-    free_catalogo_artistas_invalidos(catalogo_artistas);
 
     //musicas
 
@@ -148,14 +147,14 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
         return -1;
     }
     fprintf(file_musics, "%s\n", headers[1]);
-
+    
     Catalogo_Musicas catalogo_musica = get_catalogo_musicas(catalogo);
     GHashTable *musicas_invalidas = getMusicasInvalidas(catalogo_musica);
+    
     g_hash_table_foreach(musicas_invalidas, escreve_musica, file_musics);
-
+    
     fclose(file_musics);
 
-    free_catalogo_musicas_invalidos(catalogo_musica); 
 
     //users
 
@@ -171,14 +170,13 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
         return -1;
     }
     fprintf(file_users, "%s\n", headers[2]);
-
+    
     catalogo_utilizadores catalogo_users = get_catalogo_utilizadores(catalogo);
     GHashTable *users_invalidos = getUtilizadoresInvalidos(catalogo_users);
     g_hash_table_foreach(users_invalidos, escreve_user, file_users);
-
+    
     fclose(file_users);
 
-    free_catalogo_users_invalidos(catalogo_users); 
 
     return 0;
     
