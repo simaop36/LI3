@@ -54,16 +54,24 @@ GHashTable *getArtistasInvalidos(Catalogo_Artistas artistas)
 }
 
 void free_catalogo_artistas_invalidos(Catalogo_Artistas catalogo){
-    g_hash_table_destroy(catalogo->artistas_invalidos);
+    if (catalogo->artistas_invalidos) {
+        g_hash_table_unref(catalogo->artistas_invalidos);
+    }
 }
 
 void free_catalogo_artistas_validos(Catalogo_Artistas catalogo){
-    g_hash_table_destroy(catalogo->artistas_validos);
+    if (catalogo->artistas_validos) {
+        g_hash_table_unref(catalogo->artistas_validos);
+    }
 }
 
 void free_catalogo_artistas(Catalogo_Artistas catalogo)
 {
-    g_hash_table_destroy(catalogo->artistas_validos);
-    g_hash_table_destroy(catalogo->artistas_invalidos);
+    if (catalogo->artistas_validos) {
+        g_hash_table_unref(catalogo->artistas_validos);
+    }
+    if (catalogo->artistas_invalidos) {
+        g_hash_table_unref(catalogo->artistas_invalidos);
+    }
     free(catalogo);
 }

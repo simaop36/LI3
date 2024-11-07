@@ -1,5 +1,6 @@
 #include "musica.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "catalogo_musica.h"
 #include "catalogo_artista.h"
@@ -48,10 +49,12 @@ int verifica_musicas(char **linha)
         return 0;
     if (!(linha[6]))
         return 0;
-    return 1;
+    
 
     if (!(valida_duracao(linha[3])))
         return 0;
+
+    return 1;
 }
 
 void build_musica(char **linha, void *cat)
@@ -129,7 +132,7 @@ void setId_Musica(char *id, musica m)
 void setTitle(char *title, musica m)
 {
     char *copy = strdup(title);
-    m->id = copy;
+    m->title = copy ;
 }
 
 void setId_Artistas(char *id_musica, musica m)
