@@ -146,7 +146,7 @@ void free_artista(Artista novo_artista) {
     free(novo_artista->id);
     free(novo_artista->name);
     free(novo_artista->description);
-    free(novo_artista->id_constituent);
+    free_lista_strings(novo_artista->id_constituent);
     free(novo_artista->country);
     free(novo_artista->type);
     free(novo_artista);

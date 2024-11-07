@@ -27,7 +27,7 @@ LDFLAGS := `pkg-config --libs glib-2.0`
 all: $(EXEC) $(EXEC_TEST)
 
 $(EXEC): $(OBJ)
-	@$(CC) $(FLAGS) $^ $(LDFLAGS) -g -o $@ ; echo "[Compiling] $@"
+	@$(CC) $(FLAGS) $^ $(LDFLAGS) -g -fsanitize=address -o $@ ; echo "[Compiling] $@"
 	
 build/%.o: src/%.c
 	@mkdir -p build

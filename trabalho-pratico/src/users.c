@@ -153,7 +153,7 @@ void set_liked_musics_id(char* liked_musics_id,utilizador u){
     char **result = parse_lista(copy);
     u->liked_musics_id = result;
 }
-
+/*
 int valida_liked_music(utilizador u, Catalogo_Musicas catalogo_m){
     int i = 0;
     while(get_liked_musics_id(u)+i != NULL){
@@ -162,6 +162,7 @@ int valida_liked_music(utilizador u, Catalogo_Musicas catalogo_m){
     }
     return 1;
 }
+*/
 
 void free_utilizador(utilizador novo_utilizador) {
 
@@ -172,6 +173,6 @@ void free_utilizador(utilizador novo_utilizador) {
     free(novo_utilizador->birth_date);
     free(novo_utilizador->country);
     free(novo_utilizador->subscription_style);
-    free(novo_utilizador->liked_musics_id);
+    free_lista_strings(novo_utilizador->liked_musics_id);
     free(novo_utilizador);
 }

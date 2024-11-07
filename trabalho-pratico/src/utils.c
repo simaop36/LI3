@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "utils.h"
 #include "catalogo_musica.h"
 #include "catalogo_users.h"
 #include "users.h"
 #include "catalogo_artista.h"
+#include "joint.h"
 
 // return 0 : Inválido
 // return 1 : Válido
@@ -320,30 +322,88 @@ char **parse_lista(char *input)
     return final_result;
 }
 
-
-void aux_valida_liked_music(utilizador u, catalogo_utilizadores catalogo_u, Catalogo_Musicas catalogo_m){
+/*
+void aux_valida_liked_music(utilizador u, Joint catalogo) {
+    Catalogo_Musicas catM = get_catalogo_musicas(catalogo);
+    catalogo_utilizadores catU = get_catalogo_utilizadores(catalogo);
+    
+    char **liked_musics = get_liked_musics_id(u);
     int i = 0;
-    while(get_liked_musics_id(u)+i != NULL){
-        if(!(g_hash_table_contains(get_musicas_validas(catalogo_m),get_liked_musics_id(u)+i))){
-            add_utilizador_invalido(catalogo_u,u);
-            g_hash_table_remove(getUtilizadoresValidos(catalogo_u),u);
+
+    // array termina com NULL
+    if(liked_musics == NULL) return;
+    while (liked_musics[i] != NULL) {
+        if (!g_hash_table_contains(getMusicasValidas(catM), liked_musics[i])) {
+            add_utilizador_invalido(catU, u);
+            char *username = get_username(u);
+            if(username == NULL) return;
+            if (!(g_hash_table_remove(getUtilizadoresValidos(catU), username))) printf("erro remove user\n");
+            return;
+        }
+        i++;
+    }
+    return;
+}
+*/
+
+bool possui_musica_valida(utilizador utilizador, GHashTable *artistas_validos) {
+    char **liked_musics = get_liked_musics_id(utilizador);
+
+    for (int i = 0; liked_musics[i] != NULL; i++) {
+        if (!(g_hash_table_contains(artistas_validos, liked_musics[i]))) {
+            return false; // Encontrou um artista inválido
+        }
+    }
+
+    return true;
+}
+
+void mover_utilizadores_invalidos(GHashTable *utilizadores_validos, GHashTable *utilizadores_invalidos, GHashTable *artistas_validos) {
+    GHashTableIter iter;
+    gpointer key, value;
+
+    g_hash_table_iter_init(&iter, utilizadores_validos);
+
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        utilizador ut = (utilizador)value;
+
+        // Verifica se o utilizador possui músicas válidas
+        if (!possui_musica_valida(ut, artistas_validos)) {
+            // Adiciona o utilizador à tabela de utilizadores inválidos
+            g_hash_table_insert(utilizadores_invalidos, key, ut);
+            // Remove o utilizador da tabela de utilizadores válidos
+            g_hash_table_iter_remove(&iter);
+        }
+    }
+}
+
+void valida_artistasDamusica(musica m, Joint catalogo) {
+    Catalogo_Artistas catA = get_catalogo_artistas(catalogo);
+    Catalogo_Musicas catM = get_catalogo_musicas(catalogo);
+    
+    char **artistas = getId_Artistas(m);
+    int i = 0;
+
+    // array termina com NULL
+    while (artistas[i] != NULL) {
+        if (!g_hash_table_contains(getArtistasValidos(catA), artistas[i])) {
+            add_musica_invalida(catM, m);
+            g_hash_table_remove(getMusicasValidas(catM), getId_Musica(m));
+            
             break;
         }
         i++;
     }
-    
+    return;
 }
 
+void free_lista_strings(char **array) {
+    if (array == NULL) return;
 
-
-int valida_artistasDamusica(musica u, Catalogo_Artistas a)
-{
-    int i = 0;
-    while (getId_Artista(a) + i != NULL)
-    {
-        if (!(g_hash_table_contains(get_artistas_validos(a), getId_Artista(u) + i)))
-            return 0;
-        i++;
+    // Free cada elemento ate NULL
+    for (size_t i = 0; array[i] != NULL; i++) {
+        free(array[i]);
     }
-    return 1;
+
+    free(array);
 }
