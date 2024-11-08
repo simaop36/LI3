@@ -11,7 +11,7 @@
 
 
 char* Q1(char* ID,Joint catalogo){
-    catalogo_utilizadores catU = getUtilizadoresValidos(catalogo);
+    catalogo_utilizadores catU = get_catalogo_utilizadores(catalogo);
     utilizador u = get_utilizador_valido(catU,ID);
     char* email = get_email(u);
     char* first_name = get_first_name(u);

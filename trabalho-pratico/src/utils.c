@@ -403,3 +403,24 @@ int calcula_idade(char* birth_date){
 
     return idade;
 }
+
+int converter_em_segundos(char* duracao){
+    char* horas;
+    char* minutos;
+    char* segundos;
+    int seg=0;
+
+    for(int i = 0 ; i < 2 ; i++ ){
+        horas[i] = duracao[i];
+        minutos[i+3] = duracao[i+3];
+        segundos[i+6] = duracao[i+6];
+    }
+    
+    seg = atoi(horas)*3600+atoi(minutos)*60+atoi(segundos);
+    
+    free(horas);
+    free(minutos);
+    free(segundos); 
+    
+    return seg;
+}
