@@ -60,4 +60,4 @@ clean:
 	@rm -f $(EXEC) ; echo "[Removing] $(EXEC)"
 	@rm -f $(EXEC_TEST) ; echo "[Removing] $(EXEC_TEST)"
 	@rm -rf build/ ; echo "[Removing] build/"
-	@rm -f Resultados/* ; echo "[Cleaning] Resultados/"
+	@rm -f resultados/* ; echo "[Cleaning] resultados/"

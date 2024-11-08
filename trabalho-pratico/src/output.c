@@ -72,7 +72,7 @@ void escreve_artista(gpointer key, gpointer value, gpointer user_data) {
     char *id = getId_Artista(artista);
     char *name = getName(artista);
     char *description = getDescription(artista);
-    char *recipe_per_stream = escreve_lista(getId_Constituent(artista));
+    char *id_constituent = escreve_lista(getId_Constituent(artista));
     char *country = getCountry(artista);
     char *type = getType(artista);
 
@@ -81,14 +81,14 @@ void escreve_artista(gpointer key, gpointer value, gpointer user_data) {
             name,
             description,
             getRecipe_Per_Stream(artista),
-            recipe_per_stream,
+            id_constituent,
             country,
             type);
 
     free(id);
     free(name);
     free(description);
-    free(recipe_per_stream);
+    free(id_constituent);
     free(country);
     free(type);
 }
@@ -168,6 +168,10 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
     strcpy(artists_errors, dir_path);
     strcat(artists_errors, file_Names[0]);
 
+    Catalogo_Artistas catalogo_artistas = get_catalogo_artistas(catalogo);
+    GHashTable *artistas_invalidos = getArtistasInvalidos(catalogo_artistas);
+
+    if(g_hash_table_size(artistas_invalidos) == 0) return -1;
 
     // Abre o ficheiro para escrita
     FILE *file_artists = fopen(artists_errors, "w");
@@ -176,10 +180,10 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
         perror("Erro ao abrir ficheiro artists_errors.csv");
         return -1;
     }
+   
+
     fprintf(file_artists, "%s\n", headers[0]);
 
-    Catalogo_Artistas catalogo_artistas = get_catalogo_artistas(catalogo);
-    GHashTable *artistas_invalidos = getArtistasInvalidos(catalogo_artistas);
     g_hash_table_foreach(artistas_invalidos, escreve_artista, file_artists);
 
     fclose(file_artists);
@@ -191,6 +195,9 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
     strcpy(musics_errors, dir_path);
     strcat(musics_errors, file_Names[1]);
 
+    Catalogo_Musicas catalogo_musica = get_catalogo_musicas(catalogo);
+    GHashTable *musicas_invalidas = getMusicasInvalidas(catalogo_musica);
+    if(g_hash_table_size(musicas_invalidas) == 0) return -1;
 
     FILE *file_musics = fopen(musics_errors, "w");
     free(musics_errors);
@@ -198,10 +205,8 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
         perror("Erro ao abrir ficheiro musics_errors.csv");
         return -1;
     }
+
     fprintf(file_musics, "%s\n", headers[1]);
-    
-    Catalogo_Musicas catalogo_musica = get_catalogo_musicas(catalogo);
-    GHashTable *musicas_invalidas = getMusicasInvalidas(catalogo_musica);
     
     g_hash_table_foreach(musicas_invalidas, escreve_musica, file_musics);
     
@@ -214,6 +219,9 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
     strcpy(users_errors, dir_path);
     strcat(users_errors, file_Names[2]);
 
+    catalogo_utilizadores catalogo_users = get_catalogo_utilizadores(catalogo);
+    GHashTable *users_invalidos = getUtilizadoresInvalidos(catalogo_users);
+    if(g_hash_table_size(users_invalidos) == 0) return -1;
 
     FILE *file_users = fopen(users_errors, "w");
     free(users_errors);
@@ -221,15 +229,15 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
         perror("Erro ao abrir ficheiro users_errors.csv");
         return -1;
     }
+    
     fprintf(file_users, "%s\n", headers[2]);
     
-    catalogo_utilizadores catalogo_users = get_catalogo_utilizadores(catalogo);
-    GHashTable *users_invalidos = getUtilizadoresInvalidos(catalogo_users);
+    
     g_hash_table_foreach(users_invalidos, escreve_user, file_users);
     
     fclose(file_users);
 
 
-    return 0;
+    return 1;
     
 }
