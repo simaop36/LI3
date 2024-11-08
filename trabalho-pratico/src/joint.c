@@ -52,19 +52,20 @@ void aux_user(gpointer key, gpointer value, gpointer user_data){
     Joint catalogo = (Joint)user_data;
     aux_valida_liked_music(u,catalogo);
 }
-*/
+
 void aux_musica(gpointer key, gpointer value, gpointer user_data){
     musica m = (musica)value;
     Joint cat = (Joint)user_data;
     valida_artistasDamusica(m,cat);
 }
+*/
 
 void segunda_verificação(Joint catalogo){
 
     Catalogo_Musicas catalogo_musica = get_catalogo_musicas(catalogo);
     GHashTable *musicas_validas = getMusicasValidas(catalogo_musica);
     GHashTable *musicas_invalidas = getMusicasInvalidas(catalogo_musica);
-    //g_hash_table_foreach(musicas_validas, aux_musica, catalogo);
+    
 
     catalogo_utilizadores catalogo_users = get_catalogo_utilizadores(catalogo);
     GHashTable *users_validos = getUtilizadoresValidos(catalogo_users);
@@ -76,6 +77,8 @@ void segunda_verificação(Joint catalogo){
 
     mover_musicas_invalidos(musicas_validas,musicas_invalidas,art_validos);
     mover_utilizadores_invalidos(users_validos,users_invalidos,musicas_validas);
+
+    //g_hash_table_foreach(musicas_validas, aux_musica, catalogo);
     //g_hash_table_foreach(users_validos, aux_user, catalogo);
 
 }

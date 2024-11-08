@@ -105,10 +105,10 @@ void escreve_musica(gpointer key, gpointer value, gpointer user_data) {
     char *year = getYear(m);
     char *lyrics = getLyrics(m);
 
-    fprintf(file, "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+    fprintf(file, "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
             id,
             title,
-            artists,
+            //artists,
             duration,
             genre,
             year,
@@ -168,6 +168,26 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
     strcpy(artists_errors, dir_path);
     strcat(artists_errors, file_Names[0]);
 
+    //verificação de erros:
+    Catalogo_Artistas catalogo_artistas = get_catalogo_artistas(catalogo);
+    GHashTable *artistas_validas = getArtistasValidos(catalogo_artistas);
+    printf("\n\n Depois da segunda verificação: \n\n");
+    printf("Tamanho da tabela hash dos artistas validos: %u\n", g_hash_table_size(artistas_validas));
+    GHashTable *artistas_invalidas = getArtistasInvalidos(catalogo_artistas);
+    printf("Tamanho da tabela hash dos artistas invalidas: %u\n", g_hash_table_size(artistas_invalidas));
+
+    Catalogo_Musicas catalogo_musica = get_catalogo_musicas(catalogo);
+    GHashTable *musicas_validas = getMusicasValidas(catalogo_musica);
+    printf("Tamanho da tabela hash das musicas validas: %u\n", g_hash_table_size(musicas_validas));
+    GHashTable *musicas_invalidas = getMusicasInvalidas(catalogo_musica);
+    printf("Tamanho da tabela hash das musicas invalidas: %u\n", g_hash_table_size(musicas_invalidas));
+
+    catalogo_utilizadores catalogo_utilizadores = get_catalogo_utilizadores(catalogo);
+    GHashTable *users_validas = getUtilizadoresValidos(catalogo_utilizadores);
+    printf("Tamanho da tabela hash dos users validos: %u\n", g_hash_table_size(users_validas));
+    GHashTable *users_invalidas = getUtilizadoresInvalidos(catalogo_utilizadores);
+    printf("Tamanho da tabela hash dos users invalidos: %u\n", g_hash_table_size(users_invalidas));
+
     // Abre o ficheiro para escrita
     FILE *file_artists = fopen(artists_errors, "w");
     free(artists_errors); // Liberta a memória alocada para o caminho do ficheiro
@@ -177,7 +197,7 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
     }
     fprintf(file_artists, "%s\n", headers[0]);
 
-    Catalogo_Artistas catalogo_artistas = get_catalogo_artistas(catalogo);
+    //Catalogo_Artistas catalogo_artistas = get_catalogo_artistas(catalogo);
     GHashTable *artistas_invalidos = getArtistasInvalidos(catalogo_artistas);
     g_hash_table_foreach(artistas_invalidos, escreve_artista, file_artists);
 
@@ -199,8 +219,8 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
     }
     fprintf(file_musics, "%s\n", headers[1]);
     
-    Catalogo_Musicas catalogo_musica = get_catalogo_musicas(catalogo);
-    GHashTable *musicas_invalidas = getMusicasInvalidas(catalogo_musica);
+    //Catalogo_Musicas catalogo_musica = get_catalogo_musicas(catalogo);
+    //GHashTable *musicas_invalidas = getMusicasInvalidas(catalogo_musica);
     
     g_hash_table_foreach(musicas_invalidas, escreve_musica, file_musics);
     
@@ -222,8 +242,8 @@ int escreve_csv(const char *dir_path, Joint catalogo) {
     }
     fprintf(file_users, "%s\n", headers[2]);
     
-    catalogo_utilizadores catalogo_users = get_catalogo_utilizadores(catalogo);
-    GHashTable *users_invalidos = getUtilizadoresInvalidos(catalogo_users);
+    //catalogo_utilizadores catalogo_users = get_catalogo_utilizadores(catalogo);
+    GHashTable *users_invalidos = getUtilizadoresInvalidos(catalogo_utilizadores);
     g_hash_table_foreach(users_invalidos, escreve_user, file_users);
     
     fclose(file_users);

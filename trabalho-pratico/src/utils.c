@@ -348,29 +348,17 @@ void aux_valida_liked_music(utilizador u, Joint catalogo) {
 
 bool verifica_artista_valido(musica m, GHashTable *artista_valido){
     char **artistas_id = getId_Artistas(m);
-    
+    bool result = true;
     for (int i = 0; artistas_id[i] != NULL; i++){
         if(!(g_hash_table_contains(artista_valido,artistas_id[i]))){
-            return false;
+            result = false;
         }
+        free(artistas_id[i]);
     }
-    for (int i = 0; artistas_id[i] != NULL; i++) free(artistas_id[i]);
     free(artistas_id);
-    return true;
+    return result;
 }
 
-bool verifica_musica_valida(utilizador utilizador, GHashTable *musicas_validas) {
-    char **liked_musics = get_liked_musics_id(utilizador);
-
-    for (int i = 0; liked_musics[i] != NULL; i++) {
-        if (!(g_hash_table_contains(musicas_validas, liked_musics[i]))) {
-            return false; // Encontrou um artista inválido
-        }
-    }
-    for(int i = 0; liked_musics[i] != NULL; i++) free(liked_musics[i]);
-    free(liked_musics);
-    return true;
-}
 void mover_musicas_invalidos(GHashTable *musicas_validas, GHashTable *musicas_invalidas, GHashTable *artistas_validos) {
     GHashTableIter iter;
     gpointer key, value;
@@ -379,16 +367,33 @@ void mover_musicas_invalidos(GHashTable *musicas_validas, GHashTable *musicas_in
 
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         musica m = (musica)value;
-
+        char *id = (char *)key;
 
         if (!verifica_artista_valido(m, artistas_validos)) {
 
-            g_hash_table_insert(musicas_invalidas, key, m);
+            char *id_copy = strdup(id);
+            g_hash_table_insert(musicas_invalidas, id_copy, m);
 
             g_hash_table_iter_remove(&iter);
+
         }
     }
+
 }
+
+bool verifica_musica_valida(utilizador utilizador, GHashTable *musicas_validas) {
+    char **liked_musics = get_liked_musics_id(utilizador);
+    bool result = true;
+    for (int i = 0; liked_musics[i] != NULL; i++) {
+        if (!(g_hash_table_contains(musicas_validas, liked_musics[i]))) {
+            result = false;
+        }
+        free(liked_musics[i]);
+    }
+    free(liked_musics);
+    return result;
+}
+
 
 void mover_utilizadores_invalidos(GHashTable *utilizadores_validos, GHashTable *utilizadores_invalidos, GHashTable *musicas_validas) {
     GHashTableIter iter;
@@ -398,10 +403,11 @@ void mover_utilizadores_invalidos(GHashTable *utilizadores_validos, GHashTable *
 
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         utilizador ut = (utilizador)value;
+        char *id = (char *)key;
 
         if (!verifica_musica_valida(ut, musicas_validas)) {
-
-            g_hash_table_insert(utilizadores_invalidos, key, ut);
+            char *id_copy = strdup(id);
+            g_hash_table_insert(utilizadores_invalidos, id_copy, ut);
 
             g_hash_table_iter_remove(&iter);
         }
