@@ -54,8 +54,10 @@ int verifica_utilizadores(char **linha){
 
 void build_utilizador(char **linha,void *cat){
     utilizador u = create_utilizador();
+    Joint joint = (Joint)cat;
+    GHashTable *musicas_validas = getMusicasValidas(get_catalogo_musicas(joint));
+    catalogo_utilizadores catalogo = get_catalogo_utilizadores(joint);
 
-    catalogo_utilizadores catalogo = (catalogo_utilizadores)cat;
 
     set_username(linha[0],u);
     set_email(linha[1],u);
@@ -66,10 +68,19 @@ void build_utilizador(char **linha,void *cat){
     set_subscription_style(linha[6],u);
     set_liked_musics_id(linha[7],u);
 
-    if(verifica_utilizadores(linha)){
-        add_utilizador_valido(catalogo,u);
-    } else{
+    if(!(verifica_utilizadores(linha)))
+    {
         add_utilizador_invalido(catalogo,u);
+    }
+    else
+    {
+        if(segVerUser(u,musicas_validas)){
+            add_utilizador_valido(catalogo,u);
+        }
+        else {
+            add_utilizador_invalido(catalogo,u);
+        }
+        
     }
 }
 
