@@ -8,11 +8,12 @@
 #include "users.h"
 #include "utils.h"
 
-//DEFINE char* data_atual = "2024/09/09"
+
 
 char* Q1(char* ID,Joint catalogo){
     catalogo_utilizadores catU = getUtilizadoresValidos(catalogo);
     utilizador u = get_utilizador_valido(catU,ID);
+    char* data_atual = "2024/09/09";
     char* email = get_email(u);
     char* first_name = get_first_name(u);
     char* last_name = get_last_name(u);

@@ -379,11 +379,11 @@ int calcula_idade(char* data_atual,char* birth_date){
         ano_a[i] = data_atual[i+1];
         ano_b[i] = birth_date[i+1];
     }
-    for(int i = 4 ; i < 7 ; i++){
+    for(int i = 5 ; i < 7 ; i++){
         mes_a[i] = data_atual[i+1];
         mes_b[i] = birth_date[i+1];
     }
-    for(int i = 7 ; i < 9 ; i++){
+    for(int i = 8 ; i < 10 ; i++){
         dia_a[i] = data_atual[i+1];
         dia_b[i] = birth_date[i+1];
     }
