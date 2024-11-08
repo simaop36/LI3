@@ -43,14 +43,15 @@ char *Q1(char *ID, Joint catalogo)
 
 int comparar_generos(gconstpointer a, gconstpointer b)
 {
-    generoContagem g1 = *(generoContagem *)a;
-    generoContagem g2 = *(generoContagem *)b;
+    // conversao de void * para generoContagem
+    generoContagem g1 = (generoContagem)a;
+    generoContagem g2 = (generoContagem)b;
 
     if (g2->likes != g1->likes)
     {
-        return g2->likes - g1->likes;
+        return g2->likes - g1->likes; // ordem descendente por likes
     }
-    return strcmp(g1->genero, g2->genero);
+    return strcmp(g1->genero, g2->genero); // ordem alfabetica
 }
 
 void Q3(int min, int max, Joint catalogo)
@@ -77,7 +78,7 @@ void Q3(int min, int max, Joint catalogo)
                 {
                     generoContagem contador = malloc(sizeof(generoContagem));
                     contador->genero = strdup(genero);
-                    contador->likes = 0;
+                    contador->likes = 1;
                     g_hash_table_insert(generosContagem, contador->genero, contador);
                 }
                 contagem->likes++;
