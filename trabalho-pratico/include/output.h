@@ -3,7 +3,7 @@
 
 #include "joint.h"
 
-char *escreve_lista(char **elems);
+char *escreve_lista(char **elems,int tipo);
 void escreve_artista(gpointer key, gpointer value, gpointer user_data);
 void escreve_musica(gpointer key, gpointer value, gpointer user_data);
 void escreve_user(gpointer key, gpointer value, gpointer user_data);
