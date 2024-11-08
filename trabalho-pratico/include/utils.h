@@ -26,5 +26,6 @@ char **parse_lista(char *input);
 int segVerMusica(musica m, GHashTable *artista_valido);
 int segVerUser(utilizador utilizador, GHashTable *musicas_validas);
 void free_lista_strings(char **array);
+int calcula_idade(char* data_atual,char* birth_date);
 
 #endif

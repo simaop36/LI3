@@ -364,3 +364,40 @@ void free_lista_strings(char **array) {
 
     free(array);
 }
+
+
+int calcula_idade(char* data_atual,char* birth_date){
+    char* ano_a;
+    char* mes_a;
+    char* dia_a;
+    char* ano_b;
+    char* mes_b;
+    char* dia_b;
+    int idade = 0;
+
+    for(int i = 0 ; i < 4 ; i++){
+        ano_a[i] = data_atual[i+1];
+        ano_b[i] = birth_date[i+1];
+    }
+    for(int i = 4 ; i < 7 ; i++){
+        mes_a[i] = data_atual[i+1];
+        mes_b[i] = birth_date[i+1];
+    }
+    for(int i = 7 ; i < 9 ; i++){
+        dia_a[i] = data_atual[i+1];
+        dia_b[i] = birth_date[i+1];
+    }
+
+    idade = atoi(ano_a) - atoi(ano_b);
+
+    if((atoi(mes_a) < atoi(mes_b)) || (atoi(mes_a) == atoi(mes_b) && atoi(dia_a) < atoi(dia_b))) idade--;
+    
+    free(ano_a);
+    free(ano_b);
+    free(mes_a);
+    free(mes_b);
+    free(dia_a);
+    free(dia_b);
+
+    return idade;
+}
