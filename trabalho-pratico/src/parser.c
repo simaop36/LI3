@@ -100,7 +100,7 @@ void file_reader(FILE *csv,const char *file_name, Joint catalogo) {
         while (getline(&linha, &tamanho_linha, csv) != -1){
             linha[strlen(linha) - 1] = '\0'; // remove o \n e substitui por \0
             char **tokens = parser_linha(linha,7);
-            build_musica(tokens,get_catalogo_musicas(catalogo));
+            build_musica(tokens,catalogo);
             for(int i = 0; i < 7; i++) free(tokens[i]);
             free(tokens);
         }
@@ -117,7 +117,7 @@ void file_reader(FILE *csv,const char *file_name, Joint catalogo) {
         while (getline(&linha, &tamanho_linha, csv) != -1){
             linha[strlen(linha) - 1] = '\0'; // remove o \n e substitui por \0
             char **tokens = parser_linha(linha,8);
-            build_utilizador(tokens,get_catalogo_utilizadores(catalogo));
+            build_utilizador(tokens,catalogo);
             for(int i = 0; i < 8; i++) free(tokens[i]);
             free(tokens);
         }

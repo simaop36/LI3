@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "joint.h"
 #include "catalogo_musica.h"
 #include "catalogo_artista.h"
 #include "utils.h"
@@ -61,7 +63,9 @@ void build_musica(char **linha, void *cat)
 {
 
     musica m = create_Musica();
-    Catalogo_Musicas catalogo = (Catalogo_Musicas)cat;
+    Joint joint = (Joint)cat;
+    GHashTable *artistas_validos = getArtistasValidos(get_catalogo_artistas(joint));
+    Catalogo_Musicas catalogo = get_catalogo_musicas(joint);
 
     setId_Musica(linha[0], m);
     setTitle(linha[1], m);
@@ -71,13 +75,20 @@ void build_musica(char **linha, void *cat)
     setYear(linha[5], m);
     setLyrics(linha[6], m);
 
-    if (verifica_musicas(linha))
+    if (!(verifica_musicas(linha)))
     {
-        add_musica_valida(catalogo, m);
+        add_musica_invalida(catalogo, m);
+        
     }
     else
     {
-        add_musica_invalida(catalogo, m);
+        if(segVerMusica(m,artistas_validos)){
+            add_musica_valida(catalogo, m);
+        }
+        else {
+            add_musica_invalida(catalogo, m);
+        }
+        
     }
 }
 

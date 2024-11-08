@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <string.h>
-#include <stdbool.h>
+#include <ctype.h>
 
 #include "utils.h"
 #include "catalogo_musica.h"
@@ -322,36 +321,14 @@ char **parse_lista(char *input)
     return final_result;
 }
 
-/*
-void aux_valida_liked_music(utilizador u, Joint catalogo) {
-    Catalogo_Musicas catM = get_catalogo_musicas(catalogo);
-    catalogo_utilizadores catU = get_catalogo_utilizadores(catalogo);
-    
-    char **liked_musics = get_liked_musics_id(u);
-    int i = 0;
 
-    // array termina com NULL
-    if(liked_musics == NULL) return;
-    while (liked_musics[i] != NULL) {
-        if (!g_hash_table_contains(getMusicasValidas(catM), liked_musics[i])) {
-            add_utilizador_invalido(catU, u);
-            char *username = get_username(u);
-            if(username == NULL) return;
-            if (!(g_hash_table_remove(getUtilizadoresValidos(catU), username))) printf("erro remove user\n");
-            return;
-        }
-        i++;
-    }
-    return;
-}
-*/
 
-bool verifica_artista_valido(musica m, GHashTable *artista_valido){
+int segVerMusica(musica m, GHashTable *artista_valido){
     char **artistas_id = getId_Artistas(m);
-    bool result = true;
+    int result = 1;
     for (int i = 0; artistas_id[i] != NULL; i++){
         if(!(g_hash_table_contains(artista_valido,artistas_id[i]))){
-            result = false;
+            result = 0;
         }
         free(artistas_id[i]);
     }
@@ -359,34 +336,12 @@ bool verifica_artista_valido(musica m, GHashTable *artista_valido){
     return result;
 }
 
-void mover_musicas_invalidos(GHashTable *musicas_validas, GHashTable *musicas_invalidas, GHashTable *artistas_validos) {
-    GHashTableIter iter;
-    gpointer key, value;
-
-    g_hash_table_iter_init(&iter, musicas_validas);
-
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
-        musica m = (musica)value;
-        char *id = (char *)key;
-
-        if (!verifica_artista_valido(m, artistas_validos)) {
-
-            char *id_copy = strdup(id);
-            g_hash_table_insert(musicas_invalidas, id_copy, m);
-
-            g_hash_table_iter_remove(&iter);
-
-        }
-    }
-
-}
-
-bool verifica_musica_valida(utilizador utilizador, GHashTable *musicas_validas) {
+int segVerUser(utilizador utilizador, GHashTable *musicas_validas) {
     char **liked_musics = get_liked_musics_id(utilizador);
-    bool result = true;
+    int result = 1;
     for (int i = 0; liked_musics[i] != NULL; i++) {
         if (!(g_hash_table_contains(musicas_validas, liked_musics[i]))) {
-            result = false;
+            result = 0;
         }
         free(liked_musics[i]);
     }
@@ -394,45 +349,6 @@ bool verifica_musica_valida(utilizador utilizador, GHashTable *musicas_validas) 
     return result;
 }
 
-
-void mover_utilizadores_invalidos(GHashTable *utilizadores_validos, GHashTable *utilizadores_invalidos, GHashTable *musicas_validas) {
-    GHashTableIter iter;
-    gpointer key, value;
-
-    g_hash_table_iter_init(&iter, utilizadores_validos);
-
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
-        utilizador ut = (utilizador)value;
-        char *id = (char *)key;
-
-        if (!verifica_musica_valida(ut, musicas_validas)) {
-            char *id_copy = strdup(id);
-            g_hash_table_insert(utilizadores_invalidos, id_copy, ut);
-
-            g_hash_table_iter_remove(&iter);
-        }
-    }
-}
-
-void valida_artistasDamusica(musica m, Joint catalogo) {
-    Catalogo_Artistas catA = get_catalogo_artistas(catalogo);
-    Catalogo_Musicas catM = get_catalogo_musicas(catalogo);
-    
-    char **artistas = getId_Artistas(m);
-    int i = 0;
-
-    // array termina com NULL
-    while (artistas[i] != NULL) {
-        if (!g_hash_table_contains(getArtistasValidos(catA), artistas[i])) {
-            add_musica_invalida(catM, m);
-            g_hash_table_remove(getMusicasValidas(catM), getId_Musica(m));
-            
-            break;
-        }
-        i++;
-    }
-    return;
-}
 
 void free_lista_strings(char **array) {
     if (array == NULL) return;
