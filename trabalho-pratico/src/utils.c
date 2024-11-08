@@ -326,6 +326,8 @@ char **parse_lista(char *input)
 int segVerMusica(musica m, GHashTable *artista_valido){
     char **artistas_id = getId_Artistas(m);
     int result = 1;
+
+    if(artistas_id == NULL) return 0;
     for (int i = 0; artistas_id[i] != NULL; i++){
         if(!(g_hash_table_contains(artista_valido,artistas_id[i]))){
             result = 0;
@@ -339,6 +341,8 @@ int segVerMusica(musica m, GHashTable *artista_valido){
 int segVerUser(utilizador utilizador, GHashTable *musicas_validas) {
     char **liked_musics = get_liked_musics_id(utilizador);
     int result = 1;
+
+    if(liked_musics == NULL) return 0;
     for (int i = 0; liked_musics[i] != NULL; i++) {
         if (!(g_hash_table_contains(musicas_validas, liked_musics[i]))) {
             result = 0;
