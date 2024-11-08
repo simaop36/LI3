@@ -366,7 +366,7 @@ void free_lista_strings(char **array) {
 }
 
 
-int calcula_idade(char* data_atual,char* birth_date){
+int calcula_idade(char* birth_date){
     char* ano_a;
     char* mes_a;
     char* dia_a;
@@ -374,6 +374,7 @@ int calcula_idade(char* data_atual,char* birth_date){
     char* mes_b;
     char* dia_b;
     int idade = 0;
+    char* data_atual = "2024/09/09";
 
     for(int i = 0 ; i < 4 ; i++){
         ano_a[i] = data_atual[i+1];
@@ -398,6 +399,7 @@ int calcula_idade(char* data_atual,char* birth_date){
     free(mes_b);
     free(dia_a);
     free(dia_b);
+    free(data_atual);
 
     return idade;
 }

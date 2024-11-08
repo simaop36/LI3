@@ -13,13 +13,12 @@
 char* Q1(char* ID,Joint catalogo){
     catalogo_utilizadores catU = getUtilizadoresValidos(catalogo);
     utilizador u = get_utilizador_valido(catU,ID);
-    char* data_atual = "2024/09/09";
     char* email = get_email(u);
     char* first_name = get_first_name(u);
     char* last_name = get_last_name(u);
     char* birth_date = get_birth_date(u);
     char* country = get_country(u);
-    int idade = calcula_idade(data_atual,birth_date);
+    int idade = calcula_idade(birth_date);
     
     size_t buffer_size = strlen(email) + strlen(first_name) + strlen(last_name) +
                          strlen(country) + 50; 
