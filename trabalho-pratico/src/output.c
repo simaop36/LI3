@@ -15,13 +15,19 @@
 #include "users.h"
 
 
-char *escreve_lista(char **elems) {
+char *escreve_lista(char **elems,int tipo) {
+    //tipo 0 = artistas;
+    //tipo 1 = musica;
+    //tipo 2 = user;
+
     // Verifica o número de elementos até NULL
     int num_elems = 0;
     while (elems[num_elems] != NULL) {
         num_elems++;
     }
-
+    if (num_elems == 1 && tipo == 2 ){
+        return elems[num_elems-1];
+    }
     // Se a lista estiver vazia (apenas NULL), retorna "[]"
     if (num_elems == 0) {
         char *resultado_vazio = malloc(3 * sizeof(char));
@@ -35,10 +41,18 @@ char *escreve_lista(char **elems) {
 
     // Calcula o tamanho total necessário para a string final
     int tamanho_total = 2; // para []
-    for (int i = 0; i < num_elems; i++) {
-        tamanho_total += strlen(elems[i]) + 3; // 3 caracteres extras para as aspas e a vírgula
+    if (tipo != 3){
+        for (int i = 0; i < num_elems; i++) {
+            tamanho_total += strlen(elems[i]) + 3; // 3 caracteres extras para as aspas e a vírgula
+        }
+        tamanho_total -= 1; // Remove um caractere para evitar a última vírgula extra
+    } else {
+        for (int i = 0; i < num_elems; i++) {
+            tamanho_total += strlen(elems[i]) + 4; // 4 caracteres extras para as aspas, vírgula e espaço
+        }
+        tamanho_total -= 2; // Remove dois caracteres para evitar a última ", "
+
     }
-    tamanho_total -= 1; // Remove um caractere para evitar a última vírgula extra
 
     // Aloca memória para a string resultante
     char *resultado = malloc((tamanho_total + 1) * sizeof(char));
@@ -48,16 +62,32 @@ char *escreve_lista(char **elems) {
     }
 
     // Preenche a string com o formato desejado
-    strcpy(resultado, "[");
-    for (int i = 0; i < num_elems; i++) {
-        strcat(resultado, "'");
-        strcat(resultado, elems[i]);
-        strcat(resultado, "'");
-        if (i < num_elems - 1) {
-            strcat(resultado, ",");
+    if(tipo != 3){
+        strcpy(resultado, "[");
+        for (int i = 0; i < num_elems; i++) {
+            strcat(resultado, "'");
+            strcat(resultado, elems[i]);
+            strcat(resultado, "'");
+            if (i < num_elems - 1) {
+                strcat(resultado, ",");
+            }
+            free(elems[i]);
         }
-        free(elems[i]);
     }
+    else {
+        strcpy(resultado, "[");
+        for (int i = 0; i < num_elems-1; i++) {
+            strcat(resultado, "'");
+            strcat(resultado, elems[i]);
+            strcat(resultado, "'");
+            if (i < num_elems - 1) {
+                strcat(resultado, ",");
+                strcat(resultado, " ");
+            }
+            free(elems[i]);
+        }
+    }
+   
     free(elems);
     strcat(resultado, "]");
 
@@ -72,7 +102,7 @@ void escreve_artista(gpointer key, gpointer value, gpointer user_data) {
     char *id = getId_Artista(artista);
     char *name = getName(artista);
     char *description = getDescription(artista);
-    char *id_constituent = escreve_lista(getId_Constituent(artista));
+    char *id_constituent = escreve_lista(getId_Constituent(artista),1);
     char *country = getCountry(artista);
     char *type = getType(artista);
 
@@ -99,7 +129,7 @@ void escreve_musica(gpointer key, gpointer value, gpointer user_data) {
 
     char *id = getId_Musica(m);
     char *title = getTitle(m);
-    char *artists = escreve_lista(getId_Artistas(m));
+    char *artists = escreve_lista(getId_Artistas(m),2);
     char *duration = getDuration(m);
     char *genre = getGenre(m);
     char *year = getYear(m);
@@ -134,7 +164,7 @@ void escreve_user(gpointer key, gpointer value, gpointer user_data) {
     char *birth_date = get_birth_date(u);
     char *country = get_country(u);
     char *subscription_style = get_subscription_style(u);
-    char *liked_musics = escreve_lista(get_liked_musics_id(u));
+    char *liked_musics = escreve_lista(get_liked_musics_id(u),3);
 
     fprintf(file, "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
             username,
