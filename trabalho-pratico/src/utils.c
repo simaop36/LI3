@@ -364,45 +364,28 @@ void free_lista_strings(char **array) {
 
     free(array);
 }
+    
+int calcula_idade(const char* birth_date) {
+    if (birth_date == NULL || strlen(birth_date) < 10) {
+        printf("Data de nascimento inválida: %s\n", birth_date);
+        return -1;
+    }
+    int ano_atual, mes_atual, dia_atual;
+    int ano_nascimento, mes_nascimento, dia_nascimento;
+    const char data_atual[] = "2024/09/09";
 
-int calcula_idade(char* birth_date){
+    if (sscanf(data_atual, "%4d/%2d/%2d", &ano_atual, &mes_atual, &dia_atual) != 3) {
+        printf("Erro ao extrair data atual\n");
+        return -1;
+    }
+    if (sscanf(birth_date, "%4d/%2d/%2d", &ano_nascimento, &mes_nascimento, &dia_nascimento) != 3) {
+        printf("Erro ao extrair data de nascimento: %s\n", birth_date);
+        return -1;
+    }
+    int idade = ano_atual - ano_nascimento;
 
-    char* ano_a = (char*)malloc(5 * sizeof(char)); // 4 caracteres + '\0'
-    char* mes_a = (char*)malloc(3 * sizeof(char)); // 2 caracteres + '\0'
-    char* dia_a = (char*)malloc(3 * sizeof(char));
-    char* ano_b = (char*)malloc(5 * sizeof(char));
-    char* mes_b = (char*)malloc(3 * sizeof(char));
-    char* dia_b = (char*)malloc(3 * sizeof(char));
-    int idade = 0;
-    char data_atual[] = "2024/09/09";
-
-    strncpy(ano_a, data_atual, 4);
-    ano_a[4] = '\0';
-    strncpy(ano_b, birth_date, 4);
-    ano_b[4] = '\0';
-
-    strncpy(mes_a, data_atual + 5, 2);
-    mes_a[2] = '\0';
-    strncpy(mes_b, birth_date + 5, 2);
-    mes_b[2] = '\0';
-
-    strncpy(dia_a, data_atual + 8, 2);
-    dia_a[2] = '\0';
-    strncpy(dia_b, birth_date + 8, 2);
-    dia_b[2] = '\0';
-
-    idade = atoi(ano_a) - atoi(ano_b);
-
-    if((atoi(mes_a) < atoi(mes_b)) || (atoi(mes_a) == atoi(mes_b) && atoi(dia_a) < atoi(dia_b))) {
+    if ((mes_atual < mes_nascimento) || (mes_atual == mes_nascimento && dia_atual < dia_nascimento)) {
         idade--;
     }
-
-    free(ano_a);
-    free(ano_b);
-    free(mes_a);
-    free(mes_b);
-    free(dia_a);
-    free(dia_b);
-
     return idade;
 }
