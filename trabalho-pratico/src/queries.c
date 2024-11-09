@@ -57,7 +57,6 @@ char *Q1(char *ID, Joint catalogo)
 
 int comparar_generos(gconstpointer a, gconstpointer b)
 {
-    // conversao de void * para generoContagem
     generoContagem g1 = (generoContagem)a;
     generoContagem g2 = (generoContagem)b;
 
@@ -73,8 +72,6 @@ int comparar_generos(gconstpointer a, gconstpointer b)
 char *Q3(int min, int max, Joint catalogo) {
     GHashTable *utilizadores = getUtilizadoresValidos(get_catalogo_utilizadores(catalogo));
     Catalogo_Musicas musicas = get_catalogo_musicas(catalogo);
-
-    // Configura a hash table para liberar automaticamente a chave e o valor
     GHashTable *generosContagem = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, free);
 
     GList *keys = g_hash_table_get_keys(utilizadores);
@@ -88,7 +85,7 @@ char *Q3(int min, int max, Joint catalogo) {
         if (idade >= min && idade <= max) {
             char **likedMusics = get_liked_musics_id(u);
             if (likedMusics == NULL) {
-                printf("O utilizador não tem músicas curtidas.\n");
+                printf("O utilizador não tem iked_musics\n");
                 free(birth_date);
                 continue;
             }
@@ -97,16 +94,11 @@ char *Q3(int min, int max, Joint catalogo) {
                 char *idMusica = likedMusics[i];
                 char *genero = getGenre(get_musica_valida(musicas, idMusica));
 
-                if (genero == NULL) {
-                    printf("Gênero não encontrado para a música: %s\n", idMusica);
-                    continue;
-                }
-
                 generoContagem contagem = g_hash_table_lookup(generosContagem, genero);
 
                 if (contagem == NULL) {
                     contagem = malloc(sizeof(struct generoContagem));
-                    contagem->genero = strdup(genero);  // strdup da chave, será liberada por g_free
+                    contagem->genero = strdup(genero);
                     contagem->likes = 1;
                     g_hash_table_insert(generosContagem, contagem->genero, contagem);
                 } else {
@@ -120,44 +112,37 @@ char *Q3(int min, int max, Joint catalogo) {
         free(birth_date);
     }
 
-    // Ordena os gêneros pela popularidade e em seguida alfabeticamente
     GList *generos_lista = g_hash_table_get_values(generosContagem);
 
     if (generos_lista == NULL || g_list_length(generos_lista) == 0) {
-        //printf("Nenhum gênero foi contabilizado.\n");
         g_list_free(keys);
         g_hash_table_destroy(generosContagem);
-        return strdup("\n"); // Retorna uma string vazia indicando ausência de dados
+        return strdup("\n");
     }
     generos_lista = g_list_sort(generos_lista, comparar_generos);
 
-    // Cria um buffer dinâmico para armazenar o resultado formatado
-    size_t buffer_size = 256;
+    size_t buffer_size = 300;
     char *resultado = malloc(buffer_size);
-    resultado[0] = '\0'; // Inicializa a string como vazia
+    resultado[0] = '\0';
 
     for (GList *iter = generos_lista; iter != NULL; iter = iter->next) {
         generoContagem contagem = (generoContagem)iter->data;
         size_t required_size = strlen(contagem->genero) + 20;
-
-        // Redimensiona o buffer se necessário
+        
         if (strlen(resultado) + required_size >= buffer_size) {
             buffer_size *= 2;
             resultado = realloc(resultado, buffer_size);
         }
 
-        // Formata e adiciona cada linha ao buffer resultado
         char line[100];
         snprintf(line, sizeof(line), "%s;%d\n", contagem->genero, contagem->likes);
         strcat(resultado, line);
     }
 
-    // Libera recursos
     g_list_free(generos_lista);
     g_list_free(keys);
     g_hash_table_destroy(generosContagem);
 
-    //printf("%s\n", resultado);
 
     return resultado;
 }
