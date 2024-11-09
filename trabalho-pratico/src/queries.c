@@ -40,8 +40,17 @@ char *Q1(char *ID, Joint catalogo)
 
     snprintf(resposta, buffer_size, "%s;%s;%s;%d;%s\n",
              email, first_name, last_name, idade, country);
+    
+    free(email);
+    free(first_name);
+    free(last_name);
+    free(birth_date);
+    free(country);
 
-    return resposta;
+    char *rCopy = strdup(resposta);
+    free(resposta);
+
+    return rCopy;
 }
 
 int comparar_generos(gconstpointer a, gconstpointer b)
@@ -110,8 +119,9 @@ void excuta_queries(char *linha, int contador, Joint joint){
     {
     case '1': {
         char *id = linha+2;
-        char *resultado = Q1(id,joint);
-        escreve_querie(resultado,contador);
+        char *resposta = Q1(id,joint);
+        escreve_querie(resposta,contador);
+        
         break;
     }
     case '2':

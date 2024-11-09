@@ -296,12 +296,6 @@ void escreve_querie(char *resultado,int contador){
         fclose(file);
         exit(1);
     }
-    /*
-    if (fputc('\n', file) == EOF) {
-        perror("Erro ao escrever /n no ficheiro queries");
-        fclose(file);
-        exit(1);
-    }
-    */
     fclose(file);
+
 }
