@@ -124,10 +124,10 @@ char *Q3(int min, int max, Joint catalogo) {
     GList *generos_lista = g_hash_table_get_values(generosContagem);
 
     if (generos_lista == NULL || g_list_length(generos_lista) == 0) {
-        printf("Nenhum gênero foi contabilizado.\n");
+        //printf("Nenhum gênero foi contabilizado.\n");
         g_list_free(keys);
         g_hash_table_destroy(generosContagem);
-        return strdup(""); // Retorna uma string vazia indicando ausência de dados
+        return strdup("\n"); // Retorna uma string vazia indicando ausência de dados
     }
     generos_lista = g_list_sort(generos_lista, comparar_generos);
 
@@ -157,7 +157,7 @@ char *Q3(int min, int max, Joint catalogo) {
     g_list_free(keys);
     g_hash_table_destroy(generosContagem);
 
-    printf("%s\n", resultado);
+    //printf("%s\n", resultado);
 
     return resultado;
 }
