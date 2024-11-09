@@ -5,8 +5,6 @@ int main(int argc, char *argv[]){
     if(argc == 3){  //programa-principal
 
         run(argv);
-
-        //executa_queries(argv[2])
         
     } else if (argc == 4){ //programa-testes
         
