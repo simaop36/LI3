@@ -3,7 +3,7 @@ CC := gcc
 EXEC := programa-principal
 EXEC_TEST := programa-testes
 
-FLAGS := -Wall -Wextra -Wunused-parameter -Wunused-value `pkg-config --cflags glib-2.0`
+FLAGS := -O3 -Wall -Wextra -Wunused-parameter -Wunused-value `pkg-config --cflags glib-2.0`
 FLAGS_TEST := $(FLAGS) -Wno-unused-function
 
 INC := -Iinclude/
