@@ -10,5 +10,6 @@ void run(char *argv[]){
     Joint catalogo = create_catalago_joint();
     ler_csvs(argv[1],catalogo);
     escreve_csv("./resultados",catalogo);
+    ler_queries(argv[2],catalogo);
     free_joint(catalogo);
 }

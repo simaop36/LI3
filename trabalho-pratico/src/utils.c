@@ -365,41 +365,44 @@ void free_lista_strings(char **array) {
     free(array);
 }
 
-
 int calcula_idade(char* birth_date){
-    char* ano_a;
-    char* mes_a;
-    char* dia_a;
-    char* ano_b;
-    char* mes_b;
-    char* dia_b;
-    int idade = 0;
-    char* data_atual = "2024/09/09";
 
-    for(int i = 0 ; i < 4 ; i++){
-        ano_a[i] = data_atual[i+1];
-        ano_b[i] = birth_date[i+1];
-    }
-    for(int i = 5 ; i < 7 ; i++){
-        mes_a[i] = data_atual[i+1];
-        mes_b[i] = birth_date[i+1];
-    }
-    for(int i = 8 ; i < 10 ; i++){
-        dia_a[i] = data_atual[i+1];
-        dia_b[i] = birth_date[i+1];
-    }
+    char* ano_a = (char*)malloc(5 * sizeof(char)); // 4 caracteres + '\0'
+    char* mes_a = (char*)malloc(3 * sizeof(char)); // 2 caracteres + '\0'
+    char* dia_a = (char*)malloc(3 * sizeof(char));
+    char* ano_b = (char*)malloc(5 * sizeof(char));
+    char* mes_b = (char*)malloc(3 * sizeof(char));
+    char* dia_b = (char*)malloc(3 * sizeof(char));
+    int idade = 0;
+    char data_atual[] = "2024/09/09";
+
+    strncpy(ano_a, data_atual, 4);
+    ano_a[4] = '\0';
+    strncpy(ano_b, birth_date, 4);
+    ano_b[4] = '\0';
+
+    strncpy(mes_a, data_atual + 5, 2);
+    mes_a[2] = '\0';
+    strncpy(mes_b, birth_date + 5, 2);
+    mes_b[2] = '\0';
+
+    strncpy(dia_a, data_atual + 8, 2);
+    dia_a[2] = '\0';
+    strncpy(dia_b, birth_date + 8, 2);
+    dia_b[2] = '\0';
 
     idade = atoi(ano_a) - atoi(ano_b);
 
-    if((atoi(mes_a) < atoi(mes_b)) || (atoi(mes_a) == atoi(mes_b) && atoi(dia_a) < atoi(dia_b))) idade--;
-    
+    if((atoi(mes_a) < atoi(mes_b)) || (atoi(mes_a) == atoi(mes_b) && atoi(dia_a) < atoi(dia_b))) {
+        idade--;
+    }
+
     free(ano_a);
     free(ano_b);
     free(mes_a);
     free(mes_b);
     free(dia_a);
     free(dia_b);
-    free(data_atual);
 
     return idade;
 }

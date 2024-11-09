@@ -29,3 +29,13 @@ void ler_csvs(const char *dir_path, Joint catalogo) {
         fclose(csv_file);
     }
 }
+
+void ler_queries(const char *file_path, Joint joint){
+    FILE *queries_file = fopen(file_path, "r");
+    if(queries_file == NULL){
+        fprintf(stderr, "Erro ao abrir o ficheiro: %s\n", file_path);
+        return;
+    }
+    parse_queries(queries_file,joint);
+    fclose(queries_file);
+}

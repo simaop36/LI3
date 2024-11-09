@@ -7,6 +7,7 @@
 #include "joint.h"
 #include "users.h"
 #include "utils.h"
+#include "output.h"
 
 typedef struct generoContagem
 {
@@ -16,8 +17,10 @@ typedef struct generoContagem
 
 char *Q1(char *ID, Joint catalogo)
 {
-    catalogo_utilizadores catU = getUtilizadoresValidos(catalogo);
+    catalogo_utilizadores catU = get_catalogo_utilizadores(catalogo);
     utilizador u = get_utilizador_valido(catU, ID);
+    if(u == NULL) return "\n";
+    
     char *email = get_email(u);
     char *first_name = get_first_name(u);
     char *last_name = get_last_name(u);
@@ -35,7 +38,7 @@ char *Q1(char *ID, Joint catalogo)
         return NULL;
     }
 
-    snprintf(resposta, buffer_size, " %s;%s;%s;%d;%s\n",
+    snprintf(resposta, buffer_size, "%s;%s;%s;%d;%s\n",
              email, first_name, last_name, idade, country);
 
     return resposta;
@@ -56,8 +59,8 @@ int comparar_generos(gconstpointer a, gconstpointer b)
 
 void Q3(int min, int max, Joint catalogo)
 {
-    catalogo_utilizadores utilizadores = getUtilizadoresValidos(catalogo);
-    Catalogo_Musicas musicas = getMusicasValidas(catalogo);
+    GHashTable *utilizadores = getUtilizadoresValidos(get_catalogo_utilizadores(catalogo));
+    Catalogo_Musicas musicas = get_catalogo_musicas(catalogo);
     GHashTable *generosContagem = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
 
     GList *keys = g_hash_table_get_keys(utilizadores);
@@ -100,4 +103,25 @@ void Q3(int min, int max, Joint catalogo)
     }
     g_list_free(generos_lista);
     g_hash_table_destroy(generosContagem);
+}
+
+void excuta_queries(char *linha, int contador, Joint joint){
+    switch (linha[0])
+    {
+    case '1': {
+        char *id = linha+2;
+        char *resultado = Q1(id,joint);
+        escreve_querie(resultado,contador);
+        break;
+    }
+    case '2':
+
+        break;
+    case '3':
+
+        break;
+    default:
+        break;
+    }
+
 }
