@@ -71,7 +71,12 @@ int compara_artistas(Artista a, Artista b){
     if(getDiscography_Duration(a) != getDiscography_Duration(b)){
         return getDiscography_Duration(b) - getDiscography_Duration(a);
     }else{
-        return strcmp(getId_Artista(a),getId_Artista(b));
+        char *idA = getId_Artista(a);
+        char *idB = getId_Artista(b);
+        int result = strcmp(idA,idB);
+        free(idA);
+        free(idB);
+        return result;
     }
 }
 
@@ -95,7 +100,7 @@ void insere_artista_ordenado(Artista top[], int n, Artista novo) {
     }
 }
 
-char *Q2(int n, char *country, Joint j){
+char *Q2(int n, char *c, Joint j){
     GHashTable *artistas = getArtistasValidos(get_catalogo_artistas(j));
     Artista top[n];
     memset(top, 0, sizeof(top)); // Inicializa o array a NULL
@@ -105,8 +110,14 @@ char *Q2(int n, char *country, Joint j){
     g_hash_table_iter_init(&iter, artistas);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         Artista artista = (Artista)value;
-        if (country == NULL || strcmp(getCountry(artista), country) == 0) {
+        if (c == NULL) {
             insere_artista_ordenado(top, n, artista);
+        } else {
+            char *country = getCountry(artista);
+            if (strcmp(country, c) == 0) {
+                insere_artista_ordenado(top, n, artista);
+            }
+            free(country);
         }
     }
 
@@ -134,6 +145,7 @@ char *Q2(int n, char *country, Joint j){
         free(type);
         free(duration);
         free(country);
+        
     }
 
     return resultado;
@@ -223,14 +235,14 @@ char *Q3(int min, int max, Joint catalogo) {
 void excuta_queries(char *linha, int contador, Joint joint){
     switch (linha[0])
     {
-    /*case '1': {
+    case '1': {
         char *id = linha+2;
         char *resposta = Q1(id,joint);
         escreve_querie(resposta,contador);
         free(resposta);
         
         break;
-    }*/
+    }
     case '2':{
         char *country = NULL;
         char *resto_linha = linha + 2;
@@ -253,7 +265,7 @@ void excuta_queries(char *linha, int contador, Joint joint){
         free(resposta);
         break;
     }
-    /*case '3':{
+    case '3':{
         char buffer[50];
         strncpy(buffer, linha, sizeof(buffer) - 1);
         buffer[sizeof(buffer) - 1] = '\0';
@@ -276,7 +288,7 @@ void excuta_queries(char *linha, int contador, Joint joint){
         }
 
         break;
-    }*/
+    }
     default:
         break;
     }
