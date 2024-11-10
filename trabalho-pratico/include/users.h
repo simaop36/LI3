@@ -5,10 +5,15 @@
 #include "catalogo_musica.h"
 
 typedef struct utilizador *utilizador;
+typedef struct generoContagem *GeneroContagem;
 
 utilizador create_utilizador();
 
 void build_utilizador(char **linha,void *cat);
+
+int get_age(utilizador u);
+
+GeneroContagem *getArray(utilizador u);
 
 char* get_username(utilizador u);
 
@@ -26,6 +31,8 @@ char* get_subscription_style(utilizador u);
 
 char** get_liked_musics_id(utilizador u);
 
+void setArray(GeneroContagem *gc, utilizador u);
+
 void set_username(char* username,utilizador u);
 
 void set_email(char* email,utilizador u);
@@ -35,6 +42,8 @@ void set_first_name(char* fisrt_name,utilizador u);
 void set_last_name(char* last_name,utilizador u);
 
 void set_birth_date(char* birth_date,utilizador u);
+
+void set_age(char* birth_date,utilizador u);
 
 void set_country(char* country,utilizador u);
 

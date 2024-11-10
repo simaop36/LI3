@@ -9,12 +9,8 @@
 #include "utils.h"
 #include "output.h"
 #include "artistas.h"
+#include "estatisticas.h"
 
-typedef struct generoContagem
-{
-    char *genero;
-    int likes;
-} *generoContagem;
 
 char *Q1(char *ID, Joint catalogo)
 {
@@ -56,17 +52,7 @@ char *Q1(char *ID, Joint catalogo)
     return resposta;
 }
 
-int comparar_generos(gconstpointer a, gconstpointer b)
-{
-    generoContagem g1 = (generoContagem)a;
-    generoContagem g2 = (generoContagem)b;
 
-    if (g2->likes != g1->likes)
-    {
-        return g2->likes - g1->likes; // ordem descendente por likes
-    }
-    return strcmp(g1->genero, g2->genero); // ordem alfabetica
-}
 int compara_artistas(Artista a, Artista b){
     if(getDiscography_Duration(a) != getDiscography_Duration(b)){
         return getDiscography_Duration(b) - getDiscography_Duration(a);
@@ -104,6 +90,7 @@ char *Q2(int n, char *c, Joint j){
     GHashTable *artistas = getArtistasValidos(get_catalogo_artistas(j));
     Artista top[n];
     memset(top, 0, sizeof(top)); // Inicializa o array a NULL
+    if(n == 0) return strdup("\n");
 
     GHashTableIter iter;
     gpointer key, value;
@@ -154,83 +141,61 @@ char *Q2(int n, char *c, Joint j){
 }
 
 
-char *Q3(int min, int max, Joint catalogo) {
+
+char *Q3(int min, int max, Joint catalogo){
     GHashTable *utilizadores = getUtilizadoresValidos(get_catalogo_utilizadores(catalogo));
-    Catalogo_Musicas musicas = get_catalogo_musicas(catalogo);
-    GHashTable *generosContagem = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, free);
-
-    GList *keys = g_hash_table_get_keys(utilizadores);
-    for (GList *iter = keys; iter != NULL; iter = iter->next) {
-        gpointer key = iter->data;
-        gpointer u = g_hash_table_lookup(utilizadores, key);
-        char *birth_date = get_birth_date(u);
-
-        int idade = calcula_idade(birth_date);
-
-        if (idade >= min && idade <= max) {
-            char **likedMusics = get_liked_musics_id(u);
-            if (likedMusics == NULL) {
-                printf("O utilizador não tem iked_musics\n");
-                free(birth_date);
-                continue;
-            }
-
-            for (int i = 0; likedMusics[i] != NULL; i++) {
-                char *idMusica = likedMusics[i];
-                char *genero = getGenre(get_musica_valida(musicas, idMusica));
-
-                generoContagem contagem = g_hash_table_lookup(generosContagem, genero);
-
-                if (contagem == NULL) {
-                    contagem = malloc(sizeof(struct generoContagem));
-                    contagem->genero = strdup(genero);
-                    contagem->likes = 1;
-                    g_hash_table_insert(generosContagem, contagem->genero, contagem);
-                } else {
-                    contagem->likes++;
-                }
-                free(genero);
-                free(likedMusics[i]);
-            }
-            free(likedMusics);
+    GeneroContagem *array_resultado = build_Array_GC();
+    GHashTableIter iter;
+    gpointer key, value;
+    g_hash_table_iter_init(&iter, utilizadores);
+    while (g_hash_table_iter_next(&iter, &key, &value)){
+        utilizador u = (utilizador)value;
+        int age = get_age(u);
+        if(age<min || age > max){
+            continue;
+        } else {
+            incrementa_likes_array(array_resultado,getArray(u));
         }
-        free(birth_date);
     }
-
-    GList *generos_lista = g_hash_table_get_values(generosContagem);
-
-    if (generos_lista == NULL || g_list_length(generos_lista) == 0) {
-        g_list_free(keys);
-        g_hash_table_destroy(generosContagem);
-        return strdup("\n");
-    }
-    generos_lista = g_list_sort(generos_lista, comparar_generos);
-
-    size_t buffer_size = 300;
-    char *resultado = malloc(buffer_size);
-    resultado[0] = '\0';
-
-    for (GList *iter = generos_lista; iter != NULL; iter = iter->next) {
-        generoContagem contagem = (generoContagem)iter->data;
-        size_t required_size = strlen(contagem->genero) + 20;
-        
-        if (strlen(resultado) + required_size >= buffer_size) {
-            buffer_size *= 2;
-            resultado = realloc(resultado, buffer_size);
+    for(int i = 0; i < 10; i++){
+        for(int j = i; j < 10; j++){
+            if(comparar_generosC(array_resultado[i],array_resultado[j]) > 0){
+                troca_generosC(i,j,array_resultado);
+            }
         }
+    }
+    int total_length = 1;//para o \0
+    int any_non_zero_likes = 0;
 
-        char line[100];
-        snprintf(line, sizeof(line), "%s;%d\n", contagem->genero, contagem->likes);
-        strcat(resultado, line);
+    for(int i = 0; i < 10; i++){
+        if(getLikes(array_resultado[i]) > 0){
+            any_non_zero_likes = 1;
+            int genero_length = strlen(getGenero(array_resultado[i]));
+            int likes_length = snprintf(NULL, 0, "%d", getLikes(array_resultado[i]));
+            total_length += genero_length + likes_length + 2; //inclui ";" e "\n"
+        }
     }
 
-    g_list_free(generos_lista);
-    g_list_free(keys);
-    g_hash_table_destroy(generosContagem);
-
-
-    return resultado;
+    if(!any_non_zero_likes){
+        char *result = malloc(2);
+        free_Array_GC(array_resultado);
+        strcpy(result, "\n");
+        return result;
+    } else {
+        char *result = malloc(total_length);
+        char *ptr = result;
+        for(int i = 0; i < 10; i++){
+            if(getLikes(array_resultado[i]) > 0){
+                int n = sprintf(ptr, "%s;%d\n", getGenero(array_resultado[i]), getLikes(array_resultado[i]));
+                ptr += n;
+            }
+        }
+        free_Array_GC(array_resultado);
+        *ptr = '\0'; //termina a string
+        return result;
+    }
 }
+
 
 void excuta_queries(char *linha, int contador, Joint joint){
     switch (linha[0])
