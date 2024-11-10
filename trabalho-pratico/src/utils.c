@@ -9,6 +9,7 @@
 #include "users.h"
 #include "catalogo_artista.h"
 #include "joint.h"
+#include "estatisticas.h"
 
 // return 0 : Inválido
 // return 1 : Válido
@@ -375,7 +376,12 @@ int segVerUser(utilizador utilizador, Joint joint) {
 
     if(liked_musics == NULL) return 0;
     for (int i = 0; liked_musics[i] != NULL; i++) {
-        if (!(g_hash_table_contains(musicas_validas, liked_musics[i]))) {
+        musica m = g_hash_table_lookup(musicas_validas, liked_musics[i]);
+        if (m != NULL) {//existe
+            char *genero = getGenre(m);
+            incrementa_likes_genero(getArray(utilizador),genero);
+            free(genero);
+        } else {//nao existe
             result = 0;
         }
         free(liked_musics[i]);

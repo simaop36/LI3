@@ -9,12 +9,8 @@
 #include "utils.h"
 #include "output.h"
 #include "artistas.h"
+#include "estatisticas.h"
 
-typedef struct generoContagem
-{
-    char *genero;
-    int likes;
-} *generoContagem;
 
 char *Q1(char *ID, Joint catalogo)
 {
@@ -56,17 +52,7 @@ char *Q1(char *ID, Joint catalogo)
     return resposta;
 }
 
-int comparar_generos(gconstpointer a, gconstpointer b)
-{
-    generoContagem g1 = (generoContagem)a;
-    generoContagem g2 = (generoContagem)b;
 
-    if (g2->likes != g1->likes)
-    {
-        return g2->likes - g1->likes; // ordem descendente por likes
-    }
-    return strcmp(g1->genero, g2->genero); // ordem alfabetica
-}
 int compara_artistas(Artista a, Artista b){
     if(getDiscography_Duration(a) != getDiscography_Duration(b)){
         return getDiscography_Duration(b) - getDiscography_Duration(a);
@@ -155,6 +141,71 @@ char *Q2(int n, char *c, Joint j){
 }
 
 
+
+char *Q3(int min, int max, Joint catalogo){
+    GHashTable *utilizadores = getUtilizadoresValidos(get_catalogo_utilizadores(catalogo));
+    GeneroContagem *array_resultado = build_Array_GC();
+    GHashTableIter iter;
+    gpointer key, value;
+    g_hash_table_iter_init(&iter, utilizadores);
+    while (g_hash_table_iter_next(&iter, &key, &value)){
+        utilizador u = (utilizador)value;
+        int age = get_age(u);
+        if(age<min || age > max){
+            continue;
+        } else {
+            incrementa_likes_array(array_resultado,getArray(u));
+        }
+    }
+    for(int i = 0; i < 10; i++){
+        for(int j = i; j < 10; j++){
+            if(comparar_generosC(array_resultado[i],array_resultado[j]) > 0){
+                troca_generosC(i,j,array_resultado);
+            }
+        }
+    }
+
+    // Build the result string
+    int total_length = 1; // For the null terminator
+    int any_non_zero_likes = 0;
+
+    for(int i = 0; i < 10; i++){
+        if(getLikes(array_resultado[i]) > 0){
+            any_non_zero_likes = 1;
+            int genero_length = strlen(getGenero(array_resultado[i]));
+            int likes_length = snprintf(NULL, 0, "%d", getLikes(array_resultado[i]));
+            total_length += genero_length + likes_length + 3; // Including ": " and "\n"
+        }
+    }
+
+    if(!any_non_zero_likes){
+        char *result = malloc(2); // For "\n" and null terminator
+        if(result == NULL) {
+            // Handle memory allocation failure
+            return NULL;
+        }
+        strcpy(result, "\n");
+        return result;
+    } else {
+        char *result = malloc(total_length);
+        if(result == NULL) {
+            // Handle memory allocation failure
+            return NULL;
+        }
+        char *ptr = result;
+        for(int i = 0; i < 10; i++){
+            if(getLikes(array_resultado[i]) > 0){
+                int n = sprintf(ptr, "%s;%d\n", getGenero(array_resultado[i]), getLikes(array_resultado[i]));
+                ptr += n;
+            }
+        }
+        *ptr = '\0'; // Null-terminate the string
+        return result;
+    }
+}
+
+
+/*
 char *Q3(int min, int max, Joint catalogo) {
     GHashTable *utilizadores = getUtilizadoresValidos(get_catalogo_utilizadores(catalogo));
     Catalogo_Musicas musicas = get_catalogo_musicas(catalogo);
@@ -232,11 +283,12 @@ char *Q3(int min, int max, Joint catalogo) {
 
     return resultado;
 }
+*/
 
 void excuta_queries(char *linha, int contador, Joint joint){
     switch (linha[0])
     {
-    case '1': {
+    /*case '1': {
         char *id = linha+2;
         char *resposta = Q1(id,joint);
         escreve_querie(resposta,contador);
@@ -265,7 +317,7 @@ void excuta_queries(char *linha, int contador, Joint joint){
         escreve_querie(resposta,contador);
         free(resposta);
         break;
-    }
+    }*/
     case '3':{
         char buffer[50];
         strncpy(buffer, linha, sizeof(buffer) - 1);
