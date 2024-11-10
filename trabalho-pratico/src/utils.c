@@ -321,19 +321,49 @@ char **parse_lista(char *input)
     return final_result;
 }
 
+int converteDuration(const char *duration){
+    int horas, minutos, segundos;
+    if (sscanf(duration, "%2d:%2d:%2d", &horas, &minutos, &segundos) != 3) {
+        printf("Formato de duração inválido: %s\n", duration);
+        return -1;
+    }
+    int total_segundos = horas * 3600 + minutos * 60 + segundos;
+    return total_segundos;
+}
 
+char *formataDuration(int total_segundos) {
+    int horas = total_segundos / 3600;
+    int minutos = (total_segundos % 3600) / 60;
+    int segundos = total_segundos % 60;
+
+    char *duration = malloc(9);
+    if (duration == NULL) {
+        printf("Erro de alocação de memória\n");
+        return NULL;
+    }
+    snprintf(duration, 9, "%02d:%02d:%02d", horas, minutos, segundos);
+    return duration;
+}
 
 int segVerMusica(musica m, GHashTable *artista_valido){
     char **artistas_id = getId_Artistas(m);
     int result = 1;
+    char *duration_char = getDuration(m);
+    long int duration_int = converteDuration(duration_char);
 
     if(artistas_id == NULL) return 0;
-    for (int i = 0; artistas_id[i] != NULL; i++){
-        if(!(g_hash_table_contains(artista_valido,artistas_id[i]))){
+
+    for (int i = 0; artistas_id[i] != NULL; i++) {
+        Artista artista = g_hash_table_lookup(artista_valido, artistas_id[i]);
+        if (artista != NULL) {//existe
+            increaseDiscography_Duration(duration_int, artista);
+        } else {//nao existe
             result = 0;
         }
+        
         free(artistas_id[i]);
     }
+    free(duration_char);
     free(artistas_id);
     return result;
 }

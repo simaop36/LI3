@@ -8,6 +8,7 @@
 #include "users.h"
 #include "utils.h"
 #include "output.h"
+#include "artistas.h"
 
 typedef struct generoContagem
 {
@@ -66,7 +67,91 @@ int comparar_generos(gconstpointer a, gconstpointer b)
     }
     return strcmp(g1->genero, g2->genero); // ordem alfabetica
 }
+int compara_artistas(Artista a, Artista b){
+    if(getDiscography_Duration(a) != getDiscography_Duration(b)){
+        return getDiscography_Duration(b) - getDiscography_Duration(a);
+    }else{
+        char *idA = getId_Artista(a);
+        char *idB = getId_Artista(b);
+        int result = strcmp(idA,idB);
+        free(idA);
+        free(idB);
+        return result;
+    }
+}
 
+void insere_artista_ordenado(Artista top[], int n, Artista novo) {
+    for (int i = 0; i < n; i++) {
+        if (top[i] == NULL) {//posição vazia
+            top[i] = novo;
+            return;
+        }
+        if (compara_artistas(novo, top[i]) < 0) {
+            //abrir espaço para o novo artista
+            if (top[n - 1] != NULL) {
+                top[n - 1] = NULL;
+            }
+            for (int j = n - 1; j > i; j--) {
+                top[j] = top[j - 1];
+            }
+            top[i] = novo;
+            return;
+        }
+    }
+}
+
+char *Q2(int n, char *c, Joint j){
+    GHashTable *artistas = getArtistasValidos(get_catalogo_artistas(j));
+    Artista top[n];
+    memset(top, 0, sizeof(top)); // Inicializa o array a NULL
+
+    GHashTableIter iter;
+    gpointer key, value;
+    g_hash_table_iter_init(&iter, artistas);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        Artista artista = (Artista)value;
+        if (c == NULL) {
+            insere_artista_ordenado(top, n, artista);
+        } else {
+            char *country = getCountry(artista);
+            if (strcmp(country, c) == 0) {
+                insere_artista_ordenado(top, n, artista);
+            }
+            free(country);
+        }
+    }
+
+    size_t buffer_size = 300;
+    char *resultado = malloc(buffer_size);
+    resultado[0] = '\0';
+
+    for (int i = 0; i < n && top[i] != NULL; i++) {
+        Artista a = top[i];
+        char *name = getName(a);
+        char *type = getType(a);
+        char *duration = formataDuration(getDiscography_Duration(a));
+        char *country = getCountry(a);
+
+        // Calcula o espaço necessário para adicionar o novo artista ao resultado
+        size_t required_size = strlen(name) + strlen(type) + strlen(duration) + strlen(country) + 20;
+        if (strlen(resultado) + required_size >= buffer_size) {
+            buffer_size *= 2;
+            resultado = realloc(resultado, buffer_size);
+        }
+        char line[200];
+        snprintf(line, sizeof(line), "%s;%s;%s;%s\n",name,type,duration,country);
+        strcat(resultado, line);
+        free(name);
+        free(type);
+        free(duration);
+        free(country);
+        
+    }
+
+    return resultado;
+
+
+}
 
 
 char *Q3(int min, int max, Joint catalogo) {
@@ -158,9 +243,28 @@ void excuta_queries(char *linha, int contador, Joint joint){
         
         break;
     }
-    case '2':
+    case '2':{
+        char *country = NULL;
+        char *resto_linha = linha + 2;
+        long int n = strtol(resto_linha, &resto_linha, 10);
 
+        while (*resto_linha == ' ') {
+            resto_linha++;
+        }
+        //remove ""
+        if (*resto_linha == '"') {
+            resto_linha++;
+            country = resto_linha;
+            char *aspa_fim = strchr(resto_linha, '"');
+            if (aspa_fim != NULL) {
+                *aspa_fim = '\0';
+            }
+        }
+        char* resposta = Q2(n,country,joint);
+        escreve_querie(resposta,contador);
+        free(resposta);
         break;
+    }
     case '3':{
         char buffer[50];
         strncpy(buffer, linha, sizeof(buffer) - 1);

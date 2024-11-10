@@ -6,6 +6,7 @@ typedef struct generoContagem *generoContagem;
 void excuta_queries(char *linha,int contador,Joint joint);
 char* Q1(char* ID,Joint catalogo);
 int comparar_generos(gconstpointer a, gconstpointer b);
+int compara_artistas(Artista a, Artista b);
 char *Q3(int min, int max, Joint catalogo);
 
 #endif
