@@ -48,26 +48,6 @@ int verifica_artistas(char **linha){
     return 1;
 }
 
-void build_Artista(char **linha,void *cat){
-
-    Artista artista = create_Artista();
-    Catalogo_Artistas catalogo = (Catalogo_Artistas)cat;
-    
-    setId_Artista(linha[0],artista);
-    setName(linha[1],artista);
-    setDescription(linha[2],artista);
-    setRecipe_Per_Stream(strtod(linha[3],NULL),artista);//strtod converte char* em double, NULL é o apontador para o final do numero na string
-    setId_Constituent(linha[4],artista);
-    setCountry(linha[5],artista);
-    setType(linha[6],artista);
-
-    if(verifica_artistas(linha)){
-        add_artista_valido(catalogo,artista);
-    } else{
-        add_artista_invalido(catalogo,artista);
-    }
-}
-
 char *getId_Artista(Artista a)
 {
     char *aCopy = strdup(a->id);

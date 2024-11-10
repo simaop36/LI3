@@ -8,6 +8,7 @@ typedef struct Catalogo_Musicas *Catalogo_Musicas;
 typedef struct musica *musica;
 
 Catalogo_Musicas create_Catalogo_Musicas();
+void build_musica(char **linha, void *cat);
 void add_musica_valida(Catalogo_Musicas catalogo, musica musica);
 void add_musica_invalida(Catalogo_Musicas catalogo, musica musica);
 musica get_musica_valida(Catalogo_Musicas catalogo, char *id);

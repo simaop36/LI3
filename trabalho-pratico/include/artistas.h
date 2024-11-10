@@ -6,7 +6,7 @@
 typedef struct artista *Artista;
 
 Artista create_Artista();
-void build_Artista(char **linha,void *cat);
+int verifica_artistas(char **linha);
 char* getId_Artista(Artista a);
 char* getName(Artista a);
 char* getDescription(Artista a);

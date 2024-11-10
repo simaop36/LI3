@@ -1,6 +1,8 @@
 #include <glib.h>
 #include "musica.h"
 #include "catalogo_musica.h"
+#include "joint.h"
+#include "utils.h"
 
 typedef struct Catalogo_Musicas
 {
@@ -15,6 +17,39 @@ Catalogo_Musicas create_Catalogo_Musicas()
     catalogo->musicas_invalidas = g_hash_table_new_full(g_str_hash, g_str_equal, free, (GDestroyNotify)free_musica);
 
     return catalogo;
+}
+
+void build_musica(char **linha, void *cat)
+{
+
+    musica m = create_Musica();
+    Joint joint = (Joint)cat;
+    GHashTable *artistas_validos = getArtistasValidos(get_catalogo_artistas(joint));
+    Catalogo_Musicas catalogo = get_catalogo_musicas(joint);
+
+    setId_Musica(linha[0], m);
+    setTitle(linha[1], m);
+    setId_Artistas(linha[2], m);
+    setDuration(linha[3], m);
+    setGenre(linha[4], m);
+    setYear(linha[5], m);
+    setLyrics(linha[6], m);
+
+    if (!(verifica_musicas(linha)))
+    {
+        add_musica_invalida(catalogo, m);
+        
+    }
+    else
+    {
+        if(segVerMusica(m,artistas_validos)){
+            add_musica_valida(catalogo, m);
+        }
+        else {
+            add_musica_invalida(catalogo, m);
+        }
+        
+    }
 }
 
 void add_musica_valida(Catalogo_Musicas catalogo, musica musica)

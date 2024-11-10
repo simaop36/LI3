@@ -9,7 +9,7 @@ typedef struct generoContagem *GeneroContagem;
 
 utilizador create_utilizador();
 
-void build_utilizador(char **linha,void *cat);
+int verifica_utilizadores(char **linha);
 
 int get_age(utilizador u);
 
