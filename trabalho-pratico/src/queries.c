@@ -164,9 +164,7 @@ char *Q3(int min, int max, Joint catalogo){
             }
         }
     }
-
-    // Build the result string
-    int total_length = 1; // For the null terminator
+    int total_length = 1;//para o \0
     int any_non_zero_likes = 0;
 
     for(int i = 0; i < 10; i++){
@@ -174,24 +172,17 @@ char *Q3(int min, int max, Joint catalogo){
             any_non_zero_likes = 1;
             int genero_length = strlen(getGenero(array_resultado[i]));
             int likes_length = snprintf(NULL, 0, "%d", getLikes(array_resultado[i]));
-            total_length += genero_length + likes_length + 3; // Including ": " and "\n"
+            total_length += genero_length + likes_length + 2; //inclui ";" e "\n"
         }
     }
 
     if(!any_non_zero_likes){
-        char *result = malloc(2); // For "\n" and null terminator
-        if(result == NULL) {
-            // Handle memory allocation failure
-            return NULL;
-        }
+        char *result = malloc(2);
+        free_Array_GC(array_resultado);
         strcpy(result, "\n");
         return result;
     } else {
         char *result = malloc(total_length);
-        if(result == NULL) {
-            // Handle memory allocation failure
-            return NULL;
-        }
         char *ptr = result;
         for(int i = 0; i < 10; i++){
             if(getLikes(array_resultado[i]) > 0){
@@ -199,96 +190,17 @@ char *Q3(int min, int max, Joint catalogo){
                 ptr += n;
             }
         }
-        *ptr = '\0'; // Null-terminate the string
+        free_Array_GC(array_resultado);
+        *ptr = '\0'; //termina a string
         return result;
     }
 }
 
 
-/*
-char *Q3(int min, int max, Joint catalogo) {
-    GHashTable *utilizadores = getUtilizadoresValidos(get_catalogo_utilizadores(catalogo));
-    Catalogo_Musicas musicas = get_catalogo_musicas(catalogo);
-    GHashTable *generosContagem = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, free);
-
-    GList *keys = g_hash_table_get_keys(utilizadores);
-    for (GList *iter = keys; iter != NULL; iter = iter->next) {
-        gpointer key = iter->data;
-        gpointer u = g_hash_table_lookup(utilizadores, key);
-        char *birth_date = get_birth_date(u);
-
-        int idade = calcula_idade(birth_date);
-
-        if (idade >= min && idade <= max) {
-            char **likedMusics = get_liked_musics_id(u);
-            if (likedMusics == NULL) {
-                printf("O utilizador não tem iked_musics\n");
-                free(birth_date);
-                continue;
-            }
-
-            for (int i = 0; likedMusics[i] != NULL; i++) {
-                char *idMusica = likedMusics[i];
-                char *genero = getGenre(get_musica_valida(musicas, idMusica));
-
-                generoContagem contagem = g_hash_table_lookup(generosContagem, genero);
-
-                if (contagem == NULL) {
-                    contagem = malloc(sizeof(struct generoContagem));
-                    contagem->genero = strdup(genero);
-                    contagem->likes = 1;
-                    g_hash_table_insert(generosContagem, contagem->genero, contagem);
-                } else {
-                    contagem->likes++;
-                }
-                free(genero);
-                free(likedMusics[i]);
-            }
-            free(likedMusics);
-        }
-        free(birth_date);
-    }
-
-    GList *generos_lista = g_hash_table_get_values(generosContagem);
-
-    if (generos_lista == NULL || g_list_length(generos_lista) == 0) {
-        g_list_free(keys);
-        g_hash_table_destroy(generosContagem);
-        return strdup("\n");
-    }
-    generos_lista = g_list_sort(generos_lista, comparar_generos);
-
-    size_t buffer_size = 300;
-    char *resultado = malloc(buffer_size);
-    resultado[0] = '\0';
-
-    for (GList *iter = generos_lista; iter != NULL; iter = iter->next) {
-        generoContagem contagem = (generoContagem)iter->data;
-        size_t required_size = strlen(contagem->genero) + 20;
-        
-        if (strlen(resultado) + required_size >= buffer_size) {
-            buffer_size *= 2;
-            resultado = realloc(resultado, buffer_size);
-        }
-
-        char line[100];
-        snprintf(line, sizeof(line), "%s;%d\n", contagem->genero, contagem->likes);
-        strcat(resultado, line);
-    }
-
-    g_list_free(generos_lista);
-    g_list_free(keys);
-    g_hash_table_destroy(generosContagem);
-
-
-    return resultado;
-}
-*/
-
 void excuta_queries(char *linha, int contador, Joint joint){
     switch (linha[0])
     {
-    /*case '1': {
+    case '1': {
         char *id = linha+2;
         char *resposta = Q1(id,joint);
         escreve_querie(resposta,contador);
@@ -317,7 +229,7 @@ void excuta_queries(char *linha, int contador, Joint joint){
         escreve_querie(resposta,contador);
         free(resposta);
         break;
-    }*/
+    }
     case '3':{
         char buffer[50];
         strncpy(buffer, linha, sizeof(buffer) - 1);
