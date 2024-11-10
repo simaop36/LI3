@@ -9,6 +9,8 @@ typedef struct utilizador *utilizador;
 
 catalogo_utilizadores create_catalogo_utilizadores();
 
+void build_utilizador(char **linha,void *cat);
+
 void add_utilizador_valido(catalogo_utilizadores catalogo, utilizador u);
 
 void add_utilizador_invalido(catalogo_utilizadores catalogo, utilizador u);

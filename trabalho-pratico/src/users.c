@@ -57,39 +57,6 @@ int verifica_utilizadores(char **linha){
     return 1;
 }
 
-void build_utilizador(char **linha,void *cat){
-    utilizador u = create_utilizador();
-    Joint joint = (Joint)cat;
-    catalogo_utilizadores catalogo = get_catalogo_utilizadores(joint);
-
-
-    set_username(linha[0],u);
-    set_email(linha[1],u);
-    set_first_name(linha[2],u);
-    set_last_name(linha[3],u);
-    set_birth_date(linha[4],u);
-    set_country(linha[5],u);
-    set_subscription_style(linha[6],u);
-    set_liked_musics_id(linha[7],u);
-
-    if(!(verifica_utilizadores(linha)))
-    {
-        add_utilizador_invalido(catalogo,u);
-    }
-    else
-    {
-        if(segVerUser(u,joint)){
-            char *bDay = get_birth_date(u);
-            set_age(bDay,u);
-            free(bDay);
-            add_utilizador_valido(catalogo,u);
-        }
-        else {
-            add_utilizador_invalido(catalogo,u);
-        }
-        
-    }
-}
 
 int get_age(utilizador u){
     return u->idade;
