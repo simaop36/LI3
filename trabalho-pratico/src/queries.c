@@ -12,6 +12,7 @@
 #include "estatisticas.h"
 
 
+
 char *Q1(char *ID, Joint catalogo)
 {
     catalogo_utilizadores catU = get_catalogo_utilizadores(catalogo);
@@ -22,6 +23,7 @@ char *Q1(char *ID, Joint catalogo)
         strcpy(empty_response, "\n");
         return empty_response;
     }
+
     
     char *email = get_email(u);
     char *first_name = get_first_name(u);
