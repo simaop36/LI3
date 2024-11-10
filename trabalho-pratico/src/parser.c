@@ -9,6 +9,7 @@
 #include "musica.h"
 #include "users.h"
 #include "joint.h"
+#include "queries.h"
 
 char **parser_linha(char *line, int max_tokens) {
     // Aloca memória para o array de tokens
@@ -129,6 +130,19 @@ void file_reader(FILE *csv,const char *file_name, Joint catalogo) {
         GHashTable *users_invalidas = getUtilizadoresInvalidos(catalogo_utilizadores);
         printf("Tamanho da tabela hash dos users invalidos: %u\n", g_hash_table_size(users_invalidas));
     }
+}
+
+void parse_queries(FILE *queries_file,Joint joint){
+    char *linha = NULL;
+    size_t tamanho_linha = 0;
+    int contador = 0;
+    while(getline(&linha,&tamanho_linha,queries_file) != -1){
+        contador++;
+        linha[strlen(linha) - 1] = '\0'; // remove o \n e substitui por \0
+        excuta_queries(linha,contador,joint);
+    }
+    free(linha);
+
 }
 
 

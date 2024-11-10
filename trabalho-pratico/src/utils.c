@@ -9,6 +9,7 @@
 #include "users.h"
 #include "catalogo_artista.h"
 #include "joint.h"
+#include "estatisticas.h"
 
 // return 0 : Inválido
 // return 1 : Válido
@@ -321,30 +322,66 @@ char **parse_lista(char *input)
     return final_result;
 }
 
+int converteDuration(const char *duration){
+    int horas, minutos, segundos;
+    if (sscanf(duration, "%2d:%2d:%2d", &horas, &minutos, &segundos) != 3) {
+        printf("Formato de duração inválido: %s\n", duration);
+        return -1;
+    }
+    int total_segundos = horas * 3600 + minutos * 60 + segundos;
+    return total_segundos;
+}
 
+char *formataDuration(int total_segundos) {
+    int horas = total_segundos / 3600;
+    int minutos = (total_segundos % 3600) / 60;
+    int segundos = total_segundos % 60;
+
+    char *duration = malloc(9);
+    if (duration == NULL) {
+        printf("Erro de alocação de memória\n");
+        return NULL;
+    }
+    snprintf(duration, 9, "%02d:%02d:%02d", horas, minutos, segundos);
+    return duration;
+}
 
 int segVerMusica(musica m, GHashTable *artista_valido){
     char **artistas_id = getId_Artistas(m);
     int result = 1;
+    char *duration_char = getDuration(m);
+    long int duration_int = converteDuration(duration_char);
 
     if(artistas_id == NULL) return 0;
-    for (int i = 0; artistas_id[i] != NULL; i++){
-        if(!(g_hash_table_contains(artista_valido,artistas_id[i]))){
+
+    for (int i = 0; artistas_id[i] != NULL; i++) {
+        Artista artista = g_hash_table_lookup(artista_valido, artistas_id[i]);
+        if (artista != NULL) {//existe
+            increaseDiscography_Duration(duration_int, artista);
+        } else {//nao existe
             result = 0;
         }
+        
         free(artistas_id[i]);
     }
+    free(duration_char);
     free(artistas_id);
     return result;
 }
 
-int segVerUser(utilizador utilizador, GHashTable *musicas_validas) {
+int segVerUser(utilizador utilizador, Joint joint) {
+    GHashTable *musicas_validas = getMusicasValidas(get_catalogo_musicas(joint));
     char **liked_musics = get_liked_musics_id(utilizador);
     int result = 1;
 
     if(liked_musics == NULL) return 0;
     for (int i = 0; liked_musics[i] != NULL; i++) {
-        if (!(g_hash_table_contains(musicas_validas, liked_musics[i]))) {
+        musica m = g_hash_table_lookup(musicas_validas, liked_musics[i]);
+        if (m != NULL) {//existe
+            char *genero = getGenre(m);
+            incrementa_likes_genero(getArray(utilizador),genero);
+            free(genero);
+        } else {//nao existe
             result = 0;
         }
         free(liked_musics[i]);
@@ -364,45 +401,32 @@ void free_lista_strings(char **array) {
 
     free(array);
 }
-
-
-int calcula_idade(char* birth_date){
-    char* ano_a;
-    char* mes_a;
-    char* dia_a;
-    char* ano_b;
-    char* mes_b;
-    char* dia_b;
-    int idade = 0;
-    char* data_atual = "2024/09/09";
-
-    for(int i = 0 ; i < 4 ; i++){
-        ano_a[i] = data_atual[i+1];
-        ano_b[i] = birth_date[i+1];
-    }
-    for(int i = 5 ; i < 7 ; i++){
-        mes_a[i] = data_atual[i+1];
-        mes_b[i] = birth_date[i+1];
-    }
-    for(int i = 8 ; i < 10 ; i++){
-        dia_a[i] = data_atual[i+1];
-        dia_b[i] = birth_date[i+1];
-    }
-
-    idade = atoi(ano_a) - atoi(ano_b);
-
-    if((atoi(mes_a) < atoi(mes_b)) || (atoi(mes_a) == atoi(mes_b) && atoi(dia_a) < atoi(dia_b))) idade--;
     
-    free(ano_a);
-    free(ano_b);
-    free(mes_a);
-    free(mes_b);
-    free(dia_a);
-    free(dia_b);
-    free(data_atual);
+int calcula_idade(const char* birth_date) {
+    if (birth_date == NULL || strlen(birth_date) < 10) {
+        printf("Data de nascimento inválida: %s\n", birth_date);
+        return -1;
+    }
+    int ano_atual, mes_atual, dia_atual;
+    int ano_nascimento, mes_nascimento, dia_nascimento;
+    const char data_atual[] = "2024/09/09";
 
+    if (sscanf(data_atual, "%4d/%2d/%2d", &ano_atual, &mes_atual, &dia_atual) != 3) {
+        printf("Erro ao extrair data atual\n");
+        return -1;
+    }
+    if (sscanf(birth_date, "%4d/%2d/%2d", &ano_nascimento, &mes_nascimento, &dia_nascimento) != 3) {
+        printf("Erro ao extrair data de nascimento: %s\n", birth_date);
+        return -1;
+    }
+    int idade = ano_atual - ano_nascimento;
+
+    if ((mes_atual < mes_nascimento) || (mes_atual == mes_nascimento && dia_atual < dia_nascimento)) {
+        idade--;
+    }
     return idade;
 }
+
 
 int converter_em_segundos(char* duracao){
     char* horas;
@@ -424,3 +448,4 @@ int converter_em_segundos(char* duracao){
     
     return seg;
 }
+

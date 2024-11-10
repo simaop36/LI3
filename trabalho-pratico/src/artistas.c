@@ -15,6 +15,7 @@ typedef struct artista {
     char **id_constituent;
     char *country;
     char *type;
+    long int discography_Duration;
 } *Artista;
 
 Artista create_Artista()
@@ -26,6 +27,7 @@ Artista create_Artista()
     novo_artista->id_constituent = NULL;
     novo_artista->country = NULL;
     novo_artista->type = NULL;
+    novo_artista->discography_Duration = 0;
 
     return novo_artista;
 }
@@ -101,6 +103,10 @@ char *getType(Artista a)
     char *aCopy = strdup(a->type);
     return aCopy;
 }
+double getDiscography_Duration(Artista a)
+{
+    return a->discography_Duration;
+}
 
 void setId_Artista(char *id, Artista a)
 {
@@ -139,7 +145,13 @@ void setType(char *type, Artista a)
     a->type = copy;
 }
 
-
+void setDiscography_Duration(long int disc_Duration, Artista a)
+{
+    a->discography_Duration = disc_Duration;
+}
+void increaseDiscography_Duration(long int disc_Duration, Artista a){
+    a->discography_Duration += disc_Duration;
+}
 
 
 void free_artista(Artista novo_artista) {

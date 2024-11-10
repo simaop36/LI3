@@ -7,6 +7,7 @@
 #include "catalogo_musica.h"
 #include "utils.h"
 #include "musica.h"
+#include "estatisticas.h"
 
 typedef struct utilizador {
     char *username;
@@ -17,6 +18,8 @@ typedef struct utilizador {
     char *country;
     char *subscription_style;
     char **liked_musics_id;
+    GeneroContagem *array;
+    int idade;
 } *utilizador;
 
 utilizador create_utilizador(){
@@ -29,6 +32,8 @@ utilizador create_utilizador(){
     novo_utilizador->country = NULL;
     novo_utilizador->subscription_style = NULL;
     novo_utilizador->liked_musics_id = NULL;
+    novo_utilizador->array=build_Array_GC();
+    novo_utilizador->idade=0;
     
     return novo_utilizador;
 }
@@ -55,7 +60,6 @@ int verifica_utilizadores(char **linha){
 void build_utilizador(char **linha,void *cat){
     utilizador u = create_utilizador();
     Joint joint = (Joint)cat;
-    GHashTable *musicas_validas = getMusicasValidas(get_catalogo_musicas(joint));
     catalogo_utilizadores catalogo = get_catalogo_utilizadores(joint);
 
 
@@ -74,7 +78,10 @@ void build_utilizador(char **linha,void *cat){
     }
     else
     {
-        if(segVerUser(u,musicas_validas)){
+        if(segVerUser(u,joint)){
+            char *bDay = get_birth_date(u);
+            set_age(bDay,u);
+            free(bDay);
             add_utilizador_valido(catalogo,u);
         }
         else {
@@ -82,6 +89,14 @@ void build_utilizador(char **linha,void *cat){
         }
         
     }
+}
+
+int get_age(utilizador u){
+    return u->idade;
+}
+
+GeneroContagem *getArray(utilizador u){
+    return u->array;
 }
 
 char* get_username(utilizador u){
@@ -124,6 +139,10 @@ char** get_liked_musics_id(utilizador u){
     return uCopy;
 }
 
+void setArray(GeneroContagem *gc, utilizador u){
+    u->array=gc;
+}
+
 void set_username(char* username,utilizador u){
     char* copy = strdup(username);
     u->username = copy;
@@ -149,6 +168,10 @@ void set_birth_date(char* birth_date,utilizador u){
     u->birth_date = copy;
 }
 
+void set_age(char* birth_date,utilizador u){
+    u->idade=calcula_idade(birth_date);
+}
+
 void set_country(char* country,utilizador u){
     char* copy = strdup(country);
     u->country = copy;
@@ -165,16 +188,7 @@ void set_liked_musics_id(char* liked_musics_id,utilizador u){
     free(copy);
     u->liked_musics_id = result;
 }
-/*
-int valida_liked_music(utilizador u, Catalogo_Musicas catalogo_m){
-    int i = 0;
-    while(get_liked_musics_id(u)+i != NULL){
-        if(!(g_hash_table_contains(getMusicasValidas(catalogo_m),get_liked_musics_id(u)+i))) return 0;
-        i++;
-    }
-    return 1;
-}
-*/
+
 
 void free_utilizador(utilizador novo_utilizador) {
 
@@ -186,5 +200,6 @@ void free_utilizador(utilizador novo_utilizador) {
     free(novo_utilizador->country);
     free(novo_utilizador->subscription_style);
     free_lista_strings(novo_utilizador->liked_musics_id);
+    free_Array_GC(novo_utilizador->array);
     free(novo_utilizador);
 }
