@@ -104,6 +104,7 @@ char *Q2(int n, char *c, Joint j){
     GHashTable *artistas = getArtistasValidos(get_catalogo_artistas(j));
     Artista top[n];
     memset(top, 0, sizeof(top)); // Inicializa o array a NULL
+    if(n == 0) return strdup("\n");
 
     GHashTableIter iter;
     gpointer key, value;
