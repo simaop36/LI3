@@ -55,7 +55,6 @@ int verifica_utilizadores(char **linha){
 void build_utilizador(char **linha,void *cat){
     utilizador u = create_utilizador();
     Joint joint = (Joint)cat;
-    GHashTable *musicas_validas = getMusicasValidas(get_catalogo_musicas(joint));
     catalogo_utilizadores catalogo = get_catalogo_utilizadores(joint);
 
 
@@ -74,7 +73,7 @@ void build_utilizador(char **linha,void *cat){
     }
     else
     {
-        if(segVerUser(u,musicas_validas)){
+        if(segVerUser(u,joint)){
             add_utilizador_valido(catalogo,u);
         }
         else {

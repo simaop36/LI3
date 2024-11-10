@@ -6,6 +6,7 @@
 #include "musica.h"
 #include "users.h"
 #include "utils.h"
+#include "estatisticas.h"
 
 
 typedef struct joint
@@ -46,19 +47,6 @@ Catalogo_Artistas get_catalogo_artistas(Joint j)
 {
     return j->artista_c;
 }
-/*
-void aux_user(gpointer key, gpointer value, gpointer user_data){
-    utilizador u = (utilizador)value;
-    Joint catalogo = (Joint)user_data;
-    aux_valida_liked_music(u,catalogo);
-}
-
-void aux_musica(gpointer key, gpointer value, gpointer user_data){
-    musica m = (musica)value;
-    Joint cat = (Joint)user_data;
-    valida_artistasDamusica(m,cat);
-}
-*/
 
 
 void free_joint(Joint j)

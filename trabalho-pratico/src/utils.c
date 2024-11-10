@@ -368,7 +368,8 @@ int segVerMusica(musica m, GHashTable *artista_valido){
     return result;
 }
 
-int segVerUser(utilizador utilizador, GHashTable *musicas_validas) {
+int segVerUser(utilizador utilizador, Joint joint) {
+    GHashTable *musicas_validas = getMusicasValidas(get_catalogo_musicas(joint));
     char **liked_musics = get_liked_musics_id(utilizador);
     int result = 1;
 

@@ -26,7 +26,7 @@ char **parse_lista(char *input);
 int converteDuration(const char *duration);
 char *formataDuration(int total_segundos);
 int segVerMusica(musica m, GHashTable *artista_valido);
-int segVerUser(utilizador utilizador, GHashTable *musicas_validas);
+int segVerUser(utilizador utilizador, Joint joint);
 void free_lista_strings(char **array);
 int calcula_idade(const char* birth_date);
 
