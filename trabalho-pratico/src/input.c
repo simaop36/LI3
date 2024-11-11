@@ -33,7 +33,7 @@ void ler_csvs(const char *dir_path, Joint catalogo)
     }
 }
 
-void ler_queries(const char *file_path, Joint joint)
+char *ler_queries(const char *file_path, Joint joint)
 {
     FILE *queries_file = fopen(file_path, "r");
     if (queries_file == NULL)
