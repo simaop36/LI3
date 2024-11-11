@@ -39,7 +39,7 @@ char *ler_queries(const char *file_path, Joint joint)
     if (queries_file == NULL)
     {
         fprintf(stderr, "Erro ao abrir o ficheiro: %s\n", file_path);
-        return;
+        return NULL;
     }
     char *resultado = parse_queries(queries_file, joint);
     fclose(queries_file);
