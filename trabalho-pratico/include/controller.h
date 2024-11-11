@@ -2,5 +2,6 @@
 #define CONTROLLER_H
 
 void run(char *argv[]);
+void run_testes(char *argv[]);
 
 #endif

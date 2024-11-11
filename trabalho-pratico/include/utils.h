@@ -25,9 +25,11 @@ int valida_lista(const char *str);
 char **parse_lista(char *input);
 int converteDuration(const char *duration);
 char *formataDuration(int total_segundos);
+int extrair_numero(const char *str);
 int segVerMusica(musica m, GHashTable *artista_valido);
 int segVerUser(utilizador utilizador, Joint joint);
 void free_lista_strings(char **array);
-int calcula_idade(const char* birth_date);
+int calcula_idade(const char *birth_date);
+char *compara_resultados(const char *pasta1, const char *pasta2);
 
 #endif

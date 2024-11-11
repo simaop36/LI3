@@ -322,9 +322,11 @@ char **parse_lista(char *input)
     return final_result;
 }
 
-int converteDuration(const char *duration){
+int converteDuration(const char *duration)
+{
     int horas, minutos, segundos;
-    if (sscanf(duration, "%2d:%2d:%2d", &horas, &minutos, &segundos) != 3) {
+    if (sscanf(duration, "%2d:%2d:%2d", &horas, &minutos, &segundos) != 3)
+    {
         printf("Formato de duração inválido: %s\n", duration);
         return -1;
     }
@@ -332,13 +334,15 @@ int converteDuration(const char *duration){
     return total_segundos;
 }
 
-char *formataDuration(int total_segundos) {
+char *formataDuration(int total_segundos)
+{
     int horas = total_segundos / 3600;
     int minutos = (total_segundos % 3600) / 60;
     int segundos = total_segundos % 60;
 
     char *duration = malloc(9);
-    if (duration == NULL) {
+    if (duration == NULL)
+    {
         printf("Erro de alocação de memória\n");
         return NULL;
     }
@@ -346,22 +350,42 @@ char *formataDuration(int total_segundos) {
     return duration;
 }
 
-int segVerMusica(musica m, GHashTable *artista_valido){
+int extrair_numero(const char *str)
+{
+    const char *ptr = str;
+    while (*ptr && !isdigit(*ptr))
+    {
+        ptr++;
+    }
+    if (*ptr)
+    {
+        return atoi(ptr);
+    }
+    return 0;
+}
+
+int segVerMusica(musica m, GHashTable *artista_valido)
+{
     char **artistas_id = getId_Artistas(m);
     int result = 1;
     char *duration_char = getDuration(m);
     long int duration_int = converteDuration(duration_char);
 
-    if(artistas_id == NULL) return 0;
+    if (artistas_id == NULL)
+        return 0;
 
-    for (int i = 0; artistas_id[i] != NULL; i++) {
+    for (int i = 0; artistas_id[i] != NULL; i++)
+    {
         Artista artista = g_hash_table_lookup(artista_valido, artistas_id[i]);
-        if (artista != NULL) {//existe
+        if (artista != NULL)
+        { // existe
             increaseDiscography_Duration(duration_int, artista);
-        } else {//nao existe
+        }
+        else
+        { // nao existe
             result = 0;
         }
-        
+
         free(artistas_id[i]);
     }
     free(duration_char);
@@ -369,19 +393,25 @@ int segVerMusica(musica m, GHashTable *artista_valido){
     return result;
 }
 
-int segVerUser(utilizador utilizador, Joint joint) {
+int segVerUser(utilizador utilizador, Joint joint)
+{
     GHashTable *musicas_validas = getMusicasValidas(get_catalogo_musicas(joint));
     char **liked_musics = get_liked_musics_id(utilizador);
     int result = 1;
 
-    if(liked_musics == NULL) return 0;
-    for (int i = 0; liked_musics[i] != NULL; i++) {
+    if (liked_musics == NULL)
+        return 0;
+    for (int i = 0; liked_musics[i] != NULL; i++)
+    {
         musica m = g_hash_table_lookup(musicas_validas, liked_musics[i]);
-        if (m != NULL) {//existe
+        if (m != NULL)
+        { // existe
             char *genero = getGenre(m);
-            incrementa_likes_genero(getArray(utilizador),genero);
+            incrementa_likes_genero(getArray(utilizador), genero);
             free(genero);
-        } else {//nao existe
+        }
+        else
+        { // nao existe
             result = 0;
         }
         free(liked_musics[i]);
@@ -390,20 +420,24 @@ int segVerUser(utilizador utilizador, Joint joint) {
     return result;
 }
 
-
-void free_lista_strings(char **array) {
-    if (array == NULL) return;
+void free_lista_strings(char **array)
+{
+    if (array == NULL)
+        return;
 
     // Free cada elemento ate NULL
-    for (size_t i = 0; array[i] != NULL; i++) {
+    for (size_t i = 0; array[i] != NULL; i++)
+    {
         free(array[i]);
     }
 
     free(array);
 }
-    
-int calcula_idade(const char* birth_date) {
-    if (birth_date == NULL || strlen(birth_date) < 10) {
+
+int calcula_idade(const char *birth_date)
+{
+    if (birth_date == NULL || strlen(birth_date) < 10)
+    {
         printf("Data de nascimento inválida: %s\n", birth_date);
         return -1;
     }
@@ -411,41 +445,144 @@ int calcula_idade(const char* birth_date) {
     int ano_nascimento, mes_nascimento, dia_nascimento;
     const char data_atual[] = "2024/09/09";
 
-    if (sscanf(data_atual, "%4d/%2d/%2d", &ano_atual, &mes_atual, &dia_atual) != 3) {
+    if (sscanf(data_atual, "%4d/%2d/%2d", &ano_atual, &mes_atual, &dia_atual) != 3)
+    {
         printf("Erro ao extrair data atual\n");
         return -1;
     }
-    if (sscanf(birth_date, "%4d/%2d/%2d", &ano_nascimento, &mes_nascimento, &dia_nascimento) != 3) {
+    if (sscanf(birth_date, "%4d/%2d/%2d", &ano_nascimento, &mes_nascimento, &dia_nascimento) != 3)
+    {
         printf("Erro ao extrair data de nascimento: %s\n", birth_date);
         return -1;
     }
     int idade = ano_atual - ano_nascimento;
 
-    if ((mes_atual < mes_nascimento) || (mes_atual == mes_nascimento && dia_atual < dia_nascimento)) {
+    if ((mes_atual < mes_nascimento) || (mes_atual == mes_nascimento && dia_atual < dia_nascimento))
+    {
         idade--;
     }
     return idade;
 }
 
-
-int converter_em_segundos(char* duracao){
-    char* horas;
-    char* minutos;
-    char* segundos;
-    int seg=0;
-
-    for(int i = 0 ; i < 2 ; i++ ){
-        horas[i] = duracao[i];
-        minutos[i+3] = duracao[i+3];
-        segundos[i+6] = duracao[i+6];
+char *compara_resultados(const char *pasta1, const char *pasta2)
+{
+    DIR *dir1, *dir2;
+    struct dirent *entrada1;
+    char *resultado = malloc(1024 * sizeof(char));
+    if (resultado == NULL)
+    {
+        perror("Erro ao alocar memória para resultado");
+        return NULL;
     }
-    
-    seg = atoi(horas)*3600+atoi(minutos)*60+atoi(segundos);
-    
-    free(horas);
-    free(minutos);
-    free(segundos); 
-    
-    return seg;
-}
+    resultado[0] = '\0'; // Inicializa a string vazia
 
+    dir1 = opendir(pasta1);
+    dir2 = opendir(pasta2);
+    if (dir1 == NULL || dir2 == NULL)
+    {
+        perror("Erro ao abrir uma das pastas");
+        free(resultado);
+        return NULL;
+    }
+    int aux[3];
+    for (int i = 0; i < 3; i++)
+    {
+        aux[i] = 0;
+    }
+    int nr_querie = 0;
+    int encontrou_erro = 0;
+
+    while ((entrada1 = readdir(dir1)) != NULL)
+    {
+        if (entrada1->d_type == DT_REG && strstr(entrada1->d_name, "_output.txt") != NULL)
+        { // Apenas arquivos .txt
+            int nr_command = extrair_numero(entrada1->d_name);
+
+            if (nr_command > 0)
+            {
+                if (nr_command < 26)
+                {
+                    nr_querie = 1;
+                }
+
+                if (nr_command > 25 && nr_command < 51)
+                {
+                    nr_querie = 2;
+                }
+                if (nr_command > 25 && nr_command > 50 && nr_command < 76)
+                {
+                    nr_querie = 3;
+                }
+            }
+
+            // Construir o caminho completo
+            char caminho1[1024];
+            snprintf(caminho1, sizeof(caminho1), "%s/%s", pasta1, entrada1->d_name);
+
+            // Construir o caminho completo
+            char caminho2[1024];
+            snprintf(caminho2, sizeof(caminho2), "%s/%s", pasta2, entrada1->d_name);
+
+            // Abrir os arquivos para comparação
+            FILE *file1 = fopen(caminho1, "r");
+            FILE *file2 = fopen(caminho2, "r");
+
+            if (file1 == NULL || file2 == NULL)
+            {
+                snprintf(resultado + strlen(resultado), 1024 - strlen(resultado),
+                         "Erro ao abrir um dos arquivos: %s ou %s\n", caminho1, caminho2);
+                encontrou_erro = 1;
+                if (file1)
+                    fclose(file1);
+                if (file2)
+                    fclose(file2);
+                continue;
+            }
+
+            int posicao = 1;
+            char ch1, ch2;
+
+            while (((ch1 = fgetc(file1)) != EOF) && ((ch2 = fgetc(file2)) != EOF))
+            {
+                if (ch1 != ch2)
+                {
+                    snprintf(resultado + strlen(resultado), 1024 - strlen(resultado),
+                             "Diferença encontrada em %s na posição %d: '%c' != '%c'\n",
+                             entrada1->d_name, posicao, ch1, ch2);
+                    encontrou_erro = 1;
+                    aux[nr_querie]++;
+                    break;
+                }
+                posicao++;
+            }
+
+            if (!encontrou_erro && (fgetc(file1) != EOF || fgetc(file2) != EOF))
+            {
+                snprintf(resultado + strlen(resultado), 1024 - strlen(resultado),
+                         "Os arquivos %s têm tamanhos diferentes\n", entrada1->d_name);
+                encontrou_erro = 1;
+                aux[nr_querie]++;
+            }
+            fclose(file1);
+            fclose(file2);
+        }
+    }
+    closedir(dir1);
+    closedir(dir2);
+    resultado = realloc(resultado, strlen(resultado) * 2);
+
+    if (!encontrou_erro)
+    {
+        snprintf(resultado, 1024, "Não foram encontrados erros nos resultados obtidos\n");
+    }
+
+    // Adicionar o resumo das queries
+    int q1 = 25 - aux[0];
+    int q2 = 25 - aux[1];
+    int q3 = 25 - aux[2];
+    snprintf(resultado + strlen(resultado), 1024 - strlen(resultado), "Querie 1: %d de 25 corretas\n", q1);
+    snprintf(resultado + strlen(resultado), 1024 - strlen(resultado), "Querie 2: %d de 25 corretas\n", q2);
+    snprintf(resultado + strlen(resultado), 1024 - strlen(resultado), "Querie 3: %d de 25 corretas\n", q3);
+
+    return resultado;
+}
