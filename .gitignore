@@ -67,3 +67,4 @@ programa-testes
 
 #Ignore .vscode
 /.vscode
+*.txt
