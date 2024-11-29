@@ -26,7 +26,7 @@ Historico create_Historico()
     return novo_historico;
 }
 
-int verifica_artistas(char **linha){
+int verifica_historico(char **linha){
     //verifica se linha[x]==NULL
     if(!(linha[0])) return 0;
     if(!(linha[1])) return 0;
@@ -67,7 +67,7 @@ char *get_Plataform(Historico h){
     return hCopy;
 }
 
-void setId_Artista(char *id, Historico h){
+void setId_Historico(char *id, Historico h){
     char *copy = strdup(id);
     h->id = copy;
 }
