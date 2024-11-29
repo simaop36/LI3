@@ -468,7 +468,8 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
 {
     DIR *dir1, *dir2;
     struct dirent *entrada1;
-    char *resultado = malloc(1024 * sizeof(char));
+    size_t resultado_size = 2048;
+    char *resultado = malloc(resultado_size * sizeof(char));
     if (resultado == NULL)
     {
         perror("Erro ao alocar memória para resultado");
@@ -484,54 +485,69 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
         free(resultado);
         return NULL;
     }
-    int aux[3];
-    for (int i = 0; i < 3; i++)
-    {
-        aux[i] = 0;
-    }
+    int aux[3] = {0, 0, 0}; // Para as queries 1, 2 e 3
     int nr_querie = 0;
-    int encontrou_erro = 0;
+    int encontrou_erro_total = 0;
 
     while ((entrada1 = readdir(dir1)) != NULL)
     {
         if (entrada1->d_type == DT_REG && strstr(entrada1->d_name, "_output.txt") != NULL)
-        { // Apenas arquivos .txt
+        {
             int nr_command = extrair_numero(entrada1->d_name);
 
             if (nr_command > 0)
             {
                 if (nr_command < 26)
                 {
-                    nr_querie = 1;
+                    nr_querie = 0; // Query 1
                 }
-
-                if (nr_command > 25 && nr_command < 51)
+                else if (nr_command >= 26 && nr_command <= 50)
                 {
-                    nr_querie = 2;
+                    nr_querie = 1; // Query 2
                 }
-                if (nr_command > 25 && nr_command > 50 && nr_command < 76)
+                else if (nr_command >= 51 && nr_command <= 75)
                 {
-                    nr_querie = 3;
+                    nr_querie = 2; // Query 3
+                }
+                else
+                {
+                    continue;
                 }
             }
+            else
+            {
+                continue;
+            }
 
-            // Construir o caminho completo
             char caminho1[1024];
             snprintf(caminho1, sizeof(caminho1), "%s/%s", pasta1, entrada1->d_name);
 
-            // Construir o caminho completo
             char caminho2[1024];
             snprintf(caminho2, sizeof(caminho2), "%s/%s", pasta2, entrada1->d_name);
 
-            // Abrir os arquivos para comparação
             FILE *file1 = fopen(caminho1, "r");
             FILE *file2 = fopen(caminho2, "r");
 
             if (file1 == NULL || file2 == NULL)
             {
-                snprintf(resultado + strlen(resultado), 1024 - strlen(resultado),
-                         "Erro ao abrir um dos arquivos: %s ou %s\n", caminho1, caminho2);
-                encontrou_erro = 1;
+                size_t len = strlen(resultado);
+                size_t needed = snprintf(NULL, 0, "Erro ao abrir um dos arquivos: %s ou %s\n", caminho1, caminho2);
+                if (len + needed + 1 > resultado_size)
+                {
+                    resultado_size = len + needed + 1;
+                    resultado = realloc(resultado, resultado_size);
+                    if (resultado == NULL)
+                    {
+                        perror("Erro ao realocar memória para resultado");
+                        fclose(file1);
+                        fclose(file2);
+                        closedir(dir1);
+                        closedir(dir2);
+                        return NULL;
+                    }
+                }
+                snprintf(resultado + len, resultado_size - len, "Erro ao abrir um dos arquivos: %s ou %s\n", caminho1, caminho2);
+                encontrou_erro_total = 1;
                 if (file1)
                     fclose(file1);
                 if (file2)
@@ -541,26 +557,60 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
 
             int posicao = 1;
             char ch1, ch2;
+            int encontrou_erro_no_arquivo = 0;
 
             while (((ch1 = fgetc(file1)) != EOF) && ((ch2 = fgetc(file2)) != EOF))
             {
                 if (ch1 != ch2)
                 {
-                    snprintf(resultado + strlen(resultado), 1024 - strlen(resultado),
-                             "Diferença encontrada em %s na posição %d: '%c' != '%c'\n",
+                    size_t len = strlen(resultado);
+                    size_t needed = snprintf(NULL, 0, "Diferença encontrada em %s na posição %d: '%c' != '%c'\n",
+                                             entrada1->d_name, posicao, ch1, ch2);
+                    if (len + needed + 1 > resultado_size)
+                    {
+                        resultado_size = len + needed + 1;
+                        resultado = realloc(resultado, resultado_size);
+                        if (resultado == NULL)
+                        {
+                            perror("Erro ao realocar memória para resultado");
+                            fclose(file1);
+                            fclose(file2);
+                            closedir(dir1);
+                            closedir(dir2);
+                            return NULL;
+                        }
+                    }
+                    snprintf(resultado + len, resultado_size - len, "Diferença encontrada em %s na posição %d: '%c' != '%c'\n",
                              entrada1->d_name, posicao, ch1, ch2);
-                    encontrou_erro = 1;
+                    encontrou_erro_total = 1;
+                    encontrou_erro_no_arquivo = 1;
                     aux[nr_querie]++;
                     break;
                 }
                 posicao++;
             }
 
-            if (!encontrou_erro && (fgetc(file1) != EOF || fgetc(file2) != EOF))
+            if (!encontrou_erro_no_arquivo && (fgetc(file1) != EOF || fgetc(file2) != EOF))
             {
-                snprintf(resultado + strlen(resultado), 1024 - strlen(resultado),
-                         "Os arquivos %s têm tamanhos diferentes\n", entrada1->d_name);
-                encontrou_erro = 1;
+                size_t len = strlen(resultado);
+                size_t needed = snprintf(NULL, 0, "Os arquivos %s têm tamanhos diferentes\n", entrada1->d_name);
+                if (len + needed + 1 > resultado_size)
+                {
+                    resultado_size = len + needed + 1;
+                    resultado = realloc(resultado, resultado_size);
+                    if (resultado == NULL)
+                    {
+                        perror("Erro ao realocar memória para resultado");
+                        fclose(file1);
+                        fclose(file2);
+                        closedir(dir1);
+                        closedir(dir2);
+                        return NULL;
+                    }
+                }
+                snprintf(resultado + len, resultado_size - len, "Os arquivos %s têm tamanhos diferentes\n", entrada1->d_name);
+                encontrou_erro_total = 1;
+                encontrou_erro_no_arquivo = 1;
                 aux[nr_querie]++;
             }
             fclose(file1);
@@ -569,20 +619,51 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
     }
     closedir(dir1);
     closedir(dir2);
-    resultado = realloc(resultado, strlen(resultado) * 2);
 
-    if (!encontrou_erro)
+    if (!encontrou_erro_total)
     {
-        snprintf(resultado, 1024, "Não foram encontrados erros nos resultados obtidos\n");
+        size_t len = strlen(resultado);
+        const char *msg = "Não foram encontrados erros nos resultados obtidos\n";
+        size_t needed = strlen(msg);
+        if (len + needed + 1 > resultado_size)
+        {
+            resultado_size = len + needed + 1;
+            resultado = realloc(resultado, resultado_size);
+            if (resultado == NULL)
+            {
+                perror("Erro ao realocar memória para resultado");
+                return NULL;
+            }
+        }
+        strcat(resultado, msg);
     }
 
     // Adicionar o resumo das queries
     int q1 = 25 - aux[0];
     int q2 = 25 - aux[1];
     int q3 = 25 - aux[2];
-    snprintf(resultado + strlen(resultado), 1024 - strlen(resultado), "Querie 1: %d de 25 corretas\n", q1);
-    snprintf(resultado + strlen(resultado), 1024 - strlen(resultado), "Querie 2: %d de 25 corretas\n", q2);
-    snprintf(resultado + strlen(resultado), 1024 - strlen(resultado), "Querie 3: %d de 25 corretas\n", q3);
+
+    size_t len = strlen(resultado);
+    size_t needed = snprintf(NULL, 0, "Querie 1: %d de 25 corretas\n", q1) +
+                    snprintf(NULL, 0, "Querie 2: %d de 25 corretas\n", q2) +
+                    snprintf(NULL, 0, "Querie 3: %d de 25 corretas\n", q3);
+
+    if (len + needed + 1 > resultado_size)
+    {
+        resultado_size = len + needed + 1;
+        resultado = realloc(resultado, resultado_size);
+        if (resultado == NULL)
+        {
+            perror("Erro ao realocar memória para resultado");
+            return NULL;
+        }
+    }
+
+    snprintf(resultado + len, resultado_size - len, "Querie 1: %d de 25 corretas\n", q1);
+    len = strlen(resultado);
+    snprintf(resultado + len, resultado_size - len, "Querie 2: %d de 25 corretas\n", q2);
+    len = strlen(resultado);
+    snprintf(resultado + len, resultado_size - len, "Querie 3: %d de 25 corretas\n", q3);
 
     return resultado;
 }
