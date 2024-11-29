@@ -2,6 +2,8 @@
 #include <string.h>
 #include <glib.h>
 
+#include "album.h"
+
 typedef struct album
 {
     char *id;
@@ -21,12 +23,12 @@ Album create_Album()
     return novo_album;
 }
 
-char *getId(Album a)
+char *getIdAlbum(Album a)
 {
     char *aCopy = strdup(a->id);
     return aCopy;
 }
-char *getTitle(Album a)
+char *getTitleAlbum(Album a)
 {
     char *aCopy = strdup(a->title);
     return aCopy;

@@ -31,5 +31,6 @@ int segVerUser(utilizador utilizador, Joint joint);
 void free_lista_strings(char **array);
 int calcula_idade(const char *birth_date);
 char *compara_resultados(const char *pasta1, const char *pasta2);
+void substituiPonto_E_Virgula(char *str);
 
 #endif
