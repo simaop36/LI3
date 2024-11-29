@@ -32,8 +32,9 @@ int verifica_historico(char **linha){
     if(!(linha[1])) return 0;
     if(!(linha[2])) return 0;
     if(!(linha[3])) return 0;
-    if(!(linha[4])) return 0;
     if(!(linha[5])) return 0;
+
+    if(!verifica_plataform(linha[5])) return 0;
 
     return 1;
 }
@@ -94,4 +95,12 @@ void set_Duration(long int duration, Historico h){
 void set_Plataform(char *plataform, Historico h){
     char *copy = strdup(plataform);
     h->plataform = copy;
+}
+
+int verifica_plataform(char* plataform){
+    char* aux = strdup(plataform);
+    int i = 1; 
+    if(strcmp(toupper(aux),"MOBILE") || strcmp(toupper(plataform),"DESKTOP")) i = 0;
+    free(aux);
+    return i;
 }

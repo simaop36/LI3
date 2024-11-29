@@ -16,6 +16,7 @@ void setId_MusicId(char *music_id, Historico h);
 void set_Timestamp(char *timestamp, Historico h);
 void set_Duration(long int duration, Historico h);
 void set_Plataform(char *plataform, Historico h);
+int verifica_plataform(char* plataform);
 
 
 #endif
