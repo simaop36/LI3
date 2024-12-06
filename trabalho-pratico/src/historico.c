@@ -78,7 +78,7 @@ void set_UserId(char *user_id, Historico h){
     h->user_id = copy;
 }
 
-void setId_MusicId(char *music_id, Historico h){
+void set_MusicId(char *music_id, Historico h){
     char *copy = strdup(music_id);
     h->music_id = copy;
 }
@@ -103,4 +103,14 @@ int verifica_plataform(char* plataform){
     if(strcmp(toupper(aux),"MOBILE") || strcmp(toupper(plataform),"DESKTOP")) i = 0;
     free(aux);
     return i;
+}
+
+void free_historico(Historico novo_historico) {
+
+    free(novo_historico->id);
+    free(novo_historico->user_id);
+    free(novo_historico->music_id);
+    free(novo_historico->timestamp);
+    free(novo_historico->plataform);
+    free(novo_historico);
 }
