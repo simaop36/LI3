@@ -33,3 +33,59 @@ char *getTitleAlbum(Album a)
     char *aCopy = strdup(a->title);
     return aCopy;
 }
+
+char **getArtists_id(Album a)
+{
+    char **aCopy = g_strdupv(a->artists_id);
+    return aCopy;
+}
+
+int getYear(Album a)
+{
+    return a->year;
+}
+
+char **getProducers(Album a)
+{
+    char **aCopy = g_strdupv(a->producers);
+    return aCopy;
+}
+
+void setArtists_id(char *artists_id, Album a)
+{
+    char *copy = strdup(artists_id);
+    char **result = parse_lista(copy);
+    free(copy);
+    a->artists_id = result;
+}
+void setId(char *id, Album a)
+{
+    char *copy = strdup(id);
+    a->id = copy;
+}
+
+void setProducers(char *producers, Album a)
+{
+    char *copy = strdup(producers);
+    char **result = parse_lista(copy);
+    free(copy);
+    a->producers = result;
+}
+void setTitle(char *title, Album a)
+{
+    char *copy = strdup(title);
+    a->title = copy;
+}
+void setYear(int year, Album a)
+{
+    a->year = year;
+}
+
+void free_album(Album a)
+{
+    free_lista_strings(a->artists_id);
+    free(a->id);
+    free_lista_strings(a->producers);
+    free(a->title);
+    free(a);
+}

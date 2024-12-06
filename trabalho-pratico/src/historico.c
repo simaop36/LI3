@@ -2,9 +2,8 @@
 #include <string.h>
 #include <glib.h>
 
-
-
-typedef struct historico {
+typedef struct historico
+{
     char *id;
     char *user_id;
     char *music_id;
@@ -26,72 +25,101 @@ Historico create_Historico()
     return novo_historico;
 }
 
-int verifica_historico(char **linha){
-    //verifica se linha[x]==NULL
-    if(!(linha[0])) return 0;
-    if(!(linha[1])) return 0;
-    if(!(linha[2])) return 0;
-    if(!(linha[3])) return 0;
-    if(!(linha[4])) return 0;
-    if(!(linha[5])) return 0;
+int verifica_historico(char **linha)
+{
+    // verifica se linha[x]==NULL
+    if (!(linha[0]))
+        return 0;
+    if (!(linha[1]))
+        return 0;
+    if (!(linha[2]))
+        return 0;
+    if (!(linha[3]))
+        return 0;
+    if (!(linha[4]))
+        return 0;
+    if (!(linha[5]))
+        return 0;
 
     return 1;
 }
 
-char *get_IDHistorico(Historico h){
+char *get_IDHistorico(Historico h)
+{
     char *hCopy = strdup(h->id);
     return hCopy;
 }
 
-char *get_UserId(Historico h){
+char *get_UserId(Historico h)
+{
     char *hCopy = strdup(h->user_id);
     return hCopy;
 }
 
-char *get_MusicId(Historico h){
+char *get_MusicId(Historico h)
+{
     char *hCopy = strdup(h->music_id);
     return hCopy;
 }
 
-char *get_Timestamp(Historico h){
+char *get_Timestamp(Historico h)
+{
     char *hCopy = strdup(h->timestamp);
     return hCopy;
 }
 
-double get_Duration(Historico h){
+double get_Duration(Historico h)
+{
     return h->duration;
 }
 
-char *get_Plataform(Historico h){
+char *get_Plataform(Historico h)
+{
     char *hCopy = strdup(h->plataform);
     return hCopy;
 }
 
-void setId_Historico(char *id, Historico h){
+void setId_Historico(char *id, Historico h)
+{
     char *copy = strdup(id);
     h->id = copy;
 }
 
-void set_UserId(char *user_id, Historico h){
+void set_UserId(char *user_id, Historico h)
+{
     char *copy = strdup(user_id);
     h->user_id = copy;
 }
 
-void setId_MusicId(char *music_id, Historico h){
+void setId_MusicId(char *music_id, Historico h)
+{
     char *copy = strdup(music_id);
     h->music_id = copy;
 }
 
-void set_Timestamp(char *timestamp, Historico h){
+void set_Timestamp(char *timestamp, Historico h)
+{
     char *copy = strdup(timestamp);
     h->timestamp = copy;
 }
 
-void set_Duration(long int duration, Historico h){
+void set_Duration(long int duration, Historico h)
+{
     h->duration = duration;
 }
 
-void set_Plataform(char *plataform, Historico h){
+void set_Plataform(char *plataform, Historico h)
+{
     char *copy = strdup(plataform);
     h->plataform = copy;
+}
+
+void free(Historico h)
+{
+    free(h->id);
+    free(h->music_id);
+    free(h->plataform);
+    free(h->timestamp);
+    free(h->user_id);
+    free(h);
 }

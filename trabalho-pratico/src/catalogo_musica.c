@@ -38,17 +38,17 @@ void build_musica(char **linha, void *cat)
     if (!(verifica_musicas(linha)))
     {
         add_musica_invalida(catalogo, m);
-        
     }
     else
     {
-        if(segVerMusica(m,artistas_validos)){
+        if (segVerMusica(m, artistas_validos))
+        {
             add_musica_valida(catalogo, m);
         }
-        else {
+        else
+        {
             add_musica_invalida(catalogo, m);
         }
-        
     }
 }
 
@@ -84,20 +84,24 @@ GHashTable *getMusicasInvalidas(Catalogo_Musicas musicas)
     return musicas->musicas_invalidas;
 }
 
-void free_catalogo_musicas_invalidos(Catalogo_Musicas catalogo){
+void free_catalogo_musicas_invalidos(Catalogo_Musicas catalogo)
+{
     g_hash_table_destroy(catalogo->musicas_invalidas);
 }
 
-void free_catalogo_musicas_validos(Catalogo_Musicas catalogo){
+void free_catalogo_musicas_validos(Catalogo_Musicas catalogo)
+{
     g_hash_table_destroy(catalogo->musicas_validas);
 }
 
 void free_Catalogo_Musicas(Catalogo_Musicas catalogo)
 {
-    if (catalogo->musicas_validas) {
+    if (catalogo->musicas_validas)
+    {
         g_hash_table_unref(catalogo->musicas_validas);
     }
-    if (catalogo->musicas_invalidas) {
+    if (catalogo->musicas_invalidas)
+    {
         g_hash_table_unref(catalogo->musicas_invalidas);
     }
     free(catalogo);
