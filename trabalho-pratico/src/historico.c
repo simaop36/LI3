@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
+#include <ctype.h>
 
 
 
@@ -26,18 +27,7 @@ Historico create_Historico()
     return novo_historico;
 }
 
-int verifica_historico(char **linha){
-    //verifica se linha[x]==NULL
-    if(!(linha[0])) return 0;
-    if(!(linha[1])) return 0;
-    if(!(linha[2])) return 0;
-    if(!(linha[3])) return 0;
-    if(!(linha[5])) return 0;
 
-    if(!verifica_plataform(linha[5])) return 0;
-
-    return 1;
-}
 
 char *get_IDHistorico(Historico h){
     char *hCopy = strdup(h->id);
@@ -97,12 +87,33 @@ void set_Plataform(char *plataform, Historico h){
     h->plataform = copy;
 }
 
+void stringToUpper(char *str) {
+    while (*str) {
+        *str = toupper((unsigned char) *str);
+        str++;
+    }
+}
+
 int verifica_plataform(char* plataform){
     char* aux = strdup(plataform);
     int i = 1; 
-    if(strcmp(toupper(aux),"MOBILE") || strcmp(toupper(plataform),"DESKTOP")) i = 0;
+    stringToUpper(aux);
+    if(strcmp(aux,"MOBILE") || strcmp(aux,"DESKTOP")) i = 0;
     free(aux);
     return i;
+}
+
+int verifica_historico(char **linha){
+    //verifica se linha[x]==NULL
+    if(!(linha[0])) return 0;
+    if(!(linha[1])) return 0;
+    if(!(linha[2])) return 0;
+    if(!(linha[3])) return 0;
+    if(!(linha[5])) return 0;
+
+    if(!(verifica_plataform(linha[5]))) return 0;
+
+    return 1;
 }
 
 void free_historico(Historico novo_historico) {

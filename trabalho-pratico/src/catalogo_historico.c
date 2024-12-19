@@ -25,9 +25,9 @@ void build_Historico(char **linha,void *cat){
     
     setId_Historico(linha[0],historico);
     set_UserId(linha[1],historico);
-    setId_MusicId(linha[2],historico);
+    set_MusicId(linha[2],historico);
     set_Timestamp(linha[4],historico);
-    set_Duration(linha[5],historico);
+    set_Duration((long int) linha[5],historico);
     set_Plataform(linha[6],historico);
 
     if(verifica_historico(linha)){
@@ -37,7 +37,7 @@ void build_Historico(char **linha,void *cat){
     }
 }
 
-void add_historico_invalido(Catalogo_Historico catalogo, Historico historico)
+void add_historico_valido(Catalogo_Historico catalogo, Historico historico)
 {
 
     char *key = get_IDHistorico(historico);
