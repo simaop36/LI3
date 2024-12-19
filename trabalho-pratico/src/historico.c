@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
+#include <ctype.h>
 
 typedef struct historico
 {
@@ -25,24 +26,8 @@ Historico create_Historico()
     return novo_historico;
 }
 
-int verifica_historico(char **linha)
-{
-    // verifica se linha[x]==NULL
-    if (!(linha[0]))
-        return 0;
-    if (!(linha[1]))
-        return 0;
-    if (!(linha[2]))
-        return 0;
-    if (!(linha[3]))
-        return 0;
-    if (!(linha[4]))
-        return 0;
-    if (!(linha[5]))
-        return 0;
 
-    return 1;
-}
+
 
 char *get_IDHistorico(Historico h)
 {
@@ -91,8 +76,9 @@ void set_UserId(char *user_id, Historico h)
     h->user_id = copy;
 }
 
-void setId_MusicId(char *music_id, Historico h)
-{
+
+void set_MusicId(char *music_id, Historico h){
+
     char *copy = strdup(music_id);
     h->music_id = copy;
 }
@@ -114,12 +100,42 @@ void set_Plataform(char *plataform, Historico h)
     h->plataform = copy;
 }
 
-void free(Historico h)
-{
-    free(h->id);
-    free(h->music_id);
-    free(h->plataform);
-    free(h->timestamp);
-    free(h->user_id);
-    free(h);
+void stringToUpper(char *str) {
+    while (*str) {
+        *str = toupper((unsigned char) *str);
+        str++;
+    }
+}
+
+int verifica_plataform(char* plataform){
+    char* aux = strdup(plataform);
+    int i = 1; 
+    stringToUpper(aux);
+    if(strcmp(aux,"MOBILE") || strcmp(aux,"DESKTOP")) i = 0;
+    free(aux);
+    return i;
+}
+
+int verifica_historico(char **linha){
+    //verifica se linha[x]==NULL
+    if(!(linha[0])) return 0;
+    if(!(linha[1])) return 0;
+    if(!(linha[2])) return 0;
+    if(!(linha[3])) return 0;
+    if(!(linha[5])) return 0;
+
+    if(!(verifica_plataform(linha[5]))) return 0;
+
+    return 1;
+}
+
+void free_historico(Historico novo_historico) {
+
+    free(novo_historico->id);
+    free(novo_historico->user_id);
+    free(novo_historico->music_id);
+    free(novo_historico->timestamp);
+    free(novo_historico->plataform);
+    free(novo_historico);
+
 }

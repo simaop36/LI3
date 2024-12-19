@@ -155,7 +155,7 @@ char *parse_queries(FILE *queries_file, Joint joint)
     char *linha = NULL;
     size_t tamanho_linha = 0;
     int contador = 0;
-    double aux[75] = {0};
+    double aux[999] = {0};
     while (getline(&linha, &tamanho_linha, queries_file) != -1)
     {
         struct timespec start, end;
