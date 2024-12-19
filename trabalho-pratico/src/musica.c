@@ -18,6 +18,7 @@ typedef struct musica
     char *genre;
     char *year;
     char *lyrics;
+    char *album_id;
 } *musica;
 
 musica create_Musica()
@@ -51,15 +52,12 @@ int verifica_musicas(char **linha)
         return 0;
     if (!(linha[6]))
         return 0;
-    
 
     if (!(valida_duracao(linha[3])))
         return 0;
 
     return 1;
 }
-
-
 
 char *getId_Musica(musica m)
 {
@@ -99,8 +97,14 @@ char *getLyrics(musica m)
 
 char **getId_Artistas(musica m)
 {
-    char **aCopy = g_strdupv(m->id_artista);
-    return aCopy;
+    char **mCopy = g_strdupv(m->id_artista);
+    return mCopy;
+}
+
+char *getAlbum_id(musica m)
+{
+    char *mCopy = strdup(m->album_id);
+    return mCopy;
 }
 
 void setId_Musica(char *id, musica m)
@@ -112,7 +116,7 @@ void setId_Musica(char *id, musica m)
 void setTitle(char *title, musica m)
 {
     char *copy = strdup(title);
-    m->title = copy ;
+    m->title = copy;
 }
 
 void setId_Artistas(char *id_musica, musica m)
@@ -146,6 +150,12 @@ void setLyrics(char *lyrics, musica m)
     char *copy = strdup(lyrics);
     m->lyrics = copy;
 }
+
+void setAlbum_id(char *album_id, musica m)
+{
+    char *copy = strdup(album_id);
+    m->album_id = copy;
+}
 /*
 int valida_artistasDamusica(musica m, Catalogo_Artistas a)
 {
@@ -169,6 +179,6 @@ void free_musica(musica m)
     free(m->genre);
     free(m->year);
     free(m->lyrics);
+    free(m->album_id);
     free(m);
 }
-

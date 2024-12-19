@@ -667,3 +667,11 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
 
     return resultado;
 }
+
+void substituiPonto_E_Virgula(char *str) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] == ';') {
+            str[i] = '=';
+        }
+    }
+}

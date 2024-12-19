@@ -205,6 +205,7 @@ void excuta_queries(char *linha, int contador, Joint joint){
     case '1': {
         char *id = linha+2;
         char *resposta = Q1(id,joint);
+        if(linha[1]=='S') substituiPonto_E_Virgula(resposta);
         escreve_querie(resposta,contador);
         free(resposta);
         
@@ -228,6 +229,7 @@ void excuta_queries(char *linha, int contador, Joint joint){
             }
         }
         char* resposta = Q2(n,country,joint);
+        if(linha[1]=='S') substituiPonto_E_Virgula(resposta);
         escreve_querie(resposta,contador);
         free(resposta);
         break;
@@ -250,6 +252,7 @@ void excuta_queries(char *linha, int contador, Joint joint){
             int min = valores[1];
             int max = valores[2];
             char *resposta = Q3(min, max, joint);
+            if(linha[1]=='S') substituiPonto_E_Virgula(resposta);
             escreve_querie(resposta,contador);
             free(resposta);
         }
