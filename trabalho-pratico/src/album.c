@@ -7,7 +7,7 @@
 typedef struct album
 {
     char *id;
-    char *title;
+    char *title_album;
     char **artists_id;
     int year;
     char **producers;
@@ -17,7 +17,7 @@ Album create_Album()
 {
     Album novo_album = malloc(sizeof(struct album));
     novo_album->id = NULL;
-    novo_album->title = NULL;
+    novo_album->title_album = NULL;
     novo_album->producers = NULL;
 
     return novo_album;
@@ -30,7 +30,7 @@ char *getIdAlbum(Album a)
 }
 char *getTitleAlbum(Album a)
 {
-    char *aCopy = strdup(a->title);
+    char *aCopy = strdup(a->title_album);
     return aCopy;
 }
 
@@ -40,7 +40,7 @@ char **getArtists_id(Album a)
     return aCopy;
 }
 
-int getYear(Album a)
+int getYear_album(Album a)
 {
     return a->year;
 }
@@ -71,12 +71,12 @@ void setProducers(char *producers, Album a)
     free(copy);
     a->producers = result;
 }
-void setTitle(char *title, Album a)
+void setTitle_album(char *title, Album a)
 {
     char *copy = strdup(title);
-    a->title = copy;
+    a->title_album = copy;
 }
-void setYear(int year, Album a)
+void setYear_album(int year, Album a)
 {
     a->year = year;
 }
@@ -86,6 +86,6 @@ void free_album(Album a)
     free_lista_strings(a->artists_id);
     free(a->id);
     free_lista_strings(a->producers);
-    free(a->title);
+    free(a->title_album);
     free(a);
 }
