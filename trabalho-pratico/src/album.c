@@ -3,6 +3,7 @@
 #include <glib.h>
 
 #include "album.h"
+#include "utils.h"
 
 typedef struct album
 {

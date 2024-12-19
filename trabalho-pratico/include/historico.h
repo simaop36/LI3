@@ -16,6 +16,7 @@ void set_MusicId(char *music_id, Historico h);
 void set_Timestamp(char *timestamp, Historico h);
 void set_Duration(long int duration, Historico h);
 void set_Plataform(char *plataform, Historico h);
+void stringToUpper(char *str);
 int verifica_plataform(char* plataform);
 void free_historico(Historico novo_historico);
 
