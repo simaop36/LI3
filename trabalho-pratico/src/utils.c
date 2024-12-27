@@ -675,3 +675,17 @@ void substituiPonto_E_Virgula(char *str) {
         }
     }
 }
+
+// Definição do tipo de callback
+typedef void (*IteratorCallback)(const char* key, const char* value, void* user_data);
+
+// Estrutura genérica para encapsular a implementação
+typedef struct {
+    void* data;  // Ponteiro genérico para a estrutura interna
+    void (*iterate)(void* data, IteratorCallback callback, void* user_data);
+} GenericContainer;
+
+void hashtable_iterate(void* data, IteratorCallback callback, void* user_data) {
+    GHashTable* hash_table = (GHashTable*)data;
+    g_hash_table_foreach(hash_table, (GHFunc)callback, user_data);
+}
