@@ -54,6 +54,7 @@ void run_testes(char *argv[])
     fprintf(arquivo, "%s\n", queries);
     fprintf(arquivo, "Tempo de execução total do programa: %.6f segundos\n", tempo_execucao);
     fprintf(arquivo, "Memória máxima utilizada: %ld KB\n", memoria_usada);
+    free(compara_queries);
     fclose(arquivo);
     free(queries);
 }

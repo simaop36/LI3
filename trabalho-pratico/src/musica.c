@@ -31,6 +31,7 @@ musica create_Musica()
     nova_musica->genre = NULL;
     nova_musica->year = NULL;
     nova_musica->lyrics = NULL;
+    nova_musica->album_id = NULL;
 
     return nova_musica;
 }
