@@ -11,7 +11,7 @@ typedef struct catalogo_albuns
 Catalogo_Albuns create_catalogo_albuns()
 {
     Catalogo_Albuns catalogo = malloc(sizeof(struct catalogo_albuns));
-    catalogo->albuns_validos = g_hash_table_new_full(g_str_hash, g_str_equal, free, (GDestroyNotify)free_album);
+    catalogo->albuns_validos = g_hash_table_new_full(g_int_hash, g_int_equal, free, (GDestroyNotify)free_album);
     return catalogo;
 }
 
@@ -31,13 +31,14 @@ void build_Album(char **linha,void *cat){
 
 void add_album(Catalogo_Albuns catalogo, Album album)
 {
-    char *key = getIdAlbum(album);
+    int *key = malloc(sizeof(int));
+    *key = getIdAlbum_int(album);
     g_hash_table_insert(catalogo->albuns_validos, key, album);
 }
 
-Album get_album_valido(Catalogo_Albuns catalogo, char *id)
+Album get_album_valido(Catalogo_Albuns catalogo, int id)
 {
-    return (Album)g_hash_table_lookup(catalogo->albuns_validos, id);
+    return (Album)g_hash_table_lookup(catalogo->albuns_validos, &id);
 }
 
 GHashTable *getAlbunsValidos(Catalogo_Albuns albuns)

@@ -5,7 +5,8 @@ typedef struct album *Album;
 
 Album create_Album();
 
-char *getIdAlbum(Album a);
+int getIdAlbum_int(Album a);
+char *getIdAlbum_string(Album a);
 char *getTitleAlbum(Album a);
 char **getArtists_id(Album a);
 int getYear_album(Album a);

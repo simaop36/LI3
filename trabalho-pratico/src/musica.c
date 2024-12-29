@@ -14,7 +14,7 @@ typedef struct musica
     char *id;
     char *title;
     char **id_artista;
-    char *album_id;
+    int album_id;
     char *duration;
     char *genre;
     char *year;
@@ -27,7 +27,6 @@ musica create_Musica()
     nova_musica->id = NULL;
     nova_musica->title = NULL;
     nova_musica->id_artista = NULL;
-    nova_musica->album_id = NULL;
     nova_musica->duration = NULL;
     nova_musica->genre = NULL;
     nova_musica->year = NULL;
@@ -105,10 +104,16 @@ char **getId_Artistas(musica m)
     return mCopy;
 }
 
-char *getAlbum_id(musica m)
+int getAlbum_id_int(musica m)
 {
-    char *mCopy = strdup(m->album_id);
-    return mCopy;
+    return m->album_id;
+}
+
+char *getAlbum_id_string(musica m)
+{
+    char *result = malloc(9);
+    snprintf(result, 9, "AL%06d", m->album_id);
+    return result;
 }
 
 void setId_Musica(char *id, musica m)
@@ -158,21 +163,12 @@ void setLyrics(char *lyrics, musica m)
 void setAlbum_id(char *album_id, musica m)
 {
     char *copy = strdup(album_id);
-    m->album_id = copy;
-}
-/*
-int valida_artistasDamusica(musica m, Catalogo_Artistas a)
-{
-    int i = 0;
-    while (getId_Artistas(m) + i != NULL)
-    {
-        if (!(g_hash_table_contains(getArtistasValidos(a), getId_Artistas(m) + i)))
-            return 0;
-        i++;
+    int num;
+    if(sscanf(copy,"AL%d",&num) == 1){
+        m->album_id = num;
     }
-    return 1;
 }
-*/
+
 
 void free_musica(musica m)
 {
@@ -183,6 +179,5 @@ void free_musica(musica m)
     free(m->genre);
     free(m->year);
     free(m->lyrics);
-    free(m->album_id);
     free(m);
 }

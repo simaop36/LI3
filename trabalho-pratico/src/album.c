@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <glib.h>
 
@@ -7,7 +8,7 @@
 
 typedef struct album
 {
-    char *id;
+    int id;
     char *title_album;
     char **artists_id;
     int year;
@@ -17,7 +18,6 @@ typedef struct album
 Album create_Album()
 {
     Album novo_album = malloc(sizeof(struct album));
-    novo_album->id = NULL;
     novo_album->title_album = NULL;
     novo_album->artists_id = NULL;
     novo_album->producers = NULL;
@@ -25,10 +25,16 @@ Album create_Album()
     return novo_album;
 }
 
-char *getIdAlbum(Album a)
+int getIdAlbum_int(Album a)
 {
-    char *aCopy = strdup(a->id);
-    return aCopy;
+    return a->id;
+}
+
+char *getIdAlbum_string(Album a)
+{
+    char *result = malloc(9);
+    snprintf(result, 9, "AL%06d", a->id);
+    return result;
 }
 char *getTitleAlbum(Album a)
 {
@@ -63,7 +69,10 @@ void setArtists_id(char *artists_id, Album a)
 void setId_Album(char *id, Album a)
 {
     char *copy = strdup(id);
-    a->id = copy;
+    int num;
+    if(sscanf(copy,"AL%d",&num) ==1){
+        a->id = num;
+    }
 }
 
 void setProducers(char *producers, Album a)
@@ -86,7 +95,6 @@ void setYear_album(int year, Album a)
 void free_album(Album a)
 {
     free_lista_strings(a->artists_id);
-    free(a->id);
     free_lista_strings(a->producers);
     free(a->title_album);
     free(a);
