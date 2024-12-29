@@ -19,6 +19,7 @@ Album create_Album()
     Album novo_album = malloc(sizeof(struct album));
     novo_album->id = NULL;
     novo_album->title_album = NULL;
+    novo_album->artists_id = NULL;
     novo_album->producers = NULL;
 
     return novo_album;
@@ -59,7 +60,7 @@ void setArtists_id(char *artists_id, Album a)
     free(copy);
     a->artists_id = result;
 }
-void setId(char *id, Album a)
+void setId_Album(char *id, Album a)
 {
     char *copy = strdup(id);
     a->id = copy;

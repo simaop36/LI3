@@ -1,4 +1,6 @@
 #include <glib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "users.h"
 #include "catalogo_users.h"
@@ -102,4 +104,72 @@ void free_catalogo_utilizadores(catalogo_utilizadores catalogo)
         g_hash_table_destroy(catalogo->utilizadores_invalidos);
     }
     free(catalogo);
+}
+
+
+void aux_escreve_user(gpointer key, gpointer value, gpointer user_data)
+{
+    FILE *file = (FILE *)user_data;
+    utilizador u = (utilizador)value;
+
+    char *username = get_username(u);
+    char *email = get_email(u);
+    char *first_name = get_first_name(u);
+    char *last_name = get_last_name(u);
+    char *birth_date = get_birth_date(u);
+    char *country = get_country(u);
+    char *subscription_style = get_subscription_style(u);
+    char *liked_musics = escreve_lista(get_liked_musics_id(u), 3);
+
+    fprintf(file, "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+            username,
+            email,
+            first_name,
+            last_name,
+            birth_date,
+            country,
+            subscription_style,
+            liked_musics);
+
+    free(username);
+    free(email);
+    free(first_name);
+    free(last_name);
+    free(birth_date);
+    free(country);
+    free(subscription_style);
+    free(liked_musics);
+}
+
+
+void escreve_users(const char *dir_path, catalogo_utilizadores catalogo)
+{
+    const char *file_Name = "/users_errors.csv";
+    const char *header = "\"username\";\"email\";\"first_name\";\"last_name\";\"birth_date\";\"country\";\"subscription_type\";\"liked_songs_id\"";
+
+    char *users_errors = malloc(strlen(dir_path) + strlen(file_Name) + 1);
+    strcpy(users_errors, dir_path);
+    strcat(users_errors, file_Name);
+
+    GHashTable *users_invalidos = getUtilizadoresInvalidos(catalogo);
+    if (g_hash_table_size(users_invalidos) == 0)
+    {
+        free(users_errors);
+        return;
+    }
+
+    FILE *file_users = fopen(users_errors, "w");
+    free(users_errors);
+    if (file_users == NULL)
+    {
+        perror("Erro ao abrir ficheiro users_errors.csv");
+        return;
+    }
+
+    fprintf(file_users, "%s\n", header);
+
+    g_hash_table_foreach(users_invalidos, aux_escreve_user, file_users);
+
+    fclose(file_users);
+
 }

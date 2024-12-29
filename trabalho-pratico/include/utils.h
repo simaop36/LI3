@@ -15,10 +15,10 @@ typedef struct Catalogo_Musicas *Catalogo_Musicas;
 typedef struct catalogo_utilizadores *catalogo_utilizadores;
 typedef struct joint *Joint;
 
+void stringToUpper(char *str);
 int valida_data(const char *data);
 int valida_duracao(const char *duracao);
 int valida_email(const char *email);
-int valida_tipo(const char *tipo);
 int valida_tipo_user(const char *tipo);
 int valida_tipo_artista(const char *tipo, const char *id_Constituent);
 int valida_lista(const char *str);
@@ -26,11 +26,12 @@ char **parse_lista(char *input);
 int converteDuration(const char *duration);
 char *formataDuration(int total_segundos);
 int extrair_numero(const char *str);
-int segVerMusica(musica m, GHashTable *artista_valido);
+int segVerMusica(musica m, Joint joint);
 int segVerUser(utilizador utilizador, Joint joint);
 void free_lista_strings(char **array);
 int calcula_idade(const char *birth_date);
 char *compara_resultados(const char *pasta1, const char *pasta2);
 void substituiPonto_E_Virgula(char *str);
+char *escreve_lista(char **elems, int tipo);
 
 #endif
