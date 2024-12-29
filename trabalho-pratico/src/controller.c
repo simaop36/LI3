@@ -13,7 +13,6 @@ void run(char *argv[])
 
     Joint catalogo = create_catalago_joint();
     ler_csvs(argv[1], catalogo);
-    escreve_csv("./resultados", catalogo);
     char *queries = ler_queries(argv[2], catalogo);
     free_joint(catalogo);
     free(queries);
@@ -29,7 +28,6 @@ void run_testes(char *argv[])
 
     Joint catalogo = create_catalago_joint();
     ler_csvs(argv[1], catalogo);
-    escreve_csv("./resultados", catalogo);
     char *queries = ler_queries(argv[2], catalogo);
     free_joint(catalogo);
     clock_gettime(CLOCK_REALTIME, &end);

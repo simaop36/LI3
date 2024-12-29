@@ -386,14 +386,12 @@ int segVerMusica(musica m, Joint joint)
     Catalogo_Artistas cat_artistas = get_catalogo_artistas(joint);
     Catalogo_Albuns cat_album = get_catalogo_albuns(joint);
     char **artistas_id = getId_Artistas(m);
-    char *album_id = getAlbum_id(m);
+    int album_id = getAlbum_id_int(m);
     int result = 1;
     char *duration_char = getDuration(m);
     long int duration_int = converteDuration(duration_char);
 
     if (artistas_id == NULL)
-        return 0;
-    if (album_id == NULL)
         return 0;
     Album album = get_album_valido(cat_album,album_id);
     if (album == NULL) return 0;
