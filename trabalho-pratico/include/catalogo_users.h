@@ -29,4 +29,8 @@ void free_catalogo_users_validos(catalogo_utilizadores catalogo);
 
 void free_catalogo_utilizadores(catalogo_utilizadores catalogo);
 
+void aux_escreve_user(gpointer key, gpointer value, gpointer user_data);
+
+void escreve_users(const char *dir_path, catalogo_utilizadores catalogo);
+
 #endif

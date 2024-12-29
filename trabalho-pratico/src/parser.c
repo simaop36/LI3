@@ -83,71 +83,22 @@ char **parser_linha(char *line, int max_tokens)
     return parsed_tokens;
 }
 
-void file_reader(FILE *csv, const char *file_name, Joint catalogo)
+void file_parser(FILE *csv, void *cat, build_function builder, int max_tokens)
 {
     char *linha = NULL;
     size_t tamanho_linha = 0;
     getline(&linha, &tamanho_linha, csv); // salta a primeira linha
 
-    if (strcmp(file_name, "artists.csv") == 0)
-    {
-        while (getline(&linha, &tamanho_linha, csv) != -1)
-        {
-            linha[strlen(linha) - 1] = '\0'; // remove o \n e substitui por \0
-            char **tokens = parser_linha(linha, 7);
-            build_Artista(tokens, get_catalogo_artistas(catalogo));
-            for (int i = 0; i < 7; i++)
-                free(tokens[i]);
-            free(tokens);
-        }
-        free(linha);
 
-        Catalogo_Artistas catalogo_artistas = get_catalogo_artistas(catalogo);
-        GHashTable *artistas_validas = getArtistasValidos(catalogo_artistas);
-        printf("Tamanho da tabela hash dos artistas validos: %u\n", g_hash_table_size(artistas_validas));
-        GHashTable *artistas_invalidas = getArtistasInvalidos(catalogo_artistas);
-        printf("Tamanho da tabela hash dos artistas invalidas: %u\n", g_hash_table_size(artistas_invalidas));
+    while (getline(&linha, &tamanho_linha, csv) != -1){
+        linha[strlen(linha) - 1] = '\0'; // remove o \n e substitui por \0
+        char **tokens = parser_linha(linha, max_tokens);
+        builder(tokens, cat);
+        for (int i = 0; i < max_tokens; i++) free(tokens[i]);
+        free(tokens);
     }
+    free(linha);
 
-    if (strcmp(file_name, "musics.csv") == 0)
-    {
-        while (getline(&linha, &tamanho_linha, csv) != -1)
-        {
-            linha[strlen(linha) - 1] = '\0'; // remove o \n e substitui por \0
-            char **tokens = parser_linha(linha, 7);
-            build_musica(tokens, catalogo);
-            for (int i = 0; i < 7; i++)
-                free(tokens[i]);
-            free(tokens);
-        }
-        free(linha);
-
-        Catalogo_Musicas catalogo_musica = get_catalogo_musicas(catalogo);
-        GHashTable *musicas_validas = getMusicasValidas(catalogo_musica);
-        printf("Tamanho da tabela hash das musicas validas: %u\n", g_hash_table_size(musicas_validas));
-        GHashTable *musicas_invalidas = getMusicasInvalidas(catalogo_musica);
-        printf("Tamanho da tabela hash das musicas invalidas: %u\n", g_hash_table_size(musicas_invalidas));
-    }
-
-    if (strcmp(file_name, "users.csv") == 0)
-    {
-        while (getline(&linha, &tamanho_linha, csv) != -1)
-        {
-            linha[strlen(linha) - 1] = '\0'; // remove o \n e substitui por \0
-            char **tokens = parser_linha(linha, 8);
-            build_utilizador(tokens, catalogo);
-            for (int i = 0; i < 8; i++)
-                free(tokens[i]);
-            free(tokens);
-        }
-        free(linha);
-
-        catalogo_utilizadores catalogo_utilizadores = get_catalogo_utilizadores(catalogo);
-        GHashTable *users_validas = getUtilizadoresValidos(catalogo_utilizadores);
-        printf("Tamanho da tabela hash dos users validos: %u\n", g_hash_table_size(users_validas));
-        GHashTable *users_invalidas = getUtilizadoresInvalidos(catalogo_utilizadores);
-        printf("Tamanho da tabela hash dos users invalidos: %u\n", g_hash_table_size(users_invalidas));
-    }
 }
 
 char *parse_queries(FILE *queries_file, Joint joint)

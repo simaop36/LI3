@@ -18,5 +18,8 @@ GHashTable *getArtistasInvalidos(Catalogo_Artistas artistas);
 void free_catalogo_artistas_invalidos(Catalogo_Artistas catalogo);
 void free_catalogo_artistas_validos(Catalogo_Artistas catalogo);
 void free_catalogo_artistas(Catalogo_Artistas catalogo);
+void aux_escreve_artista(gpointer key, gpointer value, gpointer user_data);
+void escreve_artistas(const char *dir_path, Catalogo_Artistas catalogo_artistas);
+
 
 #endif

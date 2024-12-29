@@ -3,13 +3,15 @@
 #include <glib.h>
 #include <ctype.h>
 
+#include "utils.h"
+
 typedef struct historico
 {
     char *id;
     char *user_id;
     char *music_id;
     char *timestamp;
-    long int duration;
+    char *duration;
     char *plataform;
 } *Historico;
 
@@ -20,7 +22,7 @@ Historico create_Historico()
     novo_historico->user_id = NULL;
     novo_historico->music_id = NULL;
     novo_historico->timestamp = NULL;
-    novo_historico->duration = 0;
+    novo_historico->duration = NULL;
     novo_historico->plataform = NULL;
 
     return novo_historico;
@@ -53,9 +55,10 @@ char *get_Timestamp(Historico h)
     return hCopy;
 }
 
-double get_Duration(Historico h)
+char *get_Duration(Historico h)
 {
-    return h->duration;
+    char *hCopy = strdup(h->duration);
+    return hCopy;
 }
 
 char *get_Plataform(Historico h)
@@ -89,9 +92,10 @@ void set_Timestamp(char *timestamp, Historico h)
     h->timestamp = copy;
 }
 
-void set_Duration(long int duration, Historico h)
+void set_Duration(char *duration, Historico h)
 {
-    h->duration = duration;
+    char *copy = strdup(duration);
+    h->duration = copy;
 }
 
 void set_Plataform(char *plataform, Historico h)
@@ -100,18 +104,12 @@ void set_Plataform(char *plataform, Historico h)
     h->plataform = copy;
 }
 
-void stringToUpper(char *str) {
-    while (*str) {
-        *str = toupper((unsigned char) *str);
-        str++;
-    }
-}
 
 int verifica_plataform(char* plataform){
     char* aux = strdup(plataform);
-    int i = 1; 
+    int i = 0; 
     stringToUpper(aux);
-    if(strcmp(aux,"MOBILE") || strcmp(aux,"DESKTOP")) i = 0;
+    if(strcmp(aux, "MOBILE") == 0 || strcmp(aux, "DESKTOP") == 0) i = 1;
     free(aux);
     return i;
 }
@@ -135,6 +133,7 @@ void free_historico(Historico novo_historico) {
     free(novo_historico->user_id);
     free(novo_historico->music_id);
     free(novo_historico->timestamp);
+    free(novo_historico->duration);
     free(novo_historico->plataform);
     free(novo_historico);
 

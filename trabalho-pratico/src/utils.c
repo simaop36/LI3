@@ -6,13 +6,22 @@
 #include "utils.h"
 #include "catalogo_musica.h"
 #include "catalogo_users.h"
-#include "users.h"
 #include "catalogo_artista.h"
+#include "catalogo_albuns.h"
 #include "joint.h"
+#include "users.h"
+#include "musica.h"
 #include "estatisticas.h"
 
 // return 0 : Inválido
 // return 1 : Válido
+
+void stringToUpper(char *str) {
+    while (*str) {
+        *str = toupper((unsigned char) *str);
+        str++;
+    }
+}
 
 int valida_data(const char *data)
 {
@@ -218,18 +227,26 @@ int valida_tipo_user(const char *tipo)
 
 int valida_tipo_artista(const char *tipo, const char *id_Constituent)
 {
-    if (strcmp(tipo, "individual") == 0)
+    int result = 0;
+    char *aux = strdup(tipo);
+    stringToUpper(aux);
+
+    if (strcmp(aux, "INDIVIDUAL") == 0)
     {
         if (strcmp(id_Constituent, "[]") == 0)
         {
-            return 1;
+            result = 1;
         }
         else
         {
-            return 0;
+            result = 0;
         }
+    } else if(strcmp(aux, "GROUP") == 0)
+    {
+        result = 1;
     }
-    return 1;
+    free(aux);
+    return result;
 }
 
 int valida_lista(const char *str)
@@ -364,19 +381,26 @@ int extrair_numero(const char *str)
     return 0;
 }
 
-int segVerMusica(musica m, GHashTable *artista_valido)
+int segVerMusica(musica m, Joint joint)
 {
+    Catalogo_Artistas cat_artistas = get_catalogo_artistas(joint);
+    Catalogo_Albuns cat_album = get_catalogo_albuns(joint);
     char **artistas_id = getId_Artistas(m);
+    char *album_id = getAlbum_id(m);
     int result = 1;
     char *duration_char = getDuration(m);
     long int duration_int = converteDuration(duration_char);
 
     if (artistas_id == NULL)
         return 0;
+    if (album_id == NULL)
+        return 0;
+    Album album = get_album_valido(cat_album,album_id);
+    if (album == NULL) return 0;
 
     for (int i = 0; artistas_id[i] != NULL; i++)
     {
-        Artista artista = g_hash_table_lookup(artista_valido, artistas_id[i]);
+        Artista artista = get_artista_valido(cat_artistas, artistas_id[i]);
         if (artista != NULL)
         { // existe
             increaseDiscography_Duration(duration_int, artista);
@@ -395,7 +419,7 @@ int segVerMusica(musica m, GHashTable *artista_valido)
 
 int segVerUser(utilizador utilizador, Joint joint)
 {
-    GHashTable *musicas_validas = getMusicasValidas(get_catalogo_musicas(joint));
+    Catalogo_Musicas cat_musicas = get_catalogo_musicas(joint);
     char **liked_musics = get_liked_musics_id(utilizador);
     int result = 1;
 
@@ -403,7 +427,7 @@ int segVerUser(utilizador utilizador, Joint joint)
         return 0;
     for (int i = 0; liked_musics[i] != NULL; i++)
     {
-        musica m = g_hash_table_lookup(musicas_validas, liked_musics[i]);
+        musica m = get_musica_valida(cat_musicas, liked_musics[i]);
         if (m != NULL)
         { // existe
             char *genero = getGenre(m);
@@ -688,4 +712,80 @@ typedef struct {
 void hashtable_iterate(void* data, IteratorCallback callback, void* user_data) {
     GHashTable* hash_table = (GHashTable*)data;
     g_hash_table_foreach(hash_table, (GHFunc)callback, user_data);
+}
+
+
+char *escreve_lista(char **elems, int tipo) {
+    // tipo 0 = artistas;
+    // tipo 1 = musica;
+    // tipo 2 = user;
+
+    // Verifica o número de elementos até NULL
+    int num_elems = 0;
+    while (elems[num_elems] != NULL) {
+        num_elems++;
+    }
+
+    // Caso especial: se há apenas um elemento e o tipo é user (tipo == 2), retorna o elemento diretamente
+    if (num_elems == 1 && tipo == 2) {
+        char *single_elem = strdup(elems[0]); // copia o único elemento para evitar vazamento
+        free(elems[0]);
+        free(elems);
+        return single_elem;
+    }
+
+    // Se a lista estiver vazia, retorna "[]"
+    if (num_elems == 0) {
+        char *resultado_vazio = malloc(3 * sizeof(char));
+        if (resultado_vazio == NULL) {
+            perror("Erro ao alocar memória");
+            return NULL;
+        }
+        strcpy(resultado_vazio, "[]");
+        free(elems);
+        return resultado_vazio;
+    }
+
+    // Calcula o tamanho total necessário para a string final
+    int tamanho_total = 2; // para os colchetes []
+
+    if (tipo != 3) {
+        for (int i = 0; i < num_elems; i++) {
+            tamanho_total += strlen(elems[i]) + 3; // 3 caracteres para aspas e vírgula
+        }
+        tamanho_total -= 1; // Remove o último caractere extra de vírgula
+    } else {
+        for (int i = 0; i < num_elems; i++) {
+            tamanho_total += strlen(elems[i]) + 4; // 4 caracteres para aspas, vírgula e espaço
+        }
+        tamanho_total -= 2; // Remove os últimos dois caracteres ", "
+    }
+
+    // Aloca memória para a string resultante
+    char *resultado = malloc((tamanho_total + 1) * sizeof(char));
+    if (resultado == NULL) {
+        perror("Erro ao alocar memória");
+        free(elems);
+        return NULL;
+    }
+
+    // Preenche a string com o formato desejado
+    strcpy(resultado, "[");
+    for (int i = 0; i < num_elems; i++) {
+        strcat(resultado, "'");
+        strcat(resultado, elems[i]);
+        strcat(resultado, "'");
+        if (i < num_elems - 1) {
+            strcat(resultado, ",");
+            if (tipo == 3) {
+                strcat(resultado, " ");
+            }
+        }
+        free(elems[i]);
+    }
+
+    free(elems); // Libera o array de ponteiros após o uso
+    strcat(resultado, "]");
+
+    return resultado;
 }

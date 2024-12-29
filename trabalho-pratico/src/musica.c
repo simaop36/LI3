@@ -14,11 +14,11 @@ typedef struct musica
     char *id;
     char *title;
     char **id_artista;
+    char *album_id;
     char *duration;
     char *genre;
     char *year;
     char *lyrics;
-    char *album_id;
 } *musica;
 
 musica create_Musica()
@@ -27,11 +27,12 @@ musica create_Musica()
     nova_musica->id = NULL;
     nova_musica->title = NULL;
     nova_musica->id_artista = NULL;
+    nova_musica->album_id = NULL;
     nova_musica->duration = NULL;
     nova_musica->genre = NULL;
     nova_musica->year = NULL;
     nova_musica->lyrics = NULL;
-    nova_musica->album_id = NULL;
+
 
     return nova_musica;
 }
@@ -53,8 +54,10 @@ int verifica_musicas(char **linha)
         return 0;
     if (!(linha[6]))
         return 0;
+    if (!(linha[7]))
+        return 0;
 
-    if (!(valida_duracao(linha[3])))
+    if (!(valida_duracao(linha[4])))
         return 0;
 
     return 1;
