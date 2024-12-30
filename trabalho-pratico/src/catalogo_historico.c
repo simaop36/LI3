@@ -13,7 +13,7 @@ typedef struct catalogo_historico
 Catalogo_Historico create_catalogo_historico()
 {
     Catalogo_Historico catalogo = malloc(sizeof(struct catalogo_historico));
-    catalogo->historico_validos = g_hash_table_new_full(g_str_hash, g_str_equal, free, (GDestroyNotify)free_historico);
+    catalogo->historico_validos = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_historico);
 
     return catalogo;
 }
@@ -33,6 +33,7 @@ void build_Historico(char **linha,void *cat){
     if(verifica_historico(linha)){
         add_historico_valido(catalogo,historico);
     } else{
+        free_historico(historico);
         escreve_historico("./resultados",linha);
     }
 }
@@ -40,12 +41,10 @@ void build_Historico(char **linha,void *cat){
 void add_historico_valido(Catalogo_Historico catalogo, Historico historico)
 {
 
-    char *key = get_IDHistorico(historico);
-
-    g_hash_table_insert(catalogo->historico_validos, key, historico);
+    g_hash_table_insert(catalogo->historico_validos, get_IDHistorico_gpointer(historico), historico);
 }
 
-Historico get_historico_valido(Catalogo_Historico catalogo, char *id)
+Historico get_historico_valido(Catalogo_Historico catalogo, gpointer id)
 {
     return (Historico)g_hash_table_lookup(catalogo->historico_validos, id);
 }

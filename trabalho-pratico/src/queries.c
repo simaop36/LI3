@@ -59,8 +59,8 @@ int compara_artistas(Artista a, Artista b){
     if(getDiscography_Duration(a) != getDiscography_Duration(b)){
         return getDiscography_Duration(b) - getDiscography_Duration(a);
     }else{
-        char *idA = getId_Artista(a);
-        char *idB = getId_Artista(b);
+        char *idA = getId_Artista_String(a);
+        char *idB = getId_Artista_String(b);
         int result = strcmp(idA,idB);
         free(idA);
         free(idB);

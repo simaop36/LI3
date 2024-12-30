@@ -13,7 +13,7 @@ void build_utilizador(char **linha,void *cat);
 
 void add_utilizador_valido(catalogo_utilizadores catalogo, utilizador u);
 
-utilizador get_utilizador_valido(catalogo_utilizadores catalogo, char *id);
+utilizador get_utilizador_valido(catalogo_utilizadores catalogo, gpointer username);
 
 GHashTable *getUtilizadoresValidos(catalogo_utilizadores utilzadores);
 

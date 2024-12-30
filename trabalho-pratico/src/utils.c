@@ -383,24 +383,45 @@ int extrair_numero(const char *str)
 
 int segVerMusica(musica m, Joint joint)
 {
+    static int contador = 1;
+
+
     Catalogo_Artistas cat_artistas = get_catalogo_artistas(joint);
     Catalogo_Albuns cat_album = get_catalogo_albuns(joint);
-    char **artistas_id = getId_Artistas(m);
-    int album_id = getAlbum_id_int(m);
+    gpointer *artistas_id = getId_Artistas_gpointer(m);
+    gpointer album_id = getAlbum_id_gpointer(m);
     int result = 1;
     char *duration_char = getDuration(m);
     long int duration_int = converteDuration(duration_char);
 
+
     if (artistas_id == NULL)
+    {
+        free(duration_char);
         return 0;
+    }
+
+    if (album_id == NULL)
+    {
+        free(duration_char);
+        return 0;
+    }
+
     Album album = get_album_valido(cat_album,album_id);
-    if (album == NULL) return 0;
+    if (album == NULL)
+    {
+        printf("%d\n",contador);
+        contador++;
+        free(duration_char);
+        return 0;
+    }
 
     for (int i = 0; artistas_id[i] != NULL; i++)
     {
         Artista artista = get_artista_valido(cat_artistas, artistas_id[i]);
         if (artista != NULL)
         { // existe
+            
             increaseDiscography_Duration(duration_int, artista);
         }
         else
@@ -408,17 +429,15 @@ int segVerMusica(musica m, Joint joint)
             result = 0;
         }
 
-        free(artistas_id[i]);
     }
     free(duration_char);
-    free(artistas_id);
     return result;
 }
 
 int segVerUser(utilizador utilizador, Joint joint)
 {
     Catalogo_Musicas cat_musicas = get_catalogo_musicas(joint);
-    char **liked_musics = get_liked_musics_id(utilizador);
+    gpointer *liked_musics = get_liked_musics_id(utilizador);
     int result = 1;
 
     if (liked_musics == NULL)
@@ -436,9 +455,7 @@ int segVerUser(utilizador utilizador, Joint joint)
         { // nao existe
             result = 0;
         }
-        free(liked_musics[i]);
     }
-    free(liked_musics);
     return result;
 }
 

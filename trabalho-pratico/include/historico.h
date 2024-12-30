@@ -2,11 +2,24 @@
 #define HISTORICO_H
 
 typedef struct historico *Historico;
+
+#define OFFSET_HISTORY 3500000
+
 Historico create_Historico();
 int verifica_historico(char **linha);
-char *get_IDHistorico(Historico h);
-char *get_UserId(Historico h);
-char *get_MusicId(Historico h);
+
+gpointer get_IDHistorico_gpointer(Historico h);
+int get_IDHistorico_int(Historico h);
+char *get_IDHistorico_string(Historico h);
+
+gpointer get_user_id_gpointer(Historico h);
+int get_user_id_int(Historico h);
+char *get_user_id_string(Historico h);
+
+gpointer get_musica_id_gpointer(Historico h);
+int get_musica_id_int(Historico h);
+char *get_musica_id_string(Historico h);
+
 char *get_Timestamp(Historico h);
 char *get_Duration(Historico h);
 char *get_Plataform(Historico h);

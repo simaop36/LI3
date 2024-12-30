@@ -9,7 +9,7 @@ typedef struct historico *Historico;
 Catalogo_Historico create_catalogo_historico();
 void build_Historico(char **linha,void *cat);
 void add_historico_valido(Catalogo_Historico catalogo, Historico historico);
-Historico get_historico_valido(Catalogo_Historico catalogo, char *id);
+Historico get_historico_valido(Catalogo_Historico catalogo, gpointer id);
 GHashTable *getHistoricoValidos(Catalogo_Historico historico);
 void free_catalogo_historico(Catalogo_Historico catalogo);
 void escreve_historico(const char *dir_path, char **linha);

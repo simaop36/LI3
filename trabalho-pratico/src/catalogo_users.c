@@ -15,7 +15,7 @@ typedef struct catalogo_utilizadores
 catalogo_utilizadores create_catalogo_utilizadores()
 {
     catalogo_utilizadores catalogo = malloc(sizeof(struct catalogo_utilizadores));
-    catalogo->utilizadores_validos = g_hash_table_new_full(g_str_hash, g_str_equal, free, (GDestroyNotify)free_utilizador);
+    catalogo->utilizadores_validos = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_utilizador);
 
     return catalogo;
 }
@@ -37,6 +37,7 @@ void build_utilizador(char **linha,void *cat){
 
     if(!(verifica_utilizadores(linha)))
     {
+        free_utilizador(u);
         escreve_user("./resultados",linha);
     }
     else
@@ -48,6 +49,7 @@ void build_utilizador(char **linha,void *cat){
             add_utilizador_valido(catalogo,u);
         }
         else {
+            free_utilizador(u);
             escreve_user("./resultados",linha);
         }
         
@@ -56,11 +58,10 @@ void build_utilizador(char **linha,void *cat){
 
 void add_utilizador_valido(catalogo_utilizadores catalogo, utilizador u)
 {
-    char *key = get_username(u);
-    g_hash_table_insert(catalogo->utilizadores_validos, key, u);
+    g_hash_table_insert(catalogo->utilizadores_validos, get_username_gpointer(u), u);
 }
 
-utilizador get_utilizador_valido(catalogo_utilizadores catalogo, char *username)
+utilizador get_utilizador_valido(catalogo_utilizadores catalogo, gpointer username)
 {
     return (utilizador)g_hash_table_lookup(catalogo->utilizadores_validos, username);
 }

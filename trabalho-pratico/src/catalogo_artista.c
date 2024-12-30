@@ -14,7 +14,7 @@ typedef struct catalogo_artistas
 Catalogo_Artistas create_catalogo_artistas()
 {
     Catalogo_Artistas catalogo = malloc(sizeof(struct catalogo_artistas));
-    catalogo->artistas_validos = g_hash_table_new_full(g_str_hash, g_str_equal, free, (GDestroyNotify)free_artista);
+    catalogo->artistas_validos = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_artista);
 
     return catalogo;
 }
@@ -24,9 +24,10 @@ void build_Artista(char **linha,void *cat){
     Artista artista = create_Artista();
     Catalogo_Artistas catalogo = (Catalogo_Artistas)cat;
     
+
     setId_Artista(linha[0],artista);
     setName(linha[1],artista);
-    setDescription(linha[2],artista);
+    //linha[2] description
     setRecipe_Per_Stream(strtod(linha[3],NULL),artista);//strtod converte char* em double, NULL é o apontador para o final do numero na string
     setId_Constituent(linha[4],artista);
     setCountry(linha[5],artista);
@@ -35,20 +36,18 @@ void build_Artista(char **linha,void *cat){
     if(verifica_artistas(linha)){
         add_artista_valido(catalogo,artista);
     } else{
+        free_artista(artista);
         escreve_artista("./resultados",linha);
     }
 }
 
 void add_artista_valido(Catalogo_Artistas catalogo, Artista artista)
 {
-
-    char *key = getId_Artista(artista);
-
-    g_hash_table_insert(catalogo->artistas_validos, key, artista);
+    g_hash_table_insert(catalogo->artistas_validos, getId_Artista(artista), artista);
 }
 
 
-Artista get_artista_valido(Catalogo_Artistas catalogo, char *id)
+Artista get_artista_valido(Catalogo_Artistas catalogo, gpointer id)
 {
     return (Artista)g_hash_table_lookup(catalogo->artistas_validos, id);
 }

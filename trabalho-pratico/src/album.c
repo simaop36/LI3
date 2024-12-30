@@ -8,7 +8,7 @@
 
 typedef struct album
 {
-    int id;
+    gpointer id;
     char *title_album;
     char **artists_id;
     int year;
@@ -18,6 +18,7 @@ typedef struct album
 Album create_Album()
 {
     Album novo_album = malloc(sizeof(struct album));
+    novo_album->id = NULL;
     novo_album->title_album = NULL;
     novo_album->artists_id = NULL;
     novo_album->producers = NULL;
@@ -25,15 +26,21 @@ Album create_Album()
     return novo_album;
 }
 
-int getIdAlbum_int(Album a)
+gpointer getIdAlbum_gpointer(Album a)
 {
     return a->id;
+}
+
+int getIdAlbum_int(Album a)
+{
+    int num = GPOINTER_TO_INT(a->id);
+    return num;
 }
 
 char *getIdAlbum_string(Album a)
 {
     char *result = malloc(9);
-    snprintf(result, 9, "AL%06d", a->id);
+    snprintf(result, 9, "AL%06d", getIdAlbum_int(a));
     return result;
 }
 char *getTitleAlbum(Album a)
@@ -66,13 +73,10 @@ void setArtists_id(char *artists_id, Album a)
     free(copy);
     a->artists_id = result;
 }
-void setId_Album(char *id, Album a)
+void setId_Album(int num, Album a)
 {
-    char *copy = strdup(id);
-    int num;
-    if(sscanf(copy,"AL%d",&num) ==1){
-        a->id = num;
-    }
+    gpointer p = GINT_TO_POINTER(num);
+    a->id = p;
 }
 
 void setProducers(char *producers, Album a)

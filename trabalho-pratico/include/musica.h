@@ -5,15 +5,21 @@
 #include "catalogo_artista.h"
 
 typedef struct musica *musica;
+
+#define OFFSET_MUSICA 20000
+
 musica create_Musica();
 int verifica_musicas(char **linha);
-char *getId_Musica(musica m);
+gpointer getId_Musica_gpointer(musica m);
+int getId_Musica_int(musica m);
+char *getId_Musica_string(musica m);
+
 char *getTitle(musica m);
 char *getDuration(musica m);
 char *getGenre(musica m);
 char *getYear(musica m);
-char *getLyrics(musica m);
-char **getId_Artistas(musica m);
+gpointer *getId_Artistas_gpointer(musica m);
+gpointer getAlbum_id_gpointer(musica m);
 int getAlbum_id_int(musica m);
 char *getAlbum_id_string(musica m);
 void setId_Musica(char *id, musica m);
@@ -22,7 +28,6 @@ void setId_Artistas(char *id_musica, musica m);
 void setDuration(char *duration, musica m);
 void setGenre(char *genre, musica m);
 void setYear(char *year, musica m);
-void setLyrics(char *lyrics, musica m);
 void setAlbum_id(char *album_id, musica m);
 void free_musica(musica m);
 
