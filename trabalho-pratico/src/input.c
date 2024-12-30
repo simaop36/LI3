@@ -32,6 +32,7 @@ void ler_csvs(const char *dir_path, Joint joint)
     }
 
     file_parser(file_album, get_catalogo_albuns(joint), build_Album, MAX_ALBUM_TOKENS);
+    build_values_albuns(get_catalogo_albuns(joint));
     fclose(file_album);
 
 
@@ -50,6 +51,7 @@ void ler_csvs(const char *dir_path, Joint joint)
     }
 
     file_parser(file_artista, get_catalogo_artistas(joint), build_Artista, MAX_ARTISTA_TOKENS);
+    build_values_artistas(get_catalogo_artistas(joint));
     fclose(file_artista);
 
     //___________________________________MUSICS__________________________________________
@@ -62,6 +64,7 @@ void ler_csvs(const char *dir_path, Joint joint)
         fprintf(stderr, "Erro ao abrir o arquivo: %s\n", filename_musics);
     }
     file_parser(file_musics, joint, build_musica, MAX_MUSIC_TOKENS);
+    build_values_musicas(get_catalogo_musicas(joint));
     fclose(file_musics);
 
     //____________________________________USERS__________________________________________
@@ -74,6 +77,7 @@ void ler_csvs(const char *dir_path, Joint joint)
         fprintf(stderr, "Erro ao abrir o arquivo: %s\n", filename_users);
     }
     file_parser(file_users, joint, build_utilizador, MAX_USERS_TOKENS);
+    build_values_users(get_catalogo_utilizadores(joint));
     fclose(file_users);
 
     //__________________________________HISTORICO________________________________________
@@ -86,6 +90,7 @@ void ler_csvs(const char *dir_path, Joint joint)
         fprintf(stderr, "Erro ao abrir o arquivo: %s\n", filename_history);
     }
     file_parser(file_history, get_catalogo_historico(joint), build_Historico, MAX_HISTORICO_TOKENS);
+    build_values_history(get_catalogo_historico(joint));
     fclose(file_history);
 
 
