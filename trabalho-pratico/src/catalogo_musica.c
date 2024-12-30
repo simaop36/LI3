@@ -14,10 +14,11 @@ typedef struct Catalogo_Musicas
 Catalogo_Musicas create_Catalogo_Musicas()
 {
     Catalogo_Musicas catalogo = malloc(sizeof(struct Catalogo_Musicas));
-    catalogo->musicas_validas = g_hash_table_new_full(g_str_hash, g_str_equal, free, (GDestroyNotify)free_musica);
+    catalogo->musicas_validas = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_musica);
 
     return catalogo;
 }
+
 
 void build_musica(char **linha, void *cat)
 {
@@ -26,8 +27,6 @@ void build_musica(char **linha, void *cat)
     Joint joint = (Joint)cat;
     Catalogo_Musicas catalogo = get_catalogo_musicas(joint);
 
-    //char * aux = extract_album_id(linha[3]);
-
     setId_Musica(linha[0], m);
     setTitle(linha[1], m);
     setId_Artistas(linha[2], m);
@@ -35,22 +34,25 @@ void build_musica(char **linha, void *cat)
     setDuration(linha[4], m);
     setGenre(linha[5], m);
     setYear(linha[6], m);
-    setLyrics(linha[7], m);
+    //linha[7] lyrics
 
-    //free(aux);
 
     if (!(verifica_musicas(linha)))
     {
+        
+        free_musica(m);
         escreve_musica("./resultados",linha);
     }
     else
     {
         if (segVerMusica(m, joint))
         {   
+            
             add_musica_valida(catalogo, m);
         }
         else
         {
+            free_musica(m);
             escreve_musica("./resultados",linha);
         }
     }
@@ -58,12 +60,11 @@ void build_musica(char **linha, void *cat)
 
 void add_musica_valida(Catalogo_Musicas catalogo, musica musica)
 {
-    char *key = getId_Musica(musica);
-    g_hash_table_insert(catalogo->musicas_validas, key, musica);
+    g_hash_table_insert(catalogo->musicas_validas, getId_Musica_gpointer(musica), musica);
 }
 
 
-musica get_musica_valida(Catalogo_Musicas catalogo, char *id)
+musica get_musica_valida(Catalogo_Musicas catalogo, gpointer id)
 {
     return (musica)g_hash_table_lookup(catalogo->musicas_validas, id);
 }

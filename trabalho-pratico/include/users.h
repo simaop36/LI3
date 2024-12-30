@@ -7,6 +7,8 @@
 typedef struct utilizador *utilizador;
 typedef struct generoContagem *GeneroContagem;
 
+#define OFFSET_USER 2500000
+
 utilizador create_utilizador();
 
 int verifica_utilizadores(char **linha);
@@ -15,7 +17,11 @@ int get_age(utilizador u);
 
 GeneroContagem *getArray(utilizador u);
 
-char* get_username(utilizador u);
+gpointer get_username_gpointer(utilizador u);
+
+int get_username_Musica_int(utilizador u);
+
+char *get_username_string(utilizador u);
 
 char* get_email(utilizador u);
 
@@ -29,7 +35,7 @@ char* get_country(utilizador u);
 
 char* get_subscription_style(utilizador u);
 
-char** get_liked_musics_id(utilizador u);
+gpointer *get_liked_musics_id(utilizador u);
 
 void setArray(GeneroContagem *gc, utilizador u);
 
@@ -50,8 +56,6 @@ void set_country(char* country,utilizador u);
 void set_subscription_style(char* subscription_style,utilizador u);
 
 void set_liked_musics_id(char* liked_musics_id,utilizador u);
-
-//int valida_liked_music(utilizador u, Catalogo_Musicas catalogo_m);
 
 void free_utilizador(utilizador novo_utilizador);
 

@@ -11,14 +11,13 @@
 
 typedef struct musica
 {
-    char *id;
+    gpointer id;
     char *title;
-    char **id_artista;
-    int album_id;
+    gpointer *id_artista;
+    gpointer album_id;
     char *duration;
     char *genre;
     char *year;
-    char *lyrics;
 } *musica;
 
 musica create_Musica()
@@ -27,10 +26,10 @@ musica create_Musica()
     nova_musica->id = NULL;
     nova_musica->title = NULL;
     nova_musica->id_artista = NULL;
+    nova_musica->album_id = NULL;
     nova_musica->duration = NULL;
     nova_musica->genre = NULL;
     nova_musica->year = NULL;
-    nova_musica->lyrics = NULL;
 
 
     return nova_musica;
@@ -62,10 +61,22 @@ int verifica_musicas(char **linha)
     return 1;
 }
 
-char *getId_Musica(musica m)
+gpointer getId_Musica_gpointer(musica m)
 {
-    char *mCopy = strdup(m->id);
-    return mCopy;
+    return m->id;
+}
+
+int getId_Musica_int(musica m)
+{
+    int num = GPOINTER_TO_INT(m->id);
+    return num - OFFSET_MUSICA;
+}
+
+char *getId_Musica_string(musica m)
+{
+    char *result = malloc(9);
+    snprintf(result, 9, "S%07d", getId_Musica_int(m));
+    return result;
 }
 
 char *getTitle(musica m)
@@ -92,34 +103,39 @@ char *getYear(musica m)
     return mCopy;
 }
 
-char *getLyrics(musica m)
+
+gpointer *getId_Artistas_gpointer(musica m)
 {
-    char *mCopy = strdup(m->lyrics);
-    return mCopy;
+    return m->id_artista;
 }
 
-char **getId_Artistas(musica m)
+gpointer getAlbum_id_gpointer(musica m)
 {
-    char **mCopy = g_strdupv(m->id_artista);
-    return mCopy;
+    return m->album_id;
 }
 
 int getAlbum_id_int(musica m)
 {
-    return m->album_id;
+    int num = GPOINTER_TO_INT(m->album_id);
+    return num;
 }
 
 char *getAlbum_id_string(musica m)
 {
     char *result = malloc(9);
-    snprintf(result, 9, "AL%06d", m->album_id);
+    snprintf(result, 9, "AL%06d", getAlbum_id_int(m->album_id));
     return result;
 }
 
 void setId_Musica(char *id, musica m)
 {
-    char *copy = strdup(id);
-    m->id = copy;
+    int num;
+    if(sscanf(id,"S%d",&num) == 1){
+        gpointer p = GINT_TO_POINTER(num + OFFSET_MUSICA);
+        m->id= p;
+    } else {
+        return;
+    }
 }
 
 void setTitle(char *title, musica m)
@@ -131,11 +147,26 @@ void setTitle(char *title, musica m)
 void setId_Artistas(char *id_musica, musica m)
 {
     char *copy = strdup(id_musica);
-    char **result = parse_lista(copy);
+    char **result = parse_lista(copy); // NULL terminated
     free(copy);
-    m->id_artista = result;
-}
+    int size = 1;
+    for(int i = 0;result[i] != NULL;i++) size++;
 
+    m->id_artista = malloc(size*sizeof(gpointer));
+
+    for(int j = 0; result[j] != NULL; j++)
+    {
+        int num;
+        if (sscanf(result[j], "A%d", &num) != 1) {
+            return;
+        }
+        m->id_artista[j] = GINT_TO_POINTER(num + OFFSET_ARTISTA);
+        free(result[j]);
+    }
+    m->id_artista[size - 1] = NULL;
+    free(result);
+
+}
 void setDuration(char *duration, musica m)
 {
     char *copy = strdup(duration);
@@ -154,30 +185,26 @@ void setYear(char *year, musica m)
     m->year = copy;
 }
 
-void setLyrics(char *lyrics, musica m)
-{
-    char *copy = strdup(lyrics);
-    m->lyrics = copy;
-}
 
 void setAlbum_id(char *album_id, musica m)
 {
-    char *copy = strdup(album_id);
     int num;
-    if(sscanf(copy,"AL%d",&num) == 1){
-        m->album_id = num;
+    if(sscanf(album_id,"AL%d",&num) == 1){
+        gpointer p = GINT_TO_POINTER(num);
+        m->album_id= p;
+    } else {
+        return;
     }
+
 }
 
 
 void free_musica(musica m)
 {
-    free(m->id);
     free(m->title);
-    free_lista_strings(m->id_artista);
+    free(m->id_artista);
     free(m->duration);
     free(m->genre);
     free(m->year);
-    free(m->lyrics);
     free(m);
 }

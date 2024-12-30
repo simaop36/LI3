@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <glib.h>
 #include <string.h>
 
@@ -10,14 +11,14 @@
 #include "estatisticas.h"
 
 typedef struct utilizador {
-    char *username;
+    gpointer username;
     char *email;
     char *first_name;
     char *last_name;
     char *birth_date;
     char *country;
     char *subscription_style;
-    char **liked_musics_id;
+    gpointer *liked_musics_id;
     GeneroContagem *array;
     int idade;
 } *utilizador;
@@ -66,9 +67,21 @@ GeneroContagem *getArray(utilizador u){
     return u->array;
 }
 
-char* get_username(utilizador u){
-    char* uCopy = strdup(u->username);
-    return uCopy;
+gpointer get_username_gpointer(utilizador u){
+    return u->username;
+}
+
+int get_username_Musica_int(utilizador u)
+{
+    int num = GPOINTER_TO_INT(u->username);
+    return num - OFFSET_USER;
+}
+
+char *get_username_string(utilizador u)
+{
+    char *result = malloc(9);
+    snprintf(result, 9, "U%07d", get_username_Musica_int(u));
+    return result;
 }
 
 char* get_email(utilizador u){
@@ -101,9 +114,9 @@ char* get_subscription_style(utilizador u){
     return uCopy;
 }
 
-char** get_liked_musics_id(utilizador u){
-    char** uCopy = g_strdupv(u->liked_musics_id);
-    return uCopy;
+gpointer *get_liked_musics_id(utilizador u){
+
+    return u->liked_musics_id;
 }
 
 void setArray(GeneroContagem *gc, utilizador u){
@@ -111,8 +124,13 @@ void setArray(GeneroContagem *gc, utilizador u){
 }
 
 void set_username(char* username,utilizador u){
-    char* copy = strdup(username);
-    u->username = copy;
+    int num;
+    if(sscanf(username,"U%d",&num) == 1){
+        gpointer p = GINT_TO_POINTER(num + OFFSET_USER);
+        u->username = p;
+    } else {
+        return;
+    }
 }
 
 void set_email(char* email,utilizador u){
@@ -150,23 +168,39 @@ void set_subscription_style(char* subscription_style,utilizador u){
 }
 
 void set_liked_musics_id(char* liked_musics_id,utilizador u){
-    char* copy = strdup(liked_musics_id);
-    char **result = parse_lista(copy);
+
+    char *copy = strdup(liked_musics_id);
+    char **result = parse_lista(copy); // NULL terminated
     free(copy);
-    u->liked_musics_id = result;
+    int size = 1;
+    for(int i = 0;result[i] != NULL;i++) size++;
+
+    u->liked_musics_id = malloc(size*sizeof(gpointer));
+
+    for(int j = 0; result[j] != NULL; j++)
+    {
+        int num;
+        if (sscanf(result[j], "S%d", &num) != 1) {
+            return;
+        }
+        u->liked_musics_id[j] = GINT_TO_POINTER(num + OFFSET_MUSICA);
+        free(result[j]);
+    }
+    u->liked_musics_id[size - 1] = NULL;
+    free(result);
+    
 }
 
 
 void free_utilizador(utilizador novo_utilizador) {
 
-    free(novo_utilizador->username);
     free(novo_utilizador->email);
     free(novo_utilizador->first_name);
     free(novo_utilizador->last_name);
     free(novo_utilizador->birth_date);
     free(novo_utilizador->country);
     free(novo_utilizador->subscription_style);
-    free_lista_strings(novo_utilizador->liked_musics_id);
+    free(novo_utilizador->liked_musics_id);
     free_Array_GC(novo_utilizador->array);
     free(novo_utilizador);
 }

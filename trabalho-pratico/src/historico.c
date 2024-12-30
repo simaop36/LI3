@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <glib.h>
 #include <ctype.h>
@@ -7,9 +8,9 @@
 
 typedef struct historico
 {
-    char *id;
-    char *user_id;
-    char *music_id;
+    gpointer id;
+    gpointer user_id;
+    gpointer music_id;
     char *timestamp;
     char *duration;
     char *plataform;
@@ -30,24 +31,62 @@ Historico create_Historico()
 
 
 
-
-char *get_IDHistorico(Historico h)
+gpointer get_IDHistorico_gpointer(Historico h)
 {
-    char *hCopy = strdup(h->id);
-    return hCopy;
+    return h->id;
 }
 
-char *get_UserId(Historico h)
+
+int get_IDHistorico_int(Historico h)
 {
-    char *hCopy = strdup(h->user_id);
-    return hCopy;
+    int num = GPOINTER_TO_INT(h->id);
+    return num - OFFSET_HISTORY;
 }
 
-char *get_MusicId(Historico h)
+char *get_IDHistorico_string(Historico h)
 {
-    char *hCopy = strdup(h->music_id);
-    return hCopy;
+    char *result = malloc(11);
+    snprintf(result, 11, "H%09d", get_IDHistorico_int(h));
+    return result;
 }
+
+
+gpointer get_user_id_gpointer(Historico h){
+    return h->user_id;
+}
+
+int get_user_id_int(Historico h)
+{
+    int num = GPOINTER_TO_INT(h->user_id);
+    return num - OFFSET_USER;
+}
+
+char *get_user_id_string(Historico h)
+{
+    char *result = malloc(9);
+    snprintf(result, 9, "U%07d", get_user_id_int(h));
+    return result;
+}
+
+
+gpointer get_musica_id_gpointer(Historico h)
+{
+    return h->music_id;
+}
+
+int get_musica_id_int(Historico h)
+{
+    int num = GPOINTER_TO_INT(h->music_id);
+    return num - OFFSET_MUSICA;
+}
+
+char *get_musica_id_string(Historico h)
+{
+    char *result = malloc(9);
+    snprintf(result, 9, "S%07d", get_musica_id_int(h));
+    return result;
+}
+
 
 char *get_Timestamp(Historico h)
 {
@@ -69,21 +108,36 @@ char *get_Plataform(Historico h)
 
 void setId_Historico(char *id, Historico h)
 {
-    char *copy = strdup(id);
-    h->id = copy;
+    int num;
+    if(sscanf(id,"H%d",&num) == 1){
+        gpointer p = GINT_TO_POINTER(num + OFFSET_HISTORY);
+        h->id = p;
+    } else {
+        return;
+    }
 }
 
 void set_UserId(char *user_id, Historico h)
 {
-    char *copy = strdup(user_id);
-    h->user_id = copy;
+    int num;
+    if(sscanf(user_id,"U%d",&num) == 1){
+        gpointer p = GINT_TO_POINTER(num + OFFSET_USER);
+        h->user_id = p;
+    } else {
+        return;
+    }
 }
 
 
 void set_MusicId(char *music_id, Historico h){
 
-    char *copy = strdup(music_id);
-    h->music_id = copy;
+    int num;
+    if(sscanf(music_id,"S%d",&num) == 1){
+        gpointer p = GINT_TO_POINTER(num + OFFSET_MUSICA);
+        h->music_id= p;
+    } else {
+        return;
+    }
 }
 
 void set_Timestamp(char *timestamp, Historico h)
@@ -129,9 +183,6 @@ int verifica_historico(char **linha){
 
 void free_historico(Historico novo_historico) {
 
-    free(novo_historico->id);
-    free(novo_historico->user_id);
-    free(novo_historico->music_id);
     free(novo_historico->timestamp);
     free(novo_historico->duration);
     free(novo_historico->plataform);

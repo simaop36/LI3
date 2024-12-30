@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <glib.h>
 
@@ -8,9 +9,8 @@
 #include "catalogo_artista.h"
 
 typedef struct artista {
-    char *id;
+    gpointer id;
     char *name;
-    char *description;
     double recipe_per_stream;
     char **id_constituent;
     char *country;
@@ -23,7 +23,6 @@ Artista create_Artista()
     Artista novo_artista = malloc(sizeof(struct artista));
     novo_artista->id = NULL;
     novo_artista->name = NULL;
-    novo_artista->description = NULL;
     novo_artista->id_constituent = NULL;
     novo_artista->country = NULL;
     novo_artista->type = NULL;
@@ -48,21 +47,30 @@ int verifica_artistas(char **linha){
     return 1;
 }
 
-char *getId_Artista(Artista a)
+gpointer *getId_Artista(Artista a)
 {
-    char *aCopy = strdup(a->id);
-    return aCopy;
+    return a->id;
 }
+
+int getId_Artista_int(Artista a)
+{
+    int num = GPOINTER_TO_INT(a->id);
+    return num - OFFSET_ARTISTA;
+}
+
+char *getId_Artista_String(Artista a)
+{
+    char *result = malloc(9);
+    snprintf(result, 9, "A%07d", getId_Artista_int(a));
+    return result;
+}
+
 char *getName(Artista a)
 {
     char *aCopy = strdup(a->name);
     return aCopy;
 }
-char *getDescription(Artista a)
-{
-    char *aCopy = strdup(a->description);
-    return aCopy;
-}
+
 double getRecipe_Per_Stream(Artista a)
 {
     return a->recipe_per_stream;
@@ -90,19 +98,23 @@ double getDiscography_Duration(Artista a)
 
 void setId_Artista(char *id, Artista a)
 {
-    char *copy = strdup(id);
-    a->id = copy;
+
+    int num;
+    if(sscanf(id,"A%d",&num) == 1){
+        gpointer p = GINT_TO_POINTER(num+ OFFSET_ARTISTA);
+        a->id = p;
+    } else {
+        return;
+    }
+
+    
 }
 void setName(char *name, Artista a)
 {
     char *copy = strdup(name);
     a->name = copy;
 }
-void setDescription(char *description, Artista a)
-{
-    char *copy = strdup(description);
-    a->description = copy;
-}
+
 void setRecipe_Per_Stream(double recipe_per_stream, Artista a)
 {
     a->recipe_per_stream = recipe_per_stream;
@@ -136,9 +148,7 @@ void increaseDiscography_Duration(long int disc_Duration, Artista a){
 
 void free_artista(Artista novo_artista) {
 
-    free(novo_artista->id);
     free(novo_artista->name);
-    free(novo_artista->description);
     free_lista_strings(novo_artista->id_constituent);
     free(novo_artista->country);
     free(novo_artista->type);
