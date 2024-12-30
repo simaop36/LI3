@@ -383,9 +383,6 @@ int extrair_numero(const char *str)
 
 int segVerMusica(musica m, Joint joint)
 {
-    static int contador = 1;
-
-
     Catalogo_Artistas cat_artistas = get_catalogo_artistas(joint);
     Catalogo_Albuns cat_album = get_catalogo_albuns(joint);
     gpointer *artistas_id = getId_Artistas_gpointer(m);
@@ -410,8 +407,6 @@ int segVerMusica(musica m, Joint joint)
     Album album = get_album_valido(cat_album,album_id);
     if (album == NULL)
     {
-        printf("%d\n",contador);
-        contador++;
         free(duration_char);
         return 0;
     }

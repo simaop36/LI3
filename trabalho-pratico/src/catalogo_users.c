@@ -10,13 +10,14 @@
 typedef struct catalogo_utilizadores
 {
     GHashTable *utilizadores_validos;
+    GPtrArray *values_users;
 } *catalogo_utilizadores;
 
 catalogo_utilizadores create_catalogo_utilizadores()
 {
     catalogo_utilizadores catalogo = malloc(sizeof(struct catalogo_utilizadores));
     catalogo->utilizadores_validos = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_utilizador);
-
+    catalogo->values_users = NULL;
     return catalogo;
 }
 
@@ -61,6 +62,38 @@ void add_utilizador_valido(catalogo_utilizadores catalogo, utilizador u)
     g_hash_table_insert(catalogo->utilizadores_validos, get_username_gpointer(u), u);
 }
 
+
+GPtrArray *get_values_users(catalogo_utilizadores catalogo)
+{
+    return catalogo->values_users;
+}
+
+void build_values_users(catalogo_utilizadores catalogo)
+{
+    GHashTable *hash_table = catalogo->utilizadores_validos;
+
+    if (catalogo->values_users != NULL) {
+        g_ptr_array_free(catalogo->values_users, TRUE);
+        catalogo->values_users = NULL;
+    }
+
+    GPtrArray *values = g_ptr_array_new();
+    if (values == NULL) {
+        fprintf(stderr, "Failed to allocate memory for GPtrArray.\n");
+        return;
+    }
+
+    GHashTableIter iter;
+    gpointer key, value;
+
+    g_hash_table_iter_init(&iter, hash_table);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        g_ptr_array_add(values, value);
+    }
+
+    catalogo->values_users = values;
+}
+
 utilizador get_utilizador_valido(catalogo_utilizadores catalogo, gpointer username)
 {
     return (utilizador)g_hash_table_lookup(catalogo->utilizadores_validos, username);
@@ -76,6 +109,7 @@ void free_catalogo_utilizadores(catalogo_utilizadores catalogo)
     if (catalogo->utilizadores_validos) {
         g_hash_table_destroy(catalogo->utilizadores_validos);
     }
+    g_ptr_array_free(catalogo->values_users,TRUE);
     free(catalogo);
 }
 

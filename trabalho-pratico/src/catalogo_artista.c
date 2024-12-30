@@ -9,12 +9,14 @@
 typedef struct catalogo_artistas
 {
     GHashTable *artistas_validos;
+    GPtrArray *values_artistas;
 } *Catalogo_Artistas;
 
 Catalogo_Artistas create_catalogo_artistas()
 {
     Catalogo_Artistas catalogo = malloc(sizeof(struct catalogo_artistas));
     catalogo->artistas_validos = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_artista);
+    catalogo->values_artistas = NULL;
 
     return catalogo;
 }
@@ -46,6 +48,36 @@ void add_artista_valido(Catalogo_Artistas catalogo, Artista artista)
     g_hash_table_insert(catalogo->artistas_validos, getId_Artista(artista), artista);
 }
 
+GPtrArray *get_values_artistas(Catalogo_Artistas catalogo)
+{
+    return catalogo->values_artistas;
+}
+
+void build_values_artistas(Catalogo_Artistas catalogo)
+{
+    GHashTable *hash_table = catalogo->artistas_validos;
+
+    if (catalogo->values_artistas != NULL) {
+        g_ptr_array_free(catalogo->values_artistas, TRUE);
+        catalogo->values_artistas = NULL;
+    }
+
+    GPtrArray *values = g_ptr_array_new();
+    if (values == NULL) {
+        fprintf(stderr, "Failed to allocate memory for GPtrArray.\n");
+        return;
+    }
+
+    GHashTableIter iter;
+    gpointer key, value;
+
+    g_hash_table_iter_init(&iter, hash_table);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        g_ptr_array_add(values, value);
+    }
+
+    catalogo->values_artistas = values;
+}
 
 Artista get_artista_valido(Catalogo_Artistas catalogo, gpointer id)
 {
@@ -63,6 +95,7 @@ void free_catalogo_artistas(Catalogo_Artistas catalogo)
     if (catalogo->artistas_validos) {
         g_hash_table_unref(catalogo->artistas_validos);
     }
+    g_ptr_array_free(catalogo->values_artistas,TRUE);
     free(catalogo);
 }
 

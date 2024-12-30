@@ -9,13 +9,14 @@
 typedef struct Catalogo_Musicas
 {
     GHashTable *musicas_validas;
+    GPtrArray *values_musicas;
 } *Catalogo_Musicas;
 
 Catalogo_Musicas create_Catalogo_Musicas()
 {
     Catalogo_Musicas catalogo = malloc(sizeof(struct Catalogo_Musicas));
     catalogo->musicas_validas = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_musica);
-
+    catalogo->values_musicas = NULL;
     return catalogo;
 }
 
@@ -63,6 +64,38 @@ void add_musica_valida(Catalogo_Musicas catalogo, musica musica)
     g_hash_table_insert(catalogo->musicas_validas, getId_Musica_gpointer(musica), musica);
 }
 
+GPtrArray *get_values_musicas(Catalogo_Musicas catalogo)
+{
+    return catalogo->values_musicas;
+}
+
+void build_values_musicas(Catalogo_Musicas catalogo)
+{
+    GHashTable *hash_table = catalogo->musicas_validas;
+
+    if (catalogo->values_musicas != NULL) {
+        g_ptr_array_free(catalogo->values_musicas, TRUE);
+        catalogo->values_musicas = NULL;
+    }
+
+    GPtrArray *values = g_ptr_array_new();
+    if (values == NULL) {
+        fprintf(stderr, "Failed to allocate memory for GPtrArray.\n");
+        return;
+    }
+
+    GHashTableIter iter;
+    gpointer key, value;
+
+    g_hash_table_iter_init(&iter, hash_table);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        g_ptr_array_add(values, value);
+    }
+
+    catalogo->values_musicas = values;
+}
+
+
 
 musica get_musica_valida(Catalogo_Musicas catalogo, gpointer id)
 {
@@ -82,6 +115,7 @@ void free_Catalogo_Musicas(Catalogo_Musicas catalogo)
     {
         g_hash_table_unref(catalogo->musicas_validas);
     }
+    g_ptr_array_free(catalogo->values_musicas,TRUE);
     free(catalogo);
 }
 

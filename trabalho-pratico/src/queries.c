@@ -89,16 +89,15 @@ void insere_artista_ordenado(Artista top[], int n, Artista novo) {
 }
 
 char *Q2(int n, char *c, Joint j){
-    GHashTable *artistas = getArtistasValidos(get_catalogo_artistas(j));
+    
+    GPtrArray *values = get_values_artistas(get_catalogo_artistas(j));
     Artista top[n];
     memset(top, 0, sizeof(top)); // Inicializa o array a NULL
     if(n == 0) return strdup("\n");
 
-    GHashTableIter iter;
-    gpointer key, value;
-    g_hash_table_iter_init(&iter, artistas);
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
-        Artista artista = (Artista)value;
+
+    for (guint i = 0; i < values->len; i++) {
+        Artista artista = (Artista)values->pdata[i];
         if (c == NULL) {
             insere_artista_ordenado(top, n, artista);
         } else {
@@ -145,13 +144,12 @@ char *Q2(int n, char *c, Joint j){
 
 
 char *Q3(int min, int max, Joint catalogo){
-    GHashTable *utilizadores = getUtilizadoresValidos(get_catalogo_utilizadores(catalogo));
+    GPtrArray *values = get_values_users(get_catalogo_utilizadores(catalogo));
     GeneroContagem *array_resultado = build_Array_GC();
-    GHashTableIter iter;
-    gpointer key, value;
-    g_hash_table_iter_init(&iter, utilizadores);
-    while (g_hash_table_iter_next(&iter, &key, &value)){
-        utilizador u = (utilizador)value;
+
+
+    for (guint i = 0; i < values->len; i++){
+        utilizador u = (utilizador)values->pdata[i];
         int age = get_age(u);
         if(age<min || age > max){
             continue;
