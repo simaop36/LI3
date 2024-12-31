@@ -12,10 +12,13 @@ typedef struct artista {
     gpointer id;
     char *name;
     double recipe_per_stream;
-    char **id_constituent;
+    gpointer *id_constituent;
     char *country;
     char *type;
-    long int discography_Duration;
+    size_t discography_Duration;
+    size_t num_albums_indiv;
+    double total_recipe;
+    size_t plays;
 } *Artista;
 
 Artista create_Artista()
@@ -27,6 +30,9 @@ Artista create_Artista()
     novo_artista->country = NULL;
     novo_artista->type = NULL;
     novo_artista->discography_Duration = 0;
+    novo_artista->num_albums_indiv = 0;
+    novo_artista->total_recipe = 0.0;
+    novo_artista->plays = 0;
 
     return novo_artista;
 }
@@ -75,10 +81,9 @@ double getRecipe_Per_Stream(Artista a)
 {
     return a->recipe_per_stream;
 }
-char **getId_Constituent(Artista a)
+gpointer *getId_Constituent(Artista a)
 {
-    char **aCopy = g_strdupv(a->id_constituent);
-    return aCopy;
+    return a->id_constituent;
 }
 
 char *getCountry(Artista a)
@@ -94,6 +99,21 @@ char *getType(Artista a)
 double getDiscography_Duration(Artista a)
 {
     return a->discography_Duration;
+}
+
+size_t getNum_albums_indiv(Artista a)
+{
+    return a->num_albums_indiv;
+}
+
+double get_total_recipe(Artista a)
+{
+    return a->total_recipe;
+}
+
+size_t getPlays(Artista a)
+{
+    return a->plays;
 }
 
 void setId_Artista(char *id, Artista a)
@@ -122,9 +142,30 @@ void setRecipe_Per_Stream(double recipe_per_stream, Artista a)
 void setId_Constituent(char *id_constituent, Artista a)
 {
     char *copy = strdup(id_constituent);
-    char **result = parse_lista(copy);
+    char **result = parse_lista(copy); // NULL terminated
     free(copy);
-    a->id_constituent = result;
+    if(result == NULL) return;
+    
+    int size = 1; // +1 para dar espaço ao NULL final
+    for(int i = 0;result[i] != NULL;i++) size++;
+    if(size == 1){
+        free(result);
+        return;
+    }
+
+    a->id_constituent = malloc(size*sizeof(gpointer));
+
+    for(int j = 0; result[j] != NULL; j++)
+    {
+        int num;
+        if (sscanf(result[j], "A%d", &num) != 1) {
+            return;
+        }
+        a->id_constituent[j] = GINT_TO_POINTER(num + OFFSET_ARTISTA);
+        free(result[j]);
+    }
+    a->id_constituent[size - 1] = NULL;
+    free(result);
 }
 void setCountry(char *country, Artista a)
 {
@@ -134,22 +175,53 @@ void setCountry(char *country, Artista a)
 void setType(char *type, Artista a)
 {
     char *copy = strdup(type);
+
     a->type = copy;
 }
 
-void setDiscography_Duration(long int disc_Duration, Artista a)
+void setDiscography_Duration(size_t disc_Duration, Artista a)
 {
     a->discography_Duration = disc_Duration;
 }
-void increaseDiscography_Duration(long int disc_Duration, Artista a){
+void increaseDiscography_Duration(size_t disc_Duration, Artista a){
     a->discography_Duration += disc_Duration;
+}
+
+void setNum_albums_indiv(size_t num, Artista a)
+{
+    a->num_albums_indiv = num;
+}
+
+void increaseNum_albums_indiv(size_t num, Artista a)
+{
+    a->num_albums_indiv += num;
+}
+
+void setTotal_recipe(double num, Artista a)
+{
+    a->total_recipe = num;
+}
+
+void increaseTotal_recipe(double num, Artista a)
+{
+    a->total_recipe += num;
+}
+
+void setPlays(size_t num, Artista a)
+{
+    a->plays = num;
+}
+
+void increase_plays(size_t num, Artista a)
+{
+    a->plays += num;
 }
 
 
 void free_artista(Artista novo_artista) {
 
     free(novo_artista->name);
-    free_lista_strings(novo_artista->id_constituent);
+    free(novo_artista->id_constituent);
     free(novo_artista->country);
     free(novo_artista->type);
     free(novo_artista);

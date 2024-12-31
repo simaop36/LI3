@@ -10,47 +10,139 @@
 #include "output.h"
 #include "artistas.h"
 #include "estatisticas.h"
+#include "catalogo_artista.h"
+
+void calculate_total_value(Joint joint)
+{
+
+    Catalogo_Artistas catalogo = get_catalogo_artistas(joint);
+    GPtrArray *values = get_values_artistas(catalogo);
 
 
+    for (guint i = 0; i < values->len; i++) {
+
+        Artista artista = (Artista)values->pdata[i];
+
+        char *type = getType(artista);
+
+        if(strcmp(type,"individual") == 0)
+        {
+            double rate = getRecipe_Per_Stream(artista);
+            size_t plays = getPlays(artista);
+            double num = rate * plays;
+            increaseTotal_recipe(num,artista);
+            free(type);
+            continue;
+        }
+
+        double rate = getRecipe_Per_Stream(artista);
+        size_t plays = getPlays(artista);
+        double num = rate * plays;
+
+        increaseTotal_recipe(num,artista);
+
+        int elem = 0;
+        gpointer *constituent =  getId_Constituent(artista);
+        for (int i = 0; constituent[i] != NULL; i++) elem++;
+
+        double part = num / elem;
+
+        for (int j = 0; constituent[j] != NULL; j++)
+        {
+            Artista art = get_artista_valido(catalogo,constituent[j]);
+            if(art == NULL) continue;
+            increaseTotal_recipe(part,art);
+        }
+        
+        free(type);
+
+    }
+
+}
 
 char *Q1(char *ID, Joint catalogo)
 {
-    catalogo_utilizadores catU = get_catalogo_utilizadores(catalogo);
-    utilizador u = get_utilizador_valido(catU, ID);
-    if (u == NULL) {
+    static int first_time = 0;
+    if (first_time == 0)
+    {
+        calculate_total_value(catalogo);
+        first_time++;
+    }
+
+    if(ID[0] == 'U'){
+        catalogo_utilizadores catU = get_catalogo_utilizadores(catalogo);
+        int num;
+        sscanf(ID,"U%d",&num);
+        gpointer p = GINT_TO_POINTER(num + OFFSET_USER);
+        
+        utilizador u = get_utilizador_valido(catU, p);
+        if (u == NULL) {
+            char *empty_response = malloc(2); // Aloca espaço para "\n" e o caractere nulo
+            if (empty_response == NULL) return NULL; // Falha na alocação
+            strcpy(empty_response, "\n");
+            return empty_response;
+        }
+
+        
+        char *email = get_email(u);
+        char *first_name = get_first_name(u);
+        char *last_name = get_last_name(u);
+        char *birth_date = get_birth_date(u);
+        char *country = get_country(u);
+        int idade = calcula_idade(birth_date);
+
+        size_t buffer_size = strlen(email) + strlen(first_name) + strlen(last_name) +
+                            strlen(country) + 50;
+        char *resposta = malloc(buffer_size);
+
+        if (resposta == NULL)
+        {
+
+            return NULL;
+        }
+
+        snprintf(resposta, buffer_size, "%s;%s;%s;%d;%s\n",
+                email, first_name, last_name, idade, country);
+        
+        free(email);
+        free(first_name);
+        free(last_name);
+        free(birth_date);
+        free(country);
+
+        return resposta;
+    }
+    Catalogo_Artistas cat_artistas = get_catalogo_artistas(catalogo);
+    int num;
+    sscanf(ID,"A%d",&num);
+    gpointer p = GINT_TO_POINTER(num + OFFSET_ARTISTA);
+        
+    Artista a = get_artista_valido(cat_artistas,p);
+
+    if (a == NULL)
+    {
         char *empty_response = malloc(2); // Aloca espaço para "\n" e o caractere nulo
         if (empty_response == NULL) return NULL; // Falha na alocação
         strcpy(empty_response, "\n");
         return empty_response;
     }
 
-    
-    char *email = get_email(u);
-    char *first_name = get_first_name(u);
-    char *last_name = get_last_name(u);
-    char *birth_date = get_birth_date(u);
-    char *country = get_country(u);
-    int idade = calcula_idade(birth_date);
+    char *name = getName(a);
+    char *type = getType(a);
+    char *country = getCountry(a);
+    size_t albuns = getNum_albums_indiv(a);
+    double total_recipe = get_total_recipe(a);
 
-    size_t buffer_size = strlen(email) + strlen(first_name) + strlen(last_name) +
-                         strlen(country) + 50;
+    size_t buffer_size = strlen(name) + strlen(type) + strlen(country) + 100;
     char *resposta = malloc(buffer_size);
 
-    if (resposta == NULL)
-    {
-
-        return NULL;
-    }
-
-    snprintf(resposta, buffer_size, "%s;%s;%s;%d;%s\n",
-             email, first_name, last_name, idade, country);
+    snprintf(resposta, buffer_size, "%s;%s;%s;%zu;%.2f\n",
+                name, type, country, albuns, total_recipe);
     
-    free(email);
-    free(first_name);
-    free(last_name);
-    free(birth_date);
+    free(name);
+    free(type);
     free(country);
-
+    
     return resposta;
 }
 
@@ -201,11 +293,19 @@ void excuta_queries(char *linha, int contador, Joint joint){
     switch (linha[0])
     {
     case '1': {
-        char *id = linha+2;
-        char *resposta = Q1(id,joint);
-        if(linha[1]=='S') substituiPonto_E_Virgula(resposta);
-        escreve_querie(resposta,contador);
-        free(resposta);
+        if(linha[1]=='S')
+        {
+            char *id = linha+3;
+            char *resposta = Q1(id,joint);
+            substituiPonto_E_Virgula(resposta);
+            escreve_querie(resposta,contador);
+            free(resposta);
+        } else {
+            char *id = linha+2;
+            char *resposta = Q1(id,joint);
+            escreve_querie(resposta,contador);
+            free(resposta); 
+        }
         
         break;
     }

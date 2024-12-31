@@ -10,7 +10,7 @@ typedef struct album
 {
     gpointer id;
     char *title_album;
-    char **artists_id;
+    gpointer *artists_id;
     int year;
     char **producers;
 } *Album;
@@ -49,10 +49,9 @@ char *getTitleAlbum(Album a)
     return aCopy;
 }
 
-char **getArtists_id(Album a)
+gpointer *getArtists_id(Album a)
 {
-    char **aCopy = g_strdupv(a->artists_id);
-    return aCopy;
+    return a->artists_id;
 }
 
 int getYear_album(Album a)
@@ -69,9 +68,24 @@ char **getProducers(Album a)
 void setArtists_id(char *artists_id, Album a)
 {
     char *copy = strdup(artists_id);
-    char **result = parse_lista(copy);
+    char **result = parse_lista(copy); // NULL terminated
     free(copy);
-    a->artists_id = result;
+    int size = 1; // +1 para dar espaço ao NULL final
+    for(int i = 0;result[i] != NULL;i++) size++;
+
+    a->artists_id = malloc(size*sizeof(gpointer));
+
+    for(int j = 0; result[j] != NULL; j++)
+    {
+        int num;
+        if (sscanf(result[j], "A%d", &num) != 1) {
+            return;
+        }
+        a->artists_id[j] = GINT_TO_POINTER(num + OFFSET_ARTISTA);
+        free(result[j]);
+    }
+    a->artists_id[size - 1] = NULL;
+    free(result);
 }
 void setId_Album(int num, Album a)
 {
@@ -98,8 +112,10 @@ void setYear_album(int year, Album a)
 
 void free_album(Album a)
 {
-    free_lista_strings(a->artists_id);
+    free(a->artists_id);
     free_lista_strings(a->producers);
     free(a->title_album);
     free(a);
 }
+
+

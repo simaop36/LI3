@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <dirent.h>
 
 #include "utils.h"
 #include "catalogo_musica.h"
@@ -531,15 +532,15 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
 
             if (nr_command > 0)
             {
-                if (nr_command < 26)
+                if (nr_command < 121)
                 {
                     nr_querie = 0; // Query 1
                 }
-                else if (nr_command >= 26 && nr_command <= 50)
+                else if (nr_command >= 121 && nr_command <= 240)
                 {
                     nr_querie = 1; // Query 2
                 }
-                else if (nr_command >= 51 && nr_command <= 75)
+                else if (nr_command >= 241 && nr_command <= 300)
                 {
                     nr_querie = 2; // Query 3
                 }
@@ -673,14 +674,14 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
     }
 
     // Adicionar o resumo das queries
-    int q1 = 25 - aux[0];
-    int q2 = 25 - aux[1];
-    int q3 = 25 - aux[2];
+    int q1 = 120 - aux[0];
+    int q2 = 120- aux[1];
+    int q3 = 120 - aux[2];
 
     size_t len = strlen(resultado);
-    size_t needed = snprintf(NULL, 0, "Querie 1: %d de 25 corretas\n", q1) +
-                    snprintf(NULL, 0, "Querie 2: %d de 25 corretas\n", q2) +
-                    snprintf(NULL, 0, "Querie 3: %d de 25 corretas\n", q3);
+    size_t needed = snprintf(NULL, 0, "Querie 1: %d de 120 corretas\n", q1) +
+                    snprintf(NULL, 0, "Querie 2: %d de 120 corretas\n", q2) +
+                    snprintf(NULL, 0, "Querie 3: %d de 120 corretas\n", q3);
 
     if (len + needed + 1 > resultado_size)
     {
@@ -693,11 +694,11 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
         }
     }
 
-    snprintf(resultado + len, resultado_size - len, "Querie 1: %d de 25 corretas\n", q1);
+    snprintf(resultado + len, resultado_size - len, "Querie 1: %d de 120 corretas\n", q1);
     len = strlen(resultado);
-    snprintf(resultado + len, resultado_size - len, "Querie 2: %d de 25 corretas\n", q2);
+    snprintf(resultado + len, resultado_size - len, "Querie 2: %d de 120 corretas\n", q2);
     len = strlen(resultado);
-    snprintf(resultado + len, resultado_size - len, "Querie 3: %d de 25 corretas\n", q3);
+    snprintf(resultado + len, resultado_size - len, "Querie 3: %d de 120 corretas\n", q3);
 
     return resultado;
 }
@@ -798,4 +799,40 @@ char *escreve_lista(char **elems, int tipo) {
     strcat(resultado, "]");
 
     return resultado;
+}
+
+
+void segVerAlbum(Album a,Joint j)
+{
+    Catalogo_Artistas cat_artistas = get_catalogo_artistas(j);
+    gpointer *artistas = getArtists_id(a);
+    for(int i = 0; artistas[i] != NULL; i++)
+    {
+        Artista art = get_artista_valido(cat_artistas,artistas[i]);
+        if (art == NULL) return;
+        char *type = getType(art);
+        increaseNum_albums_indiv(1,art);
+        /*
+        if(strcmp(type,"individual") == 0){
+            increaseNum_albums_indiv(1,art);
+        }*/
+        free(type);
+    }
+}
+
+void segVerHistory(Historico h, Joint j)
+{
+    Catalogo_Musicas cat_musicas = get_catalogo_musicas(j);
+    Catalogo_Artistas cat_artistas = get_catalogo_artistas(j);
+
+    gpointer music_id = get_musica_id_gpointer(h);
+    musica m = get_musica_valida(cat_musicas,music_id);
+
+    gpointer *artistas_id = getId_Artistas_gpointer(m);
+
+    for(int i = 0; artistas_id[i] != NULL; i++)
+    {
+        Artista a = get_artista_valido(cat_artistas,artistas_id[i]);
+        increase_plays(1,a);
+    }
 }
