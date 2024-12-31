@@ -33,5 +33,7 @@ int calcula_idade(const char *birth_date);
 char *compara_resultados(const char *pasta1, const char *pasta2);
 void substituiPonto_E_Virgula(char *str);
 char *escreve_lista(char **elems, int tipo);
+void segVerAlbum(Album a,Joint j);
+void segVerHistory(Historico h, Joint j);
 
 #endif

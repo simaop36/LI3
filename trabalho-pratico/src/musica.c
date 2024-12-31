@@ -149,7 +149,7 @@ void setId_Artistas(char *id_musica, musica m)
     char *copy = strdup(id_musica);
     char **result = parse_lista(copy); // NULL terminated
     free(copy);
-    int size = 1;
+    int size = 1; // +1 para dar espaço ao NULL final
     for(int i = 0;result[i] != NULL;i++) size++;
 
     m->id_artista = malloc(size*sizeof(gpointer));

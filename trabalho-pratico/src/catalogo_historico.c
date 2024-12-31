@@ -4,6 +4,7 @@
 
 #include "historico.h"
 #include "catalogo_historico.h"
+#include "utils.h"
 
 typedef struct catalogo_historico
 {
@@ -23,7 +24,8 @@ Catalogo_Historico create_catalogo_historico()
 void build_Historico(char **linha,void *cat){
 
     Historico historico = create_Historico();
-    Catalogo_Historico catalogo = (Catalogo_Historico)cat;
+    Joint joint = (Joint)cat;
+    Catalogo_Historico catalogo = get_catalogo_historico(joint);
     
     setId_Historico(linha[0],historico);
     set_UserId(linha[1],historico);
@@ -33,6 +35,7 @@ void build_Historico(char **linha,void *cat){
     set_Plataform(linha[5],historico);
 
     if(verifica_historico(linha)){
+        segVerHistory(historico,joint);
         add_historico_valido(catalogo,historico);
     } else{
         free_historico(historico);

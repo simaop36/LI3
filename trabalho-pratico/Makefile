@@ -59,5 +59,6 @@ leaks: $(EXEC)
 clean:
 	@rm -f $(EXEC) ; echo "[Removing] $(EXEC)"
 	@rm -f $(EXEC_TEST) ; echo "[Removing] $(EXEC_TEST)"
+	@rm -f resultado.txt; echo "[Removing] resultado.txt"
 	@rm -rf build/ ; echo "[Removing] build/"
 	@rm -f resultados/* ; echo "[Cleaning] resultados/"

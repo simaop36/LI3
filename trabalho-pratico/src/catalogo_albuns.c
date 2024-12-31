@@ -3,6 +3,8 @@
 
 #include "album.h"
 #include "catalogo_albuns.h"
+#include "joint.h"
+#include "utils.h"
 
 typedef struct catalogo_albuns
 {
@@ -28,7 +30,9 @@ int aux_id_album(char *id)
 void build_Album(char **linha,void *cat){
 
     Album album = create_Album();
-    Catalogo_Albuns catalogo = (Catalogo_Albuns)cat;
+    Joint joint = (Joint)cat;
+    Catalogo_Albuns catalogo = get_catalogo_albuns(joint);
+
     int aux = aux_id_album(linha[0]);
     
     setId_Album(aux, album );
@@ -37,7 +41,7 @@ void build_Album(char **linha,void *cat){
     setYear_album(atoi(linha[3]), album);
     setProducers(linha[4], album);
 
-
+    segVerAlbum(album, joint);
     add_album(catalogo,album);
 }
 

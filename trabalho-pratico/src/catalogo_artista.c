@@ -5,6 +5,7 @@
 #include "artistas.h"
 #include "catalogo_artista.h"
 #include "utils.h"
+#include "joint.h"
 
 typedef struct catalogo_artistas
 {
@@ -89,6 +90,8 @@ GHashTable *getArtistasValidos(Catalogo_Artistas artistas)
 {
     return artistas->artistas_validos;
 }
+
+
 
 void free_catalogo_artistas(Catalogo_Artistas catalogo)
 {
