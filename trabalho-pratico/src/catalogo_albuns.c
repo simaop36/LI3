@@ -5,6 +5,7 @@
 #include "catalogo_albuns.h"
 #include "joint.h"
 #include "utils.h"
+#include "estatisticas.h"
 
 typedef struct catalogo_albuns
 {
@@ -27,7 +28,7 @@ int aux_id_album(char *id)
     return num;
 }
 
-void build_Album(char **linha,void *cat){
+void build_Album(char **linha,void *cat, Stats stats) {
 
     Album album = create_Album();
     Joint joint = (Joint)cat;

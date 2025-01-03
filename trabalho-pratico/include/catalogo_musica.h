@@ -2,13 +2,14 @@
 #define Catalogo_MusicasS_H
 
 #include "musica.h"
+#include "estatisticas.h"
 #include <glib.h>
 
 typedef struct Catalogo_Musicas *Catalogo_Musicas;
 typedef struct musica *musica;
 
 Catalogo_Musicas create_Catalogo_Musicas();
-void build_musica(char **linha, void *cat);
+void build_musica(char **linha, void *cat,Stats stats);
 void add_musica_valida(Catalogo_Musicas catalogo, musica musica);
 GPtrArray *get_values_musicas(Catalogo_Musicas catalogo);
 void build_values_musicas(Catalogo_Musicas catalogo);

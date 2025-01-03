@@ -6,6 +6,7 @@
 #include "catalogo_users.h"
 #include "joint.h"
 #include "utils.h"
+#include "estatisticas.h"
 
 typedef struct catalogo_utilizadores
 {
@@ -21,28 +22,32 @@ catalogo_utilizadores create_catalogo_utilizadores()
     return catalogo;
 }
 
-void build_utilizador(char **linha,void *cat){
-    utilizador u = create_utilizador();
+void build_utilizador(char **linha,void *cat, Stats stats){
+    
     Joint joint = (Joint)cat;
     catalogo_utilizadores catalogo = get_catalogo_utilizadores(joint);
 
 
-    set_username(linha[0],u);
-    set_email(linha[1],u);
-    set_first_name(linha[2],u);
-    set_last_name(linha[3],u);
-    set_birth_date(linha[4],u);
-    set_country(linha[5],u);
-    set_subscription_style(linha[6],u);
-    set_liked_musics_id(linha[7],u);
+    
 
     if(!(verifica_utilizadores(linha)))
     {
-        free_utilizador(u);
+
         escreve_user("./resultados",linha);
     }
     else
     {
+        utilizador u = create_utilizador();
+        
+        set_username(linha[0],u);
+        set_email(linha[1],u);
+        set_first_name(linha[2],u);
+        set_last_name(linha[3],u);
+        set_birth_date(linha[4],u);
+        set_country(linha[5],u);
+        set_subscription_style(linha[6],u);
+        set_liked_musics_id(linha[7],u);
+
         if(segVerUser(u,joint)){
             char *bDay = get_birth_date(u);
             set_age(bDay,u);

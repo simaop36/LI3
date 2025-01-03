@@ -11,8 +11,9 @@
 #include "catalogo_users.h"
 #include "catalogo_albuns.h"
 #include "catalogo_historico.h"
+#include "estatisticas.h"
 
-void ler_csvs(const char *dir_path, Joint joint)
+void ler_csvs(const char *dir_path, Joint joint, Stats stats)
 {
     // CSV esperados
     const char *file_Names[] = {"albums.csv","artists.csv", "musics.csv", "users.csv","history.csv"};
@@ -31,7 +32,7 @@ void ler_csvs(const char *dir_path, Joint joint)
         fprintf(stderr, "Erro ao abrir o arquivo: %s\n", filename_artista);
     }
 
-    file_parser(file_artista, get_catalogo_artistas(joint), build_Artista, MAX_ARTISTA_TOKENS);
+    file_parser(file_artista, get_catalogo_artistas(joint), build_Artista, MAX_ARTISTA_TOKENS, stats);
     build_values_artistas(get_catalogo_artistas(joint));
     fclose(file_artista);
 
@@ -49,7 +50,7 @@ void ler_csvs(const char *dir_path, Joint joint)
         fprintf(stderr, "Erro ao abrir o arquivo: %s\n", filename_album);
     }
 
-    file_parser(file_album, joint, build_Album, MAX_ALBUM_TOKENS);
+    file_parser(file_album, joint, build_Album, MAX_ALBUM_TOKENS, stats);
     build_values_albuns(get_catalogo_albuns(joint));
     fclose(file_album);
 
@@ -62,7 +63,7 @@ void ler_csvs(const char *dir_path, Joint joint)
     {
         fprintf(stderr, "Erro ao abrir o arquivo: %s\n", filename_musics);
     }
-    file_parser(file_musics, joint, build_musica, MAX_MUSIC_TOKENS);
+    file_parser(file_musics, joint, build_musica, MAX_MUSIC_TOKENS, stats);
     build_values_musicas(get_catalogo_musicas(joint));
     fclose(file_musics);
 
@@ -75,7 +76,7 @@ void ler_csvs(const char *dir_path, Joint joint)
     {
         fprintf(stderr, "Erro ao abrir o arquivo: %s\n", filename_users);
     }
-    file_parser(file_users, joint, build_utilizador, MAX_USERS_TOKENS);
+    file_parser(file_users, joint, build_utilizador, MAX_USERS_TOKENS, stats);
     build_values_users(get_catalogo_utilizadores(joint));
     fclose(file_users);
 
@@ -88,14 +89,14 @@ void ler_csvs(const char *dir_path, Joint joint)
     {
         fprintf(stderr, "Erro ao abrir o arquivo: %s\n", filename_history);
     }
-    file_parser(file_history, joint, build_Historico, MAX_HISTORICO_TOKENS);
+    file_parser(file_history, joint, build_Historico, MAX_HISTORICO_TOKENS, stats);
     build_values_history(get_catalogo_historico(joint));
     fclose(file_history);
 
 
 }
 
-char *ler_queries(const char *file_path, Joint joint)
+char *ler_queries(const char *file_path, Joint joint, Stats s)
 {
     FILE *queries_file = fopen(file_path, "r");
     if (queries_file == NULL)
@@ -103,7 +104,7 @@ char *ler_queries(const char *file_path, Joint joint)
         fprintf(stderr, "Erro ao abrir o ficheiro: %s\n", file_path);
         return NULL;
     }
-    char *resultado = parse_queries(queries_file, joint);
+    char *resultado = parse_queries(queries_file, joint, s);
     fclose(queries_file);
     return resultado;
 }

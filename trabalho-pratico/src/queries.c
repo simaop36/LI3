@@ -11,6 +11,7 @@
 #include "artistas.h"
 #include "estatisticas.h"
 #include "catalogo_artista.h"
+#include "recomendador.h"
 
 void calculate_total_value(Joint joint)
 {
@@ -66,7 +67,7 @@ char *Q1(char *ID, Joint catalogo)
     if (first_time == 0)
     {
         calculate_total_value(catalogo);
-        first_time++;
+        first_time++;    
     }
 
     if(ID[0] == 'U'){
@@ -237,7 +238,7 @@ char *Q2(int n, char *c, Joint j){
 
 char *Q3(int min, int max, Joint catalogo){
     GPtrArray *values = get_values_users(get_catalogo_utilizadores(catalogo));
-    GeneroContagem *array_resultado = build_Array_GC();
+    GArray *array_resultado = build_Array_GC();
 
 
     for (guint i = 0; i < values->len; i++){
@@ -249,47 +250,66 @@ char *Q3(int min, int max, Joint catalogo){
             incrementa_likes_array(array_resultado,getArray(u));
         }
     }
-    for(int i = 0; i < 10; i++){
-        for(int j = i; j < 10; j++){
-            if(comparar_generosC(array_resultado[i],array_resultado[j]) > 0){
-                troca_generosC(i,j,array_resultado);
-            }
-        }
-    }
-    int total_length = 1;//para o \0
-    int any_non_zero_likes = 0;
-
-    for(int i = 0; i < 10; i++){
-        if(getLikes(array_resultado[i]) > 0){
-            any_non_zero_likes = 1;
-            int genero_length = strlen(getGenero(array_resultado[i]));
-            int likes_length = snprintf(NULL, 0, "%d", getLikes(array_resultado[i]));
-            total_length += genero_length + likes_length + 2; //inclui ";" e "\n"
-        }
-    }
-
-    if(!any_non_zero_likes){
+    if(array_resultado->len == 0){
         char *result = malloc(2);
         free_Array_GC(array_resultado);
         strcpy(result, "\n");
         return result;
-    } else {
-        char *result = malloc(total_length);
-        char *ptr = result;
-        for(int i = 0; i < 10; i++){
-            if(getLikes(array_resultado[i]) > 0){
-                int n = sprintf(ptr, "%s;%d\n", getGenero(array_resultado[i]), getLikes(array_resultado[i]));
-                ptr += n;
+    }
+    //printf("%d\n",array_resultado->len);
+    gboolean swapped = TRUE;
+    while (swapped) {
+        swapped = FALSE;
+        for (guint i = 0; i < array_resultado->len - 1; i++) {
+            GeneroContagem gc_1 = g_array_index(array_resultado, GeneroContagem, i);
+            GeneroContagem gc_2 = g_array_index(array_resultado, GeneroContagem, i + 1);
+
+            // Se o gc_i1 for "maior" que gc_i pela nossa regra, trocamos
+            if (comparar_generosC(gc_1, gc_2) > 0) {
+                swap_generos(array_resultado, i, i + 1);
+                swapped = TRUE;
             }
         }
-        free_Array_GC(array_resultado);
-        *ptr = '\0'; //termina a string
-        return result;
     }
+
+    int total_length = 1;//para o \0
+
+     for (guint i = 0; i < array_resultado->len; i++) {
+        GeneroContagem gc = g_array_index(array_resultado, GeneroContagem, i);
+        //printf("%d\n",getLikes(gc));
+        if(getLikes(gc) > 0){
+            int genero_length = strlen(getGenero(gc));
+            int likes_length = snprintf(NULL, 0, "%d", getLikes(gc));
+            total_length += genero_length + likes_length + 2; //inclui ";" e "\n"
+        }
+    }
+
+
+    char *result = malloc(total_length);
+    char *ptr = result;
+    for (guint i = 0; i < array_resultado->len; i++) {
+        GeneroContagem gc = g_array_index(array_resultado, GeneroContagem, i);
+        if(getLikes(gc) > 0){
+            int n = sprintf(ptr, "%s;%d\n", getGenero(gc), getLikes(gc));
+            ptr += n;
+        }
+    }
+    free_Array_GC(array_resultado);
+    *ptr = '\0'; //termina a string
+    return result;
+    
+}
+
+char *Q5(char *username, char *num, Joint j, Stats s)
+{
+    char *empty_response = malloc(2); // Aloca espaço para "\n" e o caractere nulo
+    if (empty_response == NULL) return NULL; // Falha na alocação
+    strcpy(empty_response, "\n");
+    return empty_response;
 }
 
 
-void excuta_queries(char *linha, int contador, Joint joint){
+void excuta_queries(char *linha, int contador, Joint joint, Stats s){
     switch (linha[0])
     {
     case '1': {
