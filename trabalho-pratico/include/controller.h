@@ -3,5 +3,6 @@
 
 void run(char *argv[]);
 void run_testes(char *argv[]);
+void run_interactive();
 
 #endif

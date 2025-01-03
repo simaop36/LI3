@@ -56,3 +56,32 @@ void run_testes(char *argv[])
     fclose(arquivo);
     free(queries);
 }
+
+void run_interactive()
+{
+    char *caminhoFicheiro, *input, *output;
+    int n_querie;
+
+    printf("Introduza o caminho dos ficheiros de dados: \n");
+    scanf("%s", caminhoFicheiro);
+    Joint catalogo = create_catalago_joint();
+    ler_csvs(caminhoFicheiro, catalogo);
+    printf("dataset carregado...\n");
+    while (1)
+    {
+        printf("que querie deseja executar: \n");
+        scanf("%d", n_querie);
+        printf("indique o input");
+        scanf("%s", input);
+        output = excuta_queries_iterativo(input, n_querie, catalogo);
+        printf("%s", output);
+        printf("Deseja fazer outra query? (s para continuar, qualquer outra tecla para sair): ");
+        char resposta = getchar();
+        getchar();
+        if (resposta != 's')
+        {
+            free_joint(catalogo);
+            break;
+        }
+    }
+}

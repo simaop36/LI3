@@ -18,19 +18,19 @@ void calculate_total_value(Joint joint)
     Catalogo_Artistas catalogo = get_catalogo_artistas(joint);
     GPtrArray *values = get_values_artistas(catalogo);
 
-
-    for (guint i = 0; i < values->len; i++) {
+    for (guint i = 0; i < values->len; i++)
+    {
 
         Artista artista = (Artista)values->pdata[i];
 
         char *type = getType(artista);
 
-        if(strcmp(type,"individual") == 0)
+        if (strcmp(type, "individual") == 0)
         {
             double rate = getRecipe_Per_Stream(artista);
             size_t plays = getPlays(artista);
             double num = rate * plays;
-            increaseTotal_recipe(num,artista);
+            increaseTotal_recipe(num, artista);
             free(type);
             continue;
         }
@@ -39,25 +39,25 @@ void calculate_total_value(Joint joint)
         size_t plays = getPlays(artista);
         double num = rate * plays;
 
-        increaseTotal_recipe(num,artista);
+        increaseTotal_recipe(num, artista);
 
         int elem = 0;
-        gpointer *constituent =  getId_Constituent(artista);
-        for (int i = 0; constituent[i] != NULL; i++) elem++;
+        gpointer *constituent = getId_Constituent(artista);
+        for (int i = 0; constituent[i] != NULL; i++)
+            elem++;
 
         double part = num / elem;
 
         for (int j = 0; constituent[j] != NULL; j++)
         {
-            Artista art = get_artista_valido(catalogo,constituent[j]);
-            if(art == NULL) continue;
-            increaseTotal_recipe(part,art);
+            Artista art = get_artista_valido(catalogo, constituent[j]);
+            if (art == NULL)
+                continue;
+            increaseTotal_recipe(part, art);
         }
-        
+
         free(type);
-
     }
-
 }
 
 char *Q1(char *ID, Joint catalogo)
@@ -69,21 +69,23 @@ char *Q1(char *ID, Joint catalogo)
         first_time++;
     }
 
-    if(ID[0] == 'U'){
+    if (ID[0] == 'U')
+    {
         catalogo_utilizadores catU = get_catalogo_utilizadores(catalogo);
         int num;
-        sscanf(ID,"U%d",&num);
+        sscanf(ID, "U%d", &num);
         gpointer p = GINT_TO_POINTER(num + OFFSET_USER);
-        
+
         utilizador u = get_utilizador_valido(catU, p);
-        if (u == NULL) {
+        if (u == NULL)
+        {
             char *empty_response = malloc(2); // Aloca espaço para "\n" e o caractere nulo
-            if (empty_response == NULL) return NULL; // Falha na alocação
+            if (empty_response == NULL)
+                return NULL; // Falha na alocação
             strcpy(empty_response, "\n");
             return empty_response;
         }
 
-        
         char *email = get_email(u);
         char *first_name = get_first_name(u);
         char *last_name = get_last_name(u);
@@ -92,7 +94,7 @@ char *Q1(char *ID, Joint catalogo)
         int idade = calcula_idade(birth_date);
 
         size_t buffer_size = strlen(email) + strlen(first_name) + strlen(last_name) +
-                            strlen(country) + 50;
+                             strlen(country) + 50;
         char *resposta = malloc(buffer_size);
 
         if (resposta == NULL)
@@ -102,8 +104,8 @@ char *Q1(char *ID, Joint catalogo)
         }
 
         snprintf(resposta, buffer_size, "%s;%s;%s;%d;%s\n",
-                email, first_name, last_name, idade, country);
-        
+                 email, first_name, last_name, idade, country);
+
         free(email);
         free(first_name);
         free(last_name);
@@ -114,15 +116,16 @@ char *Q1(char *ID, Joint catalogo)
     }
     Catalogo_Artistas cat_artistas = get_catalogo_artistas(catalogo);
     int num;
-    sscanf(ID,"A%d",&num);
+    sscanf(ID, "A%d", &num);
     gpointer p = GINT_TO_POINTER(num + OFFSET_ARTISTA);
-        
-    Artista a = get_artista_valido(cat_artistas,p);
+
+    Artista a = get_artista_valido(cat_artistas, p);
 
     if (a == NULL)
     {
         char *empty_response = malloc(2); // Aloca espaço para "\n" e o caractere nulo
-        if (empty_response == NULL) return NULL; // Falha na alocação
+        if (empty_response == NULL)
+            return NULL; // Falha na alocação
         strcpy(empty_response, "\n");
         return empty_response;
     }
@@ -137,41 +140,50 @@ char *Q1(char *ID, Joint catalogo)
     char *resposta = malloc(buffer_size);
 
     snprintf(resposta, buffer_size, "%s;%s;%s;%zu;%.2f\n",
-                name, type, country, albuns, total_recipe);
-    
+             name, type, country, albuns, total_recipe);
+
     free(name);
     free(type);
     free(country);
-    
+
     return resposta;
 }
 
-
-int compara_artistas(Artista a, Artista b){
-    if(getDiscography_Duration(a) != getDiscography_Duration(b)){
+int compara_artistas(Artista a, Artista b)
+{
+    if (getDiscography_Duration(a) != getDiscography_Duration(b))
+    {
         return getDiscography_Duration(b) - getDiscography_Duration(a);
-    }else{
+    }
+    else
+    {
         char *idA = getId_Artista_String(a);
         char *idB = getId_Artista_String(b);
-        int result = strcmp(idA,idB);
+        int result = strcmp(idA, idB);
         free(idA);
         free(idB);
         return result;
     }
 }
 
-void insere_artista_ordenado(Artista top[], int n, Artista novo) {
-    for (int i = 0; i < n; i++) {
-        if (top[i] == NULL) {//posição vazia
+void insere_artista_ordenado(Artista top[], int n, Artista novo)
+{
+    for (int i = 0; i < n; i++)
+    {
+        if (top[i] == NULL)
+        { // posição vazia
             top[i] = novo;
             return;
         }
-        if (compara_artistas(novo, top[i]) < 0) {
-            //abrir espaço para o novo artista
-            if (top[n - 1] != NULL) {
+        if (compara_artistas(novo, top[i]) < 0)
+        {
+            // abrir espaço para o novo artista
+            if (top[n - 1] != NULL)
+            {
                 top[n - 1] = NULL;
             }
-            for (int j = n - 1; j > i; j--) {
+            for (int j = n - 1; j > i; j--)
+            {
                 top[j] = top[j - 1];
             }
             top[i] = novo;
@@ -180,21 +192,27 @@ void insere_artista_ordenado(Artista top[], int n, Artista novo) {
     }
 }
 
-char *Q2(int n, char *c, Joint j){
-    
+char *Q2(int n, char *c, Joint j)
+{
+
     GPtrArray *values = get_values_artistas(get_catalogo_artistas(j));
     Artista top[n];
     memset(top, 0, sizeof(top)); // Inicializa o array a NULL
-    if(n == 0) return strdup("\n");
+    if (n == 0)
+        return strdup("\n");
 
-
-    for (guint i = 0; i < values->len; i++) {
+    for (guint i = 0; i < values->len; i++)
+    {
         Artista artista = (Artista)values->pdata[i];
-        if (c == NULL) {
+        if (c == NULL)
+        {
             insere_artista_ordenado(top, n, artista);
-        } else {
+        }
+        else
+        {
             char *country = getCountry(artista);
-            if (strcmp(country, c) == 0) {
+            if (strcmp(country, c) == 0)
+            {
                 insere_artista_ordenado(top, n, artista);
             }
             free(country);
@@ -205,7 +223,8 @@ char *Q2(int n, char *c, Joint j){
     char *resultado = malloc(buffer_size);
     resultado[0] = '\0';
 
-    for (int i = 0; i < n && top[i] != NULL; i++) {
+    for (int i = 0; i < n && top[i] != NULL; i++)
+    {
         Artista a = top[i];
         char *name = getName(a);
         char *type = getType(a);
@@ -214,125 +233,144 @@ char *Q2(int n, char *c, Joint j){
 
         // Calcula o espaço necessário para adicionar o novo artista ao resultado
         size_t required_size = strlen(name) + strlen(type) + strlen(duration) + strlen(country) + 20;
-        if (strlen(resultado) + required_size >= buffer_size) {
+        if (strlen(resultado) + required_size >= buffer_size)
+        {
             buffer_size *= 2;
             resultado = realloc(resultado, buffer_size);
         }
         char line[200];
-        snprintf(line, sizeof(line), "%s;%s;%s;%s\n",name,type,duration,country);
+        snprintf(line, sizeof(line), "%s;%s;%s;%s\n", name, type, duration, country);
         strcat(resultado, line);
         free(name);
         free(type);
         free(duration);
         free(country);
-        
     }
 
     return resultado;
-
-
 }
 
-
-
-char *Q3(int min, int max, Joint catalogo){
+char *Q3(int min, int max, Joint catalogo)
+{
     GPtrArray *values = get_values_users(get_catalogo_utilizadores(catalogo));
     GeneroContagem *array_resultado = build_Array_GC();
 
-
-    for (guint i = 0; i < values->len; i++){
+    for (guint i = 0; i < values->len; i++)
+    {
         utilizador u = (utilizador)values->pdata[i];
         int age = get_age(u);
-        if(age<min || age > max){
+        if (age < min || age > max)
+        {
             continue;
-        } else {
-            incrementa_likes_array(array_resultado,getArray(u));
+        }
+        else
+        {
+            incrementa_likes_array(array_resultado, getArray(u));
         }
     }
-    for(int i = 0; i < 10; i++){
-        for(int j = i; j < 10; j++){
-            if(comparar_generosC(array_resultado[i],array_resultado[j]) > 0){
-                troca_generosC(i,j,array_resultado);
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = i; j < 10; j++)
+        {
+            if (comparar_generosC(array_resultado[i], array_resultado[j]) > 0)
+            {
+                troca_generosC(i, j, array_resultado);
             }
         }
     }
-    int total_length = 1;//para o \0
+    int total_length = 1; // para o \0
     int any_non_zero_likes = 0;
 
-    for(int i = 0; i < 10; i++){
-        if(getLikes(array_resultado[i]) > 0){
+    for (int i = 0; i < 10; i++)
+    {
+        if (getLikes(array_resultado[i]) > 0)
+        {
             any_non_zero_likes = 1;
             int genero_length = strlen(getGenero(array_resultado[i]));
             int likes_length = snprintf(NULL, 0, "%d", getLikes(array_resultado[i]));
-            total_length += genero_length + likes_length + 2; //inclui ";" e "\n"
+            total_length += genero_length + likes_length + 2; // inclui ";" e "\n"
         }
     }
 
-    if(!any_non_zero_likes){
+    if (!any_non_zero_likes)
+    {
         char *result = malloc(2);
         free_Array_GC(array_resultado);
         strcpy(result, "\n");
         return result;
-    } else {
+    }
+    else
+    {
         char *result = malloc(total_length);
         char *ptr = result;
-        for(int i = 0; i < 10; i++){
-            if(getLikes(array_resultado[i]) > 0){
+        for (int i = 0; i < 10; i++)
+        {
+            if (getLikes(array_resultado[i]) > 0)
+            {
                 int n = sprintf(ptr, "%s;%d\n", getGenero(array_resultado[i]), getLikes(array_resultado[i]));
                 ptr += n;
             }
         }
         free_Array_GC(array_resultado);
-        *ptr = '\0'; //termina a string
+        *ptr = '\0'; // termina a string
         return result;
     }
 }
 
-
-void excuta_queries(char *linha, int contador, Joint joint){
+void excuta_queries(char *linha, int contador, Joint joint)
+{
     switch (linha[0])
     {
-    case '1': {
-        if(linha[1]=='S')
+    case '1':
+    {
+        if (linha[1] == 'S')
         {
-            char *id = linha+3;
-            char *resposta = Q1(id,joint);
+            char *id = linha + 3;
+            char *resposta = Q1(id, joint);
             substituiPonto_E_Virgula(resposta);
-            escreve_querie(resposta,contador);
+            escreve_querie(resposta, contador);
             free(resposta);
-        } else {
-            char *id = linha+2;
-            char *resposta = Q1(id,joint);
-            escreve_querie(resposta,contador);
-            free(resposta); 
         }
-        
+        else
+        {
+            char *id = linha + 2;
+            char *resposta = Q1(id, joint);
+            escreve_querie(resposta, contador);
+            free(resposta);
+        }
+
         break;
     }
-    case '2':{
+    case '2':
+    {
         char *country = NULL;
         char *resto_linha = linha + 2;
         long int n = strtol(resto_linha, &resto_linha, 10);
 
-        while (*resto_linha == ' ') {
+        while (*resto_linha == ' ')
+        {
             resto_linha++;
         }
-        //remove ""
-        if (*resto_linha == '"') {
+        // remove ""
+        if (*resto_linha == '"')
+        {
             resto_linha++;
             country = resto_linha;
             char *aspa_fim = strchr(resto_linha, '"');
-            if (aspa_fim != NULL) {
+            if (aspa_fim != NULL)
+            {
                 *aspa_fim = '\0';
             }
         }
-        char* resposta = Q2(n,country,joint);
-        if(linha[1]=='S') substituiPonto_E_Virgula(resposta);
-        escreve_querie(resposta,contador);
+        char *resposta = Q2(n, country, joint);
+        if (linha[1] == 'S')
+            substituiPonto_E_Virgula(resposta);
+        escreve_querie(resposta, contador);
         free(resposta);
         break;
     }
-    case '3':{
+    case '3':
+    {
         char buffer[50];
         strncpy(buffer, linha, sizeof(buffer) - 1);
         buffer[sizeof(buffer) - 1] = '\0';
@@ -341,17 +379,20 @@ void excuta_queries(char *linha, int contador, Joint joint){
         int valores[3];
         int i = 0;
 
-        while (token != NULL && i < 3) {
+        while (token != NULL && i < 3)
+        {
             valores[i] = atoi(token);
             token = strtok(NULL, " ");
             i++;
         }
-        if (i >= 3) {  // Garante que temos pelo menos três valores na linha
+        if (i >= 3)
+        { // Garante que temos pelo menos três valores na linha
             int min = valores[1];
             int max = valores[2];
             char *resposta = Q3(min, max, joint);
-            if(linha[1]=='S') substituiPonto_E_Virgula(resposta);
-            escreve_querie(resposta,contador);
+            if (linha[1] == 'S')
+                substituiPonto_E_Virgula(resposta);
+            escreve_querie(resposta, contador);
             free(resposta);
         }
 
@@ -360,5 +401,86 @@ void excuta_queries(char *linha, int contador, Joint joint){
     default:
         break;
     }
+}
 
+char *excuta_queries_iterativo(char *linha, int contador, Joint joint)
+{
+    switch (linha[0])
+    {
+    case '1':
+    {
+        if (linha[1] == 'S')
+        {
+            char *id = linha + 3;
+            char *resposta = Q1(id, joint);
+            substituiPonto_E_Virgula(resposta);
+            return resposta;
+        }
+        else
+        {
+            char *id = linha + 2;
+            char *resposta = Q1(id, joint);
+            return resposta;
+        }
+
+        break;
+    }
+    case '2':
+    {
+        char *country = NULL;
+        char *resto_linha = linha + 2;
+        long int n = strtol(resto_linha, &resto_linha, 10);
+
+        while (*resto_linha == ' ')
+        {
+            resto_linha++;
+        }
+        // remove ""
+        if (*resto_linha == '"')
+        {
+            resto_linha++;
+            country = resto_linha;
+            char *aspa_fim = strchr(resto_linha, '"');
+            if (aspa_fim != NULL)
+            {
+                *aspa_fim = '\0';
+            }
+        }
+        char *resposta = Q2(n, country, joint);
+        if (linha[1] == 'S')
+            substituiPonto_E_Virgula(resposta);
+        return resposta;
+        break;
+    }
+    case '3':
+    {
+        char buffer[50];
+        strncpy(buffer, linha, sizeof(buffer) - 1);
+        buffer[sizeof(buffer) - 1] = '\0';
+
+        char *token = strtok(buffer, " ");
+        int valores[3];
+        int i = 0;
+
+        while (token != NULL && i < 3)
+        {
+            valores[i] = atoi(token);
+            token = strtok(NULL, " ");
+            i++;
+        }
+        if (i >= 3)
+        { // Garante que temos pelo menos três valores na linha
+            int min = valores[1];
+            int max = valores[2];
+            char *resposta = Q3(min, max, joint);
+            if (linha[1] == 'S')
+                substituiPonto_E_Virgula(resposta);
+            return resposta;
+        }
+
+        break;
+    }
+    default:
+        break;
+    }
 }
