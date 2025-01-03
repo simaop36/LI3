@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <dirent.h>
+#include <time.h>
 
 #include "utils.h"
 #include "catalogo_musica.h"
@@ -675,13 +676,14 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
 
     // Adicionar o resumo das queries
     int q1 = 120 - aux[0];
-    int q2 = 120- aux[1];
-    int q3 = 120 - aux[2];
+    int q2 = 120 - aux[1];
+    int q3 = 60 - aux[2];
+
 
     size_t len = strlen(resultado);
     size_t needed = snprintf(NULL, 0, "Querie 1: %d de 120 corretas\n", q1) +
                     snprintf(NULL, 0, "Querie 2: %d de 120 corretas\n", q2) +
-                    snprintf(NULL, 0, "Querie 3: %d de 120 corretas\n", q3);
+                    snprintf(NULL, 0, "Querie 3: %d de 60 corretas\n", q3);
 
     if (len + needed + 1 > resultado_size)
     {
@@ -698,7 +700,8 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
     len = strlen(resultado);
     snprintf(resultado + len, resultado_size - len, "Querie 2: %d de 120 corretas\n", q2);
     len = strlen(resultado);
-    snprintf(resultado + len, resultado_size - len, "Querie 3: %d de 120 corretas\n", q3);
+    snprintf(resultado + len, resultado_size - len, "Querie 3: %d de 60 corretas\n", q3);
+
 
     return resultado;
 }
@@ -812,10 +815,7 @@ void segVerAlbum(Album a,Joint j)
         if (art == NULL) return;
         char *type = getType(art);
         increaseNum_albums_indiv(1,art);
-        /*
-        if(strcmp(type,"individual") == 0){
-            increaseNum_albums_indiv(1,art);
-        }*/
+
         free(type);
     }
 }
@@ -824,6 +824,7 @@ void segVerHistory(Historico h, Joint j)
 {
     Catalogo_Musicas cat_musicas = get_catalogo_musicas(j);
     Catalogo_Artistas cat_artistas = get_catalogo_artistas(j);
+    catalogo_utilizadores cat_users = get_catalogo_utilizadores(j);
 
     gpointer music_id = get_musica_id_gpointer(h);
     musica m = get_musica_valida(cat_musicas,music_id);
@@ -835,4 +836,23 @@ void segVerHistory(Historico h, Joint j)
         Artista a = get_artista_valido(cat_artistas,artistas_id[i]);
         increase_plays(1,a);
     }
+
+    char *genero = getGenre(m);
+    gpointer user_id = get_user_id_gpointer(h);
+    utilizador u = get_utilizador_valido(cat_users,user_id);
+    GArray *gc = getArray(u);
+    incrementa_reproducoes_array(gc,genero);
+    free(genero);
+
+
 }
+
+// Função de comparação para strings
+gint compare_strings(gconstpointer a, gconstpointer b) {
+    const char *str_a = *(const char **)a;
+    const char *str_b = *(const char **)b;
+
+    return strcmp(str_a, str_b);
+}
+
+

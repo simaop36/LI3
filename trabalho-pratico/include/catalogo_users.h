@@ -2,6 +2,7 @@
 #define CATALOGO_USERS_H
 
 #include "users.h"
+#include "estatisticas.h"
 #include <glib.h>
 
 typedef struct catalogo_utilizadores *catalogo_utilizadores;
@@ -9,7 +10,7 @@ typedef struct utilizador *utilizador;
 
 catalogo_utilizadores create_catalogo_utilizadores();
 
-void build_utilizador(char **linha,void *cat);
+void build_utilizador(char **linha,void *cat, Stats stats);
 
 void add_utilizador_valido(catalogo_utilizadores catalogo, utilizador u);
 

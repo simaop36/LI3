@@ -5,6 +5,7 @@
 #include "catalogo_musica.h"
 #include "joint.h"
 #include "utils.h"
+#include "estatisticas.h"
 
 typedef struct Catalogo_Musicas
 {
@@ -21,31 +22,30 @@ Catalogo_Musicas create_Catalogo_Musicas()
 }
 
 
-void build_musica(char **linha, void *cat)
+void build_musica(char **linha, void *cat,Stats stats)
 {
 
-    musica m = create_Musica();
+    
     Joint joint = (Joint)cat;
     Catalogo_Musicas catalogo = get_catalogo_musicas(joint);
-
-    setId_Musica(linha[0], m);
-    setTitle(linha[1], m);
-    setId_Artistas(linha[2], m);
-    setAlbum_id(linha[3],m);
-    setDuration(linha[4], m);
-    setGenre(linha[5], m);
-    setYear(linha[6], m);
-    //linha[7] lyrics
 
 
     if (!(verifica_musicas(linha)))
     {
-        
-        free_musica(m);
         escreve_musica("./resultados",linha);
     }
     else
     {
+        musica m = create_Musica();
+        
+        setId_Musica(linha[0], m);
+        setTitle(linha[1], m);
+        setId_Artistas(linha[2], m);
+        setAlbum_id(linha[3],m);
+        setDuration(linha[4], m);
+        setGenre(linha[5], m);
+        setYear(linha[6], m);
+
         if (segVerMusica(m, joint))
         {   
             

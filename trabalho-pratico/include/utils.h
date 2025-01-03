@@ -1,6 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <time.h>
+#include <glib.h>
+
 #include "utils.h"
 #include "catalogo_musica.h"
 #include "catalogo_users.h"
@@ -35,5 +38,9 @@ void substituiPonto_E_Virgula(char *str);
 char *escreve_lista(char **elems, int tipo);
 void segVerAlbum(Album a,Joint j);
 void segVerHistory(Historico h, Joint j);
+time_t get_time_t(const char *timestamp);
+time_t get_week_start_from_time(time_t raw_time);
+gint compare_strings(gconstpointer a, gconstpointer b);
+
 
 #endif

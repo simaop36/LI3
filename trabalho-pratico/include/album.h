@@ -4,7 +4,7 @@
 
 typedef struct album *Album;
 
-#define ALBUM_OFFSET 0
+#define OFFSET_ALBUM 0
 
 Album create_Album();
 
@@ -21,5 +21,8 @@ void setProducers(char *producers, Album a);
 void setTitle_album(char *title, Album a);
 void setYear_album(int year, Album a);
 void free_album(Album a);
+
+gpointer int_gpointer_album(int i);
+int gpointer_int_album(gpointer p);
 
 #endif

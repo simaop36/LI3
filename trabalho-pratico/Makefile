@@ -1,9 +1,12 @@
 CC := gcc
 
+OS   := $(shell uname -s)
+ARCH := $(shell uname -m)
+
 EXEC := programa-principal
 EXEC_TEST := programa-testes
 
-FLAGS := -O3 -Wall -Wextra -Wunused-parameter -Wunused-value `pkg-config --cflags glib-2.0`
+FLAGS := -O3 -Wall -Wextra -Wunused-value `pkg-config --cflags glib-2.0`
 FLAGS_TEST := $(FLAGS) -Wno-unused-function
 
 INC := -Iinclude/
@@ -21,13 +24,21 @@ QUERIES_PATH ?= 0
 
 LDFLAGS := `pkg-config --libs glib-2.0`
 
+ifeq ($(OS), Linux)
+    RECOMENDADOR_OBJ = $(shell find recomendador/recomendador-linux-x86_64.o)
+else ifeq ($(ARCH), arm64)
+    RECOMENDADOR_OBJ = $(shell find recomendador/recomendador-arm64.o)
+else
+	RECOMENDADOR_OBJ = $(shell find recomendador/recomendador-macos-x86_64.o)
+endif
+
 .SUFFIXES:
 
 .PHONY: all
 all: $(EXEC) $(EXEC_TEST)
 
-$(EXEC): $(OBJ)
-	@$(CC) $(FLAGS) $^ $(LDFLAGS) -g -o $@ ; echo "[Compiling] $@"
+$(EXEC): $(OBJ) $(RECOMENDADOR_OBJ)
+	@$(CC) $(FLAGS) $^ $(LDFLAGS) -g  -o $@ ; echo "[Compiling] $@"
 	
 build/%.o: src/%.c
 	@mkdir -p build

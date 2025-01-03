@@ -118,10 +118,9 @@ size_t getPlays(Artista a)
 
 void setId_Artista(char *id, Artista a)
 {
-
     int num;
     if(sscanf(id,"A%d",&num) == 1){
-        gpointer p = GINT_TO_POINTER(num+ OFFSET_ARTISTA);
+        gpointer p = GINT_TO_POINTER(num + OFFSET_ARTISTA);
         a->id = p;
     } else {
         return;
@@ -225,4 +224,14 @@ void free_artista(Artista novo_artista) {
     free(novo_artista->country);
     free(novo_artista->type);
     free(novo_artista);
+}
+
+gpointer int_gpointer_artista(int i)
+{
+    return GINT_TO_POINTER(i + OFFSET_ARTISTA);
+}
+
+int gpointer_int_artista(gpointer p)
+{
+    return GPOINTER_TO_INT(p) - OFFSET_ARTISTA;
 }

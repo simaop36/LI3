@@ -11,6 +11,7 @@
 #include "users.h"
 #include "joint.h"
 #include "queries.h"
+#include "estatisticas.h"
 
 char **parser_linha(char *line, int max_tokens)
 {
@@ -83,7 +84,7 @@ char **parser_linha(char *line, int max_tokens)
     return parsed_tokens;
 }
 
-void file_parser(FILE *csv, void *cat, build_function builder, int max_tokens)
+void file_parser(FILE *csv, void *cat, build_function builder, int max_tokens, Stats stats)
 {
     char *linha = NULL;
     size_t tamanho_linha = 0;
@@ -93,7 +94,7 @@ void file_parser(FILE *csv, void *cat, build_function builder, int max_tokens)
     while (getline(&linha, &tamanho_linha, csv) != -1){
         linha[strlen(linha) - 1] = '\0'; // remove o \n e substitui por \0
         char **tokens = parser_linha(linha, max_tokens);
-        builder(tokens, cat);
+        builder(tokens, cat,stats);
         for (int i = 0; i < max_tokens; i++) free(tokens[i]);
         free(tokens);
     }
@@ -101,7 +102,7 @@ void file_parser(FILE *csv, void *cat, build_function builder, int max_tokens)
 
 }
 
-char *parse_queries(FILE *queries_file, Joint joint)
+char *parse_queries(FILE *queries_file, Joint joint,Stats s)
 {
     char *linha = NULL;
     size_t tamanho_linha = 0;
@@ -113,7 +114,7 @@ char *parse_queries(FILE *queries_file, Joint joint)
         contador++;
         linha[strlen(linha) - 1] = '\0'; // remove o \n e substitui por \0
         clock_gettime(CLOCK_REALTIME, &start);
-        excuta_queries(linha, contador, joint);
+        excuta_queries(linha, contador, joint,s);
         clock_gettime(CLOCK_REALTIME, &end);
         int j = contador;
         j--;
@@ -122,17 +123,18 @@ char *parse_queries(FILE *queries_file, Joint joint)
     }
 
     double soma1 = 0;
-    for (int i = 0; i < 25; i++)
+    for (int i = 0; i < 120; i++)
         soma1 += aux[i];
-    double q1 = soma1 / 25.00;
+    double q1 = soma1 / 120.00;
     double soma2 = 0;
-    for (int i = 25; i < 50; i++)
+    for (int i = 120; i < 240; i++)
         soma2 += aux[i];
-    double q2 = soma2 / 25.00;
+    double q2 = soma2 / 120.00;
     double soma3 = 0;
-    for (int i = 50; i < 75; i++)
+    for (int i = 240; i < 300; i++)
         soma3 += aux[i];
-    double q3 = soma3 / 25.00;
+    double q3 = soma3 / 60.00;
+
     free(linha);
 
     char *resultado = malloc(300 * sizeof(char));

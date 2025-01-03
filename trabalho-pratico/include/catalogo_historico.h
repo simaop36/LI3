@@ -2,12 +2,13 @@
 #define CATALOGO_HISTORICO_H
 
 #include "historico.h"
+#include "estatisticas.h"
 
 typedef struct catalogo_historico *Catalogo_Historico;
 typedef struct historico *Historico;
 
 Catalogo_Historico create_catalogo_historico();
-void build_Historico(char **linha,void *cat);
+void build_Historico(char **linha,void *cat, Stats stats);
 void add_historico_valido(Catalogo_Historico catalogo, Historico historico);
 GPtrArray *get_values_history(Catalogo_Historico catalogo);
 void build_values_history(Catalogo_Historico catalogo);
