@@ -7,15 +7,18 @@
 #include "output.h"
 #include "joint.h"
 #include "utils.h"
+#include "estatisticas.h"
 
 void run(char *argv[])
 {
 
     Joint catalogo = create_catalago_joint();
-    ler_csvs(argv[1], catalogo);
-    char *queries = ler_queries(argv[2], catalogo);
+    Stats stats = create_estatisticas();
+    ler_csvs(argv[1], catalogo,stats);
+    char *queries = ler_queries(argv[2], catalogo,stats);
     free_joint(catalogo);
     free(queries);
+    free_stats(stats);
 }
 
 void run_testes(char *argv[])
@@ -27,9 +30,11 @@ void run_testes(char *argv[])
     clock_gettime(CLOCK_REALTIME, &start);
 
     Joint catalogo = create_catalago_joint();
-    ler_csvs(argv[1], catalogo);
-    char *queries = ler_queries(argv[2], catalogo);
+    Stats stats = create_estatisticas();
+    ler_csvs(argv[1], catalogo,stats);
+    char *queries = ler_queries(argv[2], catalogo,stats);
     free_joint(catalogo);
+    free_stats(stats);
     clock_gettime(CLOCK_REALTIME, &end);
 
     getrusage(RUSAGE_SELF, &uso_recurso);

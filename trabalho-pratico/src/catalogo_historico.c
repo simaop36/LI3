@@ -5,6 +5,7 @@
 #include "historico.h"
 #include "catalogo_historico.h"
 #include "utils.h"
+#include "estatisticas.h"
 
 typedef struct catalogo_historico
 {
@@ -21,24 +22,26 @@ Catalogo_Historico create_catalogo_historico()
     return catalogo;
 }
 
-void build_Historico(char **linha,void *cat){
+void build_Historico(char **linha,void *cat, Stats stats){
 
-    Historico historico = create_Historico();
+    
     Joint joint = (Joint)cat;
     Catalogo_Historico catalogo = get_catalogo_historico(joint);
     
-    setId_Historico(linha[0],historico);
-    set_UserId(linha[1],historico);
-    set_MusicId(linha[2],historico);
-    set_Timestamp(linha[3],historico);
-    set_Duration(linha[4],historico);
-    set_Plataform(linha[5],historico);
-
-    if(verifica_historico(linha)){
+    if(verifica_historico(linha))
+    {
+        Historico historico = create_Historico();
+        
+        setId_Historico(linha[0],historico);
+        set_UserId(linha[1],historico);
+        set_MusicId(linha[2],historico);
+        set_Timestamp(linha[3],historico);
+        set_Duration(linha[4],historico);
+        //set_week(historico);
         segVerHistory(historico,joint);
         add_historico_valido(catalogo,historico);
+        //calcula_tree(stats,historico);
     } else{
-        free_historico(historico);
         escreve_historico("./resultados",linha);
     }
 }

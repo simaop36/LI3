@@ -2,13 +2,14 @@
 #define CATALOGO_ARTISTAS_H
 
 #include "artistas.h"
+#include "estatisticas.h"
 #include <glib.h>
 
 typedef struct catalogo_artistas *Catalogo_Artistas;
 typedef struct artista *Artista;
 
 Catalogo_Artistas create_catalogo_artistas();
-void build_Artista(char **linha,void *cat);
+void build_Artista(char **linha,void *cat, Stats stats);
 void add_artista_valido(Catalogo_Artistas catalogo, Artista artista);
 GPtrArray *get_values_artistas(Catalogo_Artistas catalogo);
 void build_values_artistas(Catalogo_Artistas catalogo);

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <glib.h>
 #include <ctype.h>
+#include <time.h>
 
 #include "utils.h"
 
@@ -12,8 +13,8 @@ typedef struct historico
     gpointer user_id;
     gpointer music_id;
     char *timestamp;
-    char *duration;
-    char *plataform;
+    size_t duration;
+
 } *Historico;
 
 Historico create_Historico()
@@ -22,14 +23,10 @@ Historico create_Historico()
     novo_historico->id = NULL;
     novo_historico->user_id = NULL;
     novo_historico->music_id = NULL;
-    novo_historico->timestamp = NULL;
-    novo_historico->duration = NULL;
-    novo_historico->plataform = NULL;
+
 
     return novo_historico;
 }
-
-
 
 gpointer get_IDHistorico_gpointer(Historico h)
 {
@@ -57,7 +54,7 @@ gpointer get_user_id_gpointer(Historico h){
 
 int get_user_id_int(Historico h)
 {
-    int num = GPOINTER_TO_INT(h->user_id);
+    int num = gpointer_int_users(h->user_id);
     return num - OFFSET_USER;
 }
 
@@ -76,7 +73,7 @@ gpointer get_musica_id_gpointer(Historico h)
 
 int get_musica_id_int(Historico h)
 {
-    int num = GPOINTER_TO_INT(h->music_id);
+    int num = gpointer_int_musica(h->music_id);
     return num - OFFSET_MUSICA;
 }
 
@@ -90,27 +87,20 @@ char *get_musica_id_string(Historico h)
 
 char *get_Timestamp(Historico h)
 {
-    char *hCopy = strdup(h->timestamp);
-    return hCopy;
+    return h->timestamp;
 }
 
-char *get_Duration(Historico h)
+size_t get_Duration(Historico h)
 {
-    char *hCopy = strdup(h->duration);
-    return hCopy;
+    return h->duration;
 }
 
-char *get_Plataform(Historico h)
-{
-    char *hCopy = strdup(h->plataform);
-    return hCopy;
-}
 
 void setId_Historico(char *id, Historico h)
 {
     int num;
     if(sscanf(id,"H%d",&num) == 1){
-        gpointer p = GINT_TO_POINTER(num + OFFSET_HISTORY);
+        gpointer p = int_gpointer_history(num);
         h->id = p;
     } else {
         return;
@@ -121,7 +111,7 @@ void set_UserId(char *user_id, Historico h)
 {
     int num;
     if(sscanf(user_id,"U%d",&num) == 1){
-        gpointer p = GINT_TO_POINTER(num + OFFSET_USER);
+        gpointer p = int_gpointer_users(num);
         h->user_id = p;
     } else {
         return;
@@ -133,7 +123,7 @@ void set_MusicId(char *music_id, Historico h){
 
     int num;
     if(sscanf(music_id,"S%d",&num) == 1){
-        gpointer p = GINT_TO_POINTER(num + OFFSET_MUSICA);
+        gpointer p = int_gpointer_musica(num);
         h->music_id= p;
     } else {
         return;
@@ -148,15 +138,27 @@ void set_Timestamp(char *timestamp, Historico h)
 
 void set_Duration(char *duration, Historico h)
 {
-    char *copy = strdup(duration);
-    h->duration = copy;
+    int hours = 0;
+    int minutes = 0;
+    int seconds = 0;
+
+    if (!duration) {
+        return;
+    }
+
+    if (sscanf(duration, "%d:%d:%d", &hours, &minutes, &seconds) != 3) {
+        return;
+    }
+
+    if (hours < 0 || minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59) {
+        return;
+    }
+
+    size_t total_seconds = (size_t)hours * 3600 + (size_t)minutes * 60 + (size_t)seconds;
+
+    h->duration = total_seconds;
 }
 
-void set_Plataform(char *plataform, Historico h)
-{
-    char *copy = strdup(plataform);
-    h->plataform = copy;
-}
 
 
 int verifica_plataform(char* plataform){
@@ -182,10 +184,17 @@ int verifica_historico(char **linha){
 }
 
 void free_historico(Historico novo_historico) {
-
     free(novo_historico->timestamp);
-    free(novo_historico->duration);
-    free(novo_historico->plataform);
     free(novo_historico);
 
+}
+
+gpointer int_gpointer_history(int i)
+{
+    return GINT_TO_POINTER(i + OFFSET_HISTORY);
+}
+
+int gpointer_int_history(gpointer p)
+{
+    return GPOINTER_TO_INT(p) - OFFSET_HISTORY;
 }

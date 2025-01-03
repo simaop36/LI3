@@ -81,7 +81,7 @@ void setArtists_id(char *artists_id, Album a)
         if (sscanf(result[j], "A%d", &num) != 1) {
             return;
         }
-        a->artists_id[j] = GINT_TO_POINTER(num + OFFSET_ARTISTA);
+        a->artists_id[j] = int_gpointer_artista(num);
         free(result[j]);
     }
     a->artists_id[size - 1] = NULL;
@@ -117,5 +117,16 @@ void free_album(Album a)
     free(a->title_album);
     free(a);
 }
+
+gpointer int_gpointer_album(int i)
+{
+    return GINT_TO_POINTER(i + OFFSET_ALBUM);
+}
+
+int gpointer_int_album(gpointer p)
+{
+    return GPOINTER_TO_INT(p) - OFFSET_ALBUM;
+}
+
 
 
