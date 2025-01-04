@@ -321,68 +321,114 @@ char *Q3(int min, int max, Joint catalogo)
     
 }
 
-char *Q5(char *username, char *num, Joint j, Stats s)
+
+
+
+char *Q5(char *username, int num, Joint j, Stats s)
 {
-    char *empty_response = malloc(2); // Aloca espaço para "\n" e o caractere nulo
-    if (empty_response == NULL) return NULL; // Falha na alocação
-    strcpy(empty_response, "\n");
-    return empty_response;
+    catalogo_utilizadores u = get_catalogo_utilizadores(j);
+    GPtrArray *keys = get_keys_users(u);
+    
+    static int cont = 0;
+    if (cont == 0){
+        build_stats(s,keys,u);
+        cont++;
+    }
+    int **matriz = getMatriz(s);
+    char **ids = get_ids_users(s);
+    char **generos = get_nome_Generos(s);
+    int tam_ids = get_size_idsUtilizadores(s);
+    int tam_generos = get_size_nomesGeneros(s);
+
+    int user_int;
+    sscanf(username,"U%d",&user_int);
+    gpointer user = int_gpointer_users(user_int);
+
+    if(get_utilizador_valido(u,user) == NULL){
+        char *empty_response = malloc(2); // Aloca espaço para "\n" e o caractere nulo
+        if (empty_response == NULL) return NULL; // Falha na alocação
+        strcpy(empty_response, "\n");
+        return empty_response;
+    }
+
+
+    char **result = recomendaUtilizadores(username,matriz,ids,generos,tam_ids,tam_generos,num);
+    if (result == NULL){
+        char *empty_response = malloc(2); // Aloca espaço para "\n" e o caractere nulo
+        if (empty_response == NULL) return NULL; // Falha na alocação
+        strcpy(empty_response, "\n");
+        return empty_response;
+    }
+    size_t total_length = 0;
+    int count;
+    for (count = 0; count < num; count++) {
+        total_length += strlen(result[count]) + 1;  // +1 para o '\n'
+    }
+    total_length++;
+
+    if (count == 0){
+        char *empty_response = malloc(2);
+        if (empty_response == NULL) return NULL;
+        strcpy(empty_response, "\n");
+        return empty_response;
+    }
+
+    char *final_str = malloc(total_length);
+    final_str[0] = '\0';
+    for (size_t i = 0; i < count; i++) {
+        strcat(final_str, result[i]);
+        strcat(final_str, "\n");
+    }
+
+    return final_str;
+
 }
 
 
 void excuta_queries(char *linha, int contador, Joint joint, Stats s){
     switch (linha[0])
     {
-    case '1':
-    {
-        if (linha[1] == 'S')
+    case '1': {
+        if(linha[1]=='S')
         {
-            char *id = linha + 3;
-            char *resposta = Q1(id, joint);
+            char *id = linha+3;
+            char *resposta = Q1(id,joint);
             substituiPonto_E_Virgula(resposta);
-            escreve_querie(resposta, contador);
+            escreve_querie(resposta,contador);
             free(resposta);
+        } else {
+            char *id = linha+2;
+            char *resposta = Q1(id,joint);
+            escreve_querie(resposta,contador);
+            free(resposta); 
         }
-        else
-        {
-            char *id = linha + 2;
-            char *resposta = Q1(id, joint);
-            escreve_querie(resposta, contador);
-            free(resposta);
-        }
-
+        
         break;
     }
-    case '2':
-    {
+    case '2':{
         char *country = NULL;
         char *resto_linha = linha + 2;
         long int n = strtol(resto_linha, &resto_linha, 10);
 
-        while (*resto_linha == ' ')
-        {
+        while (*resto_linha == ' ') {
             resto_linha++;
         }
-        // remove ""
-        if (*resto_linha == '"')
-        {
+        //remove ""
+        if (*resto_linha == '"') {
             resto_linha++;
             country = resto_linha;
             char *aspa_fim = strchr(resto_linha, '"');
-            if (aspa_fim != NULL)
-            {
+            if (aspa_fim != NULL) {
                 *aspa_fim = '\0';
             }
         }
-        char *resposta = Q2(n, country, joint);
-        if (linha[1] == 'S')
-            substituiPonto_E_Virgula(resposta);
-        escreve_querie(resposta, contador);
+        char* resposta = Q2(n,country,joint);
+        if(linha[1]=='S') substituiPonto_E_Virgula(resposta);
+        escreve_querie(resposta,contador);
         free(resposta);
         break;
     }
-    case '3':
-    {
+    case '3':{
         char buffer[50];
         strncpy(buffer, linha, sizeof(buffer) - 1);
         buffer[sizeof(buffer) - 1] = '\0';
@@ -391,28 +437,50 @@ void excuta_queries(char *linha, int contador, Joint joint, Stats s){
         int valores[3];
         int i = 0;
 
-        while (token != NULL && i < 3)
-        {
+        while (token != NULL && i < 3) {
             valores[i] = atoi(token);
             token = strtok(NULL, " ");
             i++;
         }
-        if (i >= 3)
-        { // Garante que temos pelo menos três valores na linha
+        if (i >= 3) {  // Garante que temos pelo menos três valores na linha
             int min = valores[1];
             int max = valores[2];
-            char *resposta = Q3(min, max, joint);
-            if (linha[1] == 'S')
-                substituiPonto_E_Virgula(resposta);
-            escreve_querie(resposta, contador);
+            char *resposta = Q3(min, max, joint,s);
+            if(linha[1]=='S') substituiPonto_E_Virgula(resposta);
+            escreve_querie(resposta,contador);
             free(resposta);
         }
 
         break;
+    } case '5':{
+        if(linha[1]=='S')
+        {
+            char *id = linha+3;
+            char *username = malloc(9*sizeof(char));
+            int num;
+            sscanf(id,"%s %d",username,&num);
+            //printf("%s %d\n",username,num);
+            char *resposta = Q5(username,num,joint,s);
+            substituiPonto_E_Virgula(resposta);
+            escreve_querie(resposta,contador);
+            free(username);
+            free(resposta);
+        } else {
+            char *id = linha+2;
+            char *username = malloc(9*sizeof(char));
+            int num;
+            sscanf(id,"%s %d",username,&num);
+            //printf("%s %d\n",username,num);
+            char *resposta = Q5(username,num,joint,s);
+            escreve_querie(resposta,contador);
+            free(username);
+            free(resposta); 
+        }
     }
     default:
         break;
     }
+
 }
 
 char *excuta_queries_iterativo(char *linha, int contador, Joint joint)
