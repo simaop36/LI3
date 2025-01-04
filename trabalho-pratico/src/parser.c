@@ -134,10 +134,13 @@ char *parse_queries(FILE *queries_file, Joint joint,Stats s)
     for (int i = 240; i < 300; i++)
         soma3 += aux[i];
     double q3 = soma3 / 60.00;
-
+    double soma5 = 0;
+    for (int i = 450; i < 500; i++)
+        soma5 += aux[i];
+    double q5 = soma5 / 50.00;
     free(linha);
 
-    char *resultado = malloc(300 * sizeof(char));
+    char *resultado = malloc(500 * sizeof(char));
     if (resultado == NULL)
     {
         perror("Erro ao alocar memória para resultado");
@@ -148,8 +151,9 @@ char *parse_queries(FILE *queries_file, Joint joint,Stats s)
     snprintf(resultado, 300,
              "Tempo médio querie 1: %.6f segundos\n"
              "Tempo médio querie 2: %.6f segundos\n"
-             "Tempo médio querie 3: %.6f segundos\n",
-             q1, q2, q3);
+             "Tempo médio querie 3: %.6f segundos\n"
+             "Tempo médio querie 5: %.6f segundos\n",
+             q1, q2, q3, q5);
 
     return resultado;
 }

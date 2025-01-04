@@ -521,7 +521,7 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
         free(resultado);
         return NULL;
     }
-    int aux[3] = {0, 0, 0}; // Para as queries 1, 2 e 3
+    int aux[4] = {0, 0, 0,0}; // Para as queries 1, 2, 3 e 5
     int nr_querie = 0;
     int encontrou_erro_total = 0;
 
@@ -544,6 +544,9 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
                 else if (nr_command >= 241 && nr_command <= 300)
                 {
                     nr_querie = 2; // Query 3
+                }else if (nr_command >= 451 && nr_command <= 500)
+                {
+                    nr_querie = 3; // Query 5
                 }
                 else
                 {
@@ -678,12 +681,14 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
     int q1 = 120 - aux[0];
     int q2 = 120 - aux[1];
     int q3 = 60 - aux[2];
+    int q5 = 50 - aux[3];
 
 
     size_t len = strlen(resultado);
     size_t needed = snprintf(NULL, 0, "Querie 1: %d de 120 corretas\n", q1) +
                     snprintf(NULL, 0, "Querie 2: %d de 120 corretas\n", q2) +
-                    snprintf(NULL, 0, "Querie 3: %d de 60 corretas\n", q3);
+                    snprintf(NULL, 0, "Querie 3: %d de 60 corretas\n", q2) +
+                    snprintf(NULL, 0, "Querie 5: %d de 50 corretas\n", q5);
 
     if (len + needed + 1 > resultado_size)
     {
@@ -701,6 +706,8 @@ char *compara_resultados(const char *pasta1, const char *pasta2)
     snprintf(resultado + len, resultado_size - len, "Querie 2: %d de 120 corretas\n", q2);
     len = strlen(resultado);
     snprintf(resultado + len, resultado_size - len, "Querie 3: %d de 60 corretas\n", q3);
+    len = strlen(resultado);
+    snprintf(resultado + len, resultado_size - len, "Querie 5: %d de 50 corretas\n", q5);
 
 
     return resultado;
