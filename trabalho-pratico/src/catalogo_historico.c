@@ -10,14 +10,14 @@
 typedef struct catalogo_historico
 {
     GHashTable *historico_validos;
-    GPtrArray *values_history;
+    GPtrArray *keys_history;
 } *Catalogo_Historico;
 
 Catalogo_Historico create_catalogo_historico()
 {
     Catalogo_Historico catalogo = malloc(sizeof(struct catalogo_historico));
     catalogo->historico_validos = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_historico);
-    catalogo->values_history = NULL;
+    catalogo->keys_history = NULL;
 
     return catalogo;
 }
@@ -52,22 +52,22 @@ void add_historico_valido(Catalogo_Historico catalogo, Historico historico)
     g_hash_table_insert(catalogo->historico_validos, get_IDHistorico_gpointer(historico), historico);
 }
 
-GPtrArray *get_values_history(Catalogo_Historico catalogo)
+GPtrArray *get_keys_history(Catalogo_Historico catalogo)
 {
-    return catalogo->values_history;
+    return catalogo->keys_history;
 }
 
 void build_values_history(Catalogo_Historico catalogo)
 {
     GHashTable *hash_table = catalogo->historico_validos;
 
-    if (catalogo->values_history != NULL) {
-        g_ptr_array_free(catalogo->values_history, TRUE);
-        catalogo->values_history = NULL;
+    if (catalogo->keys_history != NULL) {
+        g_ptr_array_free(catalogo->keys_history, TRUE);
+        catalogo->keys_history = NULL;
     }
 
-    GPtrArray *values = g_ptr_array_new();
-    if (values == NULL) {
+    GPtrArray *keys = g_ptr_array_new();
+    if (keys == NULL) {
         fprintf(stderr, "Failed to allocate memory for GPtrArray.\n");
         return;
     }
@@ -77,10 +77,10 @@ void build_values_history(Catalogo_Historico catalogo)
 
     g_hash_table_iter_init(&iter, hash_table);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
-        g_ptr_array_add(values, value);
+        g_ptr_array_add(keys, key);
     }
 
-    catalogo->values_history = values;
+    catalogo->keys_history = keys;
 }
 
 Historico get_historico_valido(Catalogo_Historico catalogo, gpointer id)
@@ -99,7 +99,7 @@ void free_catalogo_historico(Catalogo_Historico catalogo)
     if (catalogo->historico_validos) {
         g_hash_table_unref(catalogo->historico_validos);
     }
-    g_ptr_array_free(catalogo->values_history,TRUE);
+    g_ptr_array_free(catalogo->keys_history,TRUE);
     free(catalogo);
 }
 

@@ -3,10 +3,35 @@ CC := gcc
 OS   := $(shell uname -s)
 ARCH := $(shell uname -m)
 
+ifeq ($(OS),Linux)
+    ifeq ($(ARCH),x86_64)
+        RECOMENDADOR_OBJ := recomendador/recomendador-linux-x86_64.o
+    else ifeq ($(ARCH),aarch64)  # em muitos ARM64, uname -m = aarch64
+        RECOMENDADOR_OBJ := recomendador/recomendador-linux-arm64.o
+    else
+        $(warning Arquitetura não suportada em Linux: $(ARCH))
+        RECOMENDADOR_OBJ :=
+    endif
+else ifeq ($(OS),Darwin)
+    # Aqui assumindo x86_64 vs arm64 em macOS
+    ifeq ($(ARCH),x86_64)
+        RECOMENDADOR_OBJ := recomendador/recomendador-macos-x86_64.o
+    else ifeq ($(ARCH),arm64)
+        RECOMENDADOR_OBJ := recomendador/recomendador-macos-arm64.o
+    else
+        $(warning Arquitetura não suportada em Darwin: $(ARCH))
+        RECOMENDADOR_OBJ :=
+    endif
+else
+    $(warning Sistema operativo não suportado: $(OS))
+    RECOMENDADOR_OBJ :=
+endif
+
+
 EXEC := programa-principal
 EXEC_TEST := programa-testes
 
-FLAGS := -O3 -Wall -Wextra -Wunused-value `pkg-config --cflags glib-2.0`
+FLAGS := -O3 -g -Wall -Wextra -Wunused-value `pkg-config --cflags glib-2.0`
 FLAGS_TEST := $(FLAGS) -Wno-unused-function
 
 INC := -Iinclude/
@@ -23,14 +48,6 @@ DATASET_PATH ?= 0
 QUERIES_PATH ?= 0
 
 LDFLAGS := `pkg-config --libs glib-2.0`
-
-ifeq ($(OS), Linux)
-    RECOMENDADOR_OBJ = $(shell find recomendador/recomendador-linux-x86_64.o)
-else ifeq ($(ARCH), arm64)
-    RECOMENDADOR_OBJ = $(shell find recomendador/recomendador-arm64.o)
-else
-	RECOMENDADOR_OBJ = $(shell find recomendador/recomendador-macos-x86_64.o)
-endif
 
 .SUFFIXES:
 
@@ -51,7 +68,7 @@ test: $(EXEC_TEST)
 	  /usr/bin/time -v ./$(EXEC_TEST) $(DATASET_PATH); \
 	fi
 
-$(EXEC_TEST): $(OBJ_TEST)
+$(EXEC_TEST): $(OBJ_TEST) $(RECOMENDADOR_OBJ)
 	@$(CC) $(FLAGS_TEST) $^ $(LDFLAGS) -o $@ ; echo "[Compiling] $@"
 
 build/%.o: tests/%.c

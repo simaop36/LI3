@@ -10,14 +10,14 @@
 typedef struct catalogo_albuns
 {
     GHashTable *albuns_validos;
-    GPtrArray *values_albuns;
+    GPtrArray *keys_albuns;
 } *Catalogo_Albuns;
 
 Catalogo_Albuns create_catalogo_albuns()
 {
     Catalogo_Albuns catalogo = malloc(sizeof(struct catalogo_albuns));
     catalogo->albuns_validos = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_album);
-    catalogo->values_albuns = NULL;
+    catalogo->keys_albuns = NULL;
     return catalogo;
 }
 
@@ -52,22 +52,22 @@ void add_album(Catalogo_Albuns catalogo, Album album)
 }
 
 
-GPtrArray *get_values_albuns(Catalogo_Albuns catalogo)
+GPtrArray *get_keys_albuns(Catalogo_Albuns catalogo)
 {
-    return catalogo->values_albuns;
+    return catalogo->keys_albuns;
 }
 
 void build_values_albuns(Catalogo_Albuns catalogo)
 {
     GHashTable *hash_table = catalogo->albuns_validos;
 
-    if (catalogo->values_albuns != NULL) {
-        g_ptr_array_free(catalogo->values_albuns, TRUE);
-        catalogo->values_albuns = NULL;
+    if (catalogo->keys_albuns != NULL) {
+        g_ptr_array_free(catalogo->keys_albuns, TRUE);
+        catalogo->keys_albuns = NULL;
     }
 
-    GPtrArray *values = g_ptr_array_new();
-    if (values == NULL) {
+    GPtrArray *keys = g_ptr_array_new();
+    if (keys == NULL) {
         fprintf(stderr, "Failed to allocate memory for GPtrArray.\n");
         return;
     }
@@ -77,10 +77,10 @@ void build_values_albuns(Catalogo_Albuns catalogo)
 
     g_hash_table_iter_init(&iter, hash_table);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
-        g_ptr_array_add(values, value);
+        g_ptr_array_add(keys, key);
     }
 
-    catalogo->values_albuns = values;
+    catalogo->keys_albuns = keys;
 }
 
 Album get_album_valido(Catalogo_Albuns catalogo, gpointer id)
@@ -97,6 +97,6 @@ void free_catalogo_albuns(Catalogo_Albuns catalogo){
     if (catalogo->albuns_validos) {
         g_hash_table_unref(catalogo->albuns_validos);
     }
-    g_ptr_array_free(catalogo->values_albuns,TRUE);
+    g_ptr_array_free(catalogo->keys_albuns,TRUE);
     free(catalogo);
 }
