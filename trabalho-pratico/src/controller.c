@@ -8,14 +8,15 @@
 #include "joint.h"
 #include "utils.h"
 #include "estatisticas.h"
+#include "queries.h"
 
 void run(char *argv[])
 {
 
     Joint catalogo = create_catalago_joint();
     Stats stats = create_estatisticas();
-    ler_csvs(argv[1], catalogo,stats);
-    char *queries = ler_queries(argv[2], catalogo,stats);
+    ler_csvs(argv[1], catalogo, stats);
+    char *queries = ler_queries(argv[2], catalogo, stats);
     free_joint(catalogo);
     free(queries);
     free_stats(stats);
@@ -31,8 +32,8 @@ void run_testes(char *argv[])
 
     Joint catalogo = create_catalago_joint();
     Stats stats = create_estatisticas();
-    ler_csvs(argv[1], catalogo,stats);
-    char *queries = ler_queries(argv[2], catalogo,stats);
+    ler_csvs(argv[1], catalogo, stats);
+    char *queries = ler_queries(argv[2], catalogo, stats);
     free_joint(catalogo);
     free_stats(stats);
     clock_gettime(CLOCK_REALTIME, &end);
@@ -60,4 +61,34 @@ void run_testes(char *argv[])
     free(compara_queries);
     fclose(arquivo);
     free(queries);
+}
+
+void run_interactive()
+{
+    char *caminhoFicheiro, *input, *output;
+    int n_querie;
+
+    printf("Introduza o caminho dos ficheiros de dados: \n");
+    scanf("%s", caminhoFicheiro);
+    Joint catalogo = create_catalago_joint();
+    Stats stats = create_estatisticas();
+    ler_csvs(caminhoFicheiro, catalogo, stats);
+    printf("dataset carregado...\n");
+    while (1)
+    {
+        printf("que querie deseja executar: \n");
+        scanf("%d", n_querie);
+        printf("indique o input");
+        scanf("%s", input);
+        output = excuta_queries_iterativo(input, n_querie, catalogo);
+        printf("%s", output);
+        printf("Deseja fazer outra query? (s para continuar, qualquer outra tecla para sair): ");
+        char resposta = getchar();
+        getchar();
+        if (resposta != 's')
+        {
+            free_joint(catalogo);
+            break;
+        }
+    }
 }

@@ -4,7 +4,8 @@
 typedef struct generoContagem *generoContagem;
 
 void excuta_queries(char *linha, int contador, Joint joint, Stats s);
-char* Q1(char* ID,Joint catalogo);
+char *excuta_queries_iterativo(char *linha, int contador, Joint joint);
+char *Q1(char *ID, Joint catalogo);
 int compara_artistas(Artista a, Artista b);
 char *Q3(int min, int max, Joint catalogo);
 

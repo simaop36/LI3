@@ -214,4 +214,6 @@ gpointer int_gpointer_users(int i)
 int gpointer_int_users(gpointer p)
 {
     return GPOINTER_TO_INT(p) - OFFSET_USER;
+
 }
+

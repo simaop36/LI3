@@ -12,6 +12,10 @@ int main(int argc, char *argv[])
     { // programa-testes
         run_testes(argv);
     }
+    else if (argc == 1)
+    {
+        run_interactive();
+    }
     else
     {
         printf("Número de argumentos errado\n");
