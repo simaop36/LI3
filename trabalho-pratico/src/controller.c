@@ -8,6 +8,7 @@
 #include "joint.h"
 #include "utils.h"
 #include "estatisticas.h"
+#include "queries.h"
 
 void run(char *argv[])
 {
