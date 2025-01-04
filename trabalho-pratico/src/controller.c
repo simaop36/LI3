@@ -14,8 +14,8 @@ void run(char *argv[])
 
     Joint catalogo = create_catalago_joint();
     Stats stats = create_estatisticas();
-    ler_csvs(argv[1], catalogo,stats);
-    char *queries = ler_queries(argv[2], catalogo,stats);
+    ler_csvs(argv[1], catalogo, stats);
+    char *queries = ler_queries(argv[2], catalogo, stats);
     free_joint(catalogo);
     free(queries);
     free_stats(stats);
@@ -31,8 +31,8 @@ void run_testes(char *argv[])
 
     Joint catalogo = create_catalago_joint();
     Stats stats = create_estatisticas();
-    ler_csvs(argv[1], catalogo,stats);
-    char *queries = ler_queries(argv[2], catalogo,stats);
+    ler_csvs(argv[1], catalogo, stats);
+    char *queries = ler_queries(argv[2], catalogo, stats);
     free_joint(catalogo);
     free_stats(stats);
     clock_gettime(CLOCK_REALTIME, &end);
@@ -70,7 +70,8 @@ void run_interactive()
     printf("Introduza o caminho dos ficheiros de dados: \n");
     scanf("%s", caminhoFicheiro);
     Joint catalogo = create_catalago_joint();
-    ler_csvs(caminhoFicheiro, catalogo);
+    Stats stats = create_estatisticas();
+    ler_csvs(caminhoFicheiro, catalogo, stats);
     printf("dataset carregado...\n");
     while (1)
     {
