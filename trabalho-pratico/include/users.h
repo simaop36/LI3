@@ -3,11 +3,12 @@
 
 #include "catalogo_users.h"
 #include "catalogo_musica.h"
+#include <limits.h>
 
 typedef struct utilizador *utilizador;
 typedef struct generoContagem *GeneroContagem;
 
-#define OFFSET_USER 2500000
+#define OFFSET_USER 3 * (INT_MAX/5)
 
 utilizador create_utilizador();
 
@@ -15,7 +16,7 @@ int verifica_utilizadores(char **linha);
 
 int get_age(utilizador u);
 
-GeneroContagem *getArray(utilizador u);
+GArray*getArray(utilizador u);
 
 gpointer get_username_gpointer(utilizador u);
 
@@ -37,7 +38,7 @@ char* get_subscription_style(utilizador u);
 
 gpointer *get_liked_musics_id(utilizador u);
 
-void setArray(GeneroContagem *gc, utilizador u);
+void setArray(GArray *gc, utilizador u);
 
 void set_username(char* username,utilizador u);
 
@@ -58,5 +59,9 @@ void set_subscription_style(char* subscription_style,utilizador u);
 void set_liked_musics_id(char* liked_musics_id,utilizador u);
 
 void free_utilizador(utilizador novo_utilizador);
+
+gpointer int_gpointer_users(int i);
+
+int gpointer_int_users(gpointer p);
 
 #endif

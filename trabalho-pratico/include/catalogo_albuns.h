@@ -11,7 +11,7 @@ typedef struct album *Album;
 Catalogo_Albuns create_catalogo_albuns();
 void build_Album(char **linha,void *cat, Stats stats);
 void add_album(Catalogo_Albuns catalogo, Album album);
-GPtrArray *get_values_albuns(Catalogo_Albuns catalogo);
+GPtrArray *get_keys_albuns(Catalogo_Albuns catalogo);
 void build_values_albuns(Catalogo_Albuns catalogo);
 Album get_album_valido(Catalogo_Albuns catalogo, gpointer id);
 //GHashTable *getAlbunsValidos(Catalogo_Albuns albuns);

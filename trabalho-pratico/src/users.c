@@ -19,7 +19,7 @@ typedef struct utilizador {
     char *country;
     char *subscription_style;
     gpointer *liked_musics_id;
-    GeneroContagem *array;
+    GArray *array;
     int idade;
 } *utilizador;
 
@@ -63,7 +63,7 @@ int get_age(utilizador u){
     return u->idade;
 }
 
-GeneroContagem *getArray(utilizador u){
+GArray*getArray(utilizador u){
     return u->array;
 }
 
@@ -119,7 +119,7 @@ gpointer *get_liked_musics_id(utilizador u){
     return u->liked_musics_id;
 }
 
-void setArray(GeneroContagem *gc, utilizador u){
+void setArray(GArray *gc, utilizador u){
     u->array=gc;
 }
 
@@ -183,7 +183,8 @@ void set_liked_musics_id(char* liked_musics_id,utilizador u){
         if (sscanf(result[j], "S%d", &num) != 1) {
             return;
         }
-        u->liked_musics_id[j] = GINT_TO_POINTER(num + OFFSET_MUSICA);
+        u->liked_musics_id[j] = int_gpointer_musica(num);
+        
         free(result[j]);
     }
     u->liked_musics_id[size - 1] = NULL;
@@ -203,4 +204,14 @@ void free_utilizador(utilizador novo_utilizador) {
     free(novo_utilizador->liked_musics_id);
     free_Array_GC(novo_utilizador->array);
     free(novo_utilizador);
+}
+
+gpointer int_gpointer_users(int i)
+{
+    return GINT_TO_POINTER(i + OFFSET_USER);
+}
+
+int gpointer_int_users(gpointer p)
+{
+    return GPOINTER_TO_INT(p) - OFFSET_USER;
 }

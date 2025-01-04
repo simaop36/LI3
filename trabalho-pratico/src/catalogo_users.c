@@ -11,14 +11,14 @@
 typedef struct catalogo_utilizadores
 {
     GHashTable *utilizadores_validos;
-    GPtrArray *values_users;
+    GPtrArray *keys_users;
 } *catalogo_utilizadores;
 
 catalogo_utilizadores create_catalogo_utilizadores()
 {
     catalogo_utilizadores catalogo = malloc(sizeof(struct catalogo_utilizadores));
     catalogo->utilizadores_validos = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_utilizador);
-    catalogo->values_users = NULL;
+    catalogo->keys_users = NULL;
     return catalogo;
 }
 
@@ -26,9 +26,6 @@ void build_utilizador(char **linha,void *cat, Stats stats){
     
     Joint joint = (Joint)cat;
     catalogo_utilizadores catalogo = get_catalogo_utilizadores(joint);
-
-
-    
 
     if(!(verifica_utilizadores(linha)))
     {
@@ -68,22 +65,22 @@ void add_utilizador_valido(catalogo_utilizadores catalogo, utilizador u)
 }
 
 
-GPtrArray *get_values_users(catalogo_utilizadores catalogo)
+GPtrArray *get_keys_users(catalogo_utilizadores catalogo)
 {
-    return catalogo->values_users;
+    return catalogo->keys_users;
 }
 
 void build_values_users(catalogo_utilizadores catalogo)
 {
     GHashTable *hash_table = catalogo->utilizadores_validos;
 
-    if (catalogo->values_users != NULL) {
-        g_ptr_array_free(catalogo->values_users, TRUE);
-        catalogo->values_users = NULL;
+    if (catalogo->keys_users != NULL) {
+        g_ptr_array_free(catalogo->keys_users, TRUE);
+        catalogo->keys_users = NULL;
     }
 
-    GPtrArray *values = g_ptr_array_new();
-    if (values == NULL) {
+    GPtrArray *keys = g_ptr_array_new();
+    if (keys == NULL) {
         fprintf(stderr, "Failed to allocate memory for GPtrArray.\n");
         return;
     }
@@ -93,10 +90,10 @@ void build_values_users(catalogo_utilizadores catalogo)
 
     g_hash_table_iter_init(&iter, hash_table);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
-        g_ptr_array_add(values, value);
+        g_ptr_array_add(keys, key);
     }
 
-    catalogo->values_users = values;
+    catalogo->keys_users = keys;
 }
 
 utilizador get_utilizador_valido(catalogo_utilizadores catalogo, gpointer username)
@@ -114,7 +111,7 @@ void free_catalogo_utilizadores(catalogo_utilizadores catalogo)
     if (catalogo->utilizadores_validos) {
         g_hash_table_destroy(catalogo->utilizadores_validos);
     }
-    g_ptr_array_free(catalogo->values_users,TRUE);
+    g_ptr_array_free(catalogo->keys_users,TRUE);
     free(catalogo);
 }
 
