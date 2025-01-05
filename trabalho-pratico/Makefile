@@ -17,7 +17,7 @@ else ifeq ($(OS),Darwin)
     ifeq ($(ARCH),x86_64)
         RECOMENDADOR_OBJ := recomendador/recomendador-macos-x86_64.o
     else ifeq ($(ARCH),arm64)
-        RECOMENDADOR_OBJ := recomendador/recomendador-macos-arm64.o
+        RECOMENDADOR_OBJ := recomendador/recomendador-arm64.o
     else
         $(warning Arquitetura não suportada em Darwin: $(ARCH))
         RECOMENDADOR_OBJ :=
