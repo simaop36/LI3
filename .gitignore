@@ -64,6 +64,7 @@ resultados/
 #programas
 programa-principal
 programa-testes
+programa-interativo
 
 #Ignore .vscode
 /.vscode
