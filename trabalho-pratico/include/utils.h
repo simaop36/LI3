@@ -11,12 +11,12 @@
 #include "catalogo_artista.h"
 #include "joint.h"
 
-typedef struct musica *musica;
-typedef struct utilizador *utilizador;
-typedef struct catalogo_artistas *Catalogo_Artistas;
-typedef struct Catalogo_Musicas *Catalogo_Musicas;
-typedef struct catalogo_utilizadores *catalogo_utilizadores;
-typedef struct joint *Joint;
+//typedef struct musica *musica;
+//typedef struct utilizador *utilizador;
+//typedef struct catalogo_artistas *Catalogo_Artistas;
+//typedef struct Catalogo_Musicas *Catalogo_Musicas;
+//typedef struct catalogo_utilizadores *catalogo_utilizadores;
+//typedef struct joint *Joint;
 
 void stringToUpper(char *str);
 int valida_data(const char *data);
@@ -29,18 +29,17 @@ char **parse_lista(char *input);
 int converteDuration(const char *duration);
 char *formataDuration(int total_segundos);
 int extrair_numero(const char *str);
-int segVerMusica(musica m, Joint joint);
-int segVerUser(utilizador utilizador, Joint joint);
 void free_lista_strings(char **array);
 int calcula_idade(const char *birth_date);
 char *compara_resultados(const char *pasta1, const char *pasta2);
 void substituiPonto_E_Virgula(char *str);
 char *escreve_lista(char **elems, int tipo);
-void segVerAlbum(Album a,Joint j);
-void segVerHistory(Historico h, Joint j);
 time_t get_time_t(const char *timestamp);
 time_t get_week_start_from_time(time_t raw_time);
 gint compare_strings(gconstpointer a, gconstpointer b);
+gpointer int_gpointer(int i);
+int gpointer_int(gpointer p);
+
 
 
 #endif
