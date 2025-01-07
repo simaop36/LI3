@@ -74,7 +74,7 @@ gpointer get_username_gpointer(utilizador u){
 int get_username_Musica_int(utilizador u)
 {
     int num = GPOINTER_TO_INT(u->username);
-    return num - OFFSET_USER;
+    return num;
 }
 
 char *get_username_string(utilizador u)
@@ -126,7 +126,7 @@ void setArray(GArray *gc, utilizador u){
 void set_username(char* username,utilizador u){
     int num;
     if(sscanf(username,"U%d",&num) == 1){
-        gpointer p = GINT_TO_POINTER(num + OFFSET_USER);
+        gpointer p = GINT_TO_POINTER(num);
         u->username = p;
     } else {
         return;
@@ -183,7 +183,7 @@ void set_liked_musics_id(char* liked_musics_id,utilizador u){
         if (sscanf(result[j], "S%d", &num) != 1) {
             return;
         }
-        u->liked_musics_id[j] = int_gpointer_musica(num);
+        u->liked_musics_id[j] = int_gpointer(num);
         
         free(result[j]);
     }
@@ -206,14 +206,5 @@ void free_utilizador(utilizador novo_utilizador) {
     free(novo_utilizador);
 }
 
-gpointer int_gpointer_users(int i)
-{
-    return GINT_TO_POINTER(i + OFFSET_USER);
-}
 
-int gpointer_int_users(gpointer p)
-{
-    return GPOINTER_TO_INT(p) - OFFSET_USER;
-
-}
 

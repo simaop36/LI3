@@ -37,7 +37,7 @@ gpointer get_IDHistorico_gpointer(Historico h)
 int get_IDHistorico_int(Historico h)
 {
     int num = GPOINTER_TO_INT(h->id);
-    return num - OFFSET_HISTORY;
+    return num;
 }
 
 char *get_IDHistorico_string(Historico h)
@@ -54,8 +54,8 @@ gpointer get_user_id_gpointer(Historico h){
 
 int get_user_id_int(Historico h)
 {
-    int num = gpointer_int_users(h->user_id);
-    return num - OFFSET_USER;
+    int num = gpointer_int(h->user_id);
+    return num;
 }
 
 char *get_user_id_string(Historico h)
@@ -73,8 +73,8 @@ gpointer get_musica_id_gpointer(Historico h)
 
 int get_musica_id_int(Historico h)
 {
-    int num = gpointer_int_musica(h->music_id);
-    return num - OFFSET_MUSICA;
+    int num = gpointer_int(h->music_id);
+    return num;
 }
 
 char *get_musica_id_string(Historico h)
@@ -100,7 +100,7 @@ void setId_Historico(char *id, Historico h)
 {
     int num;
     if(sscanf(id,"H%d",&num) == 1){
-        gpointer p = int_gpointer_history(num);
+        gpointer p = int_gpointer(num);
         h->id = p;
     } else {
         return;
@@ -111,7 +111,7 @@ void set_UserId(char *user_id, Historico h)
 {
     int num;
     if(sscanf(user_id,"U%d",&num) == 1){
-        gpointer p = int_gpointer_users(num);
+        gpointer p = int_gpointer(num);
         h->user_id = p;
     } else {
         return;
@@ -123,7 +123,7 @@ void set_MusicId(char *music_id, Historico h){
 
     int num;
     if(sscanf(music_id,"S%d",&num) == 1){
-        gpointer p = int_gpointer_musica(num);
+        gpointer p = int_gpointer(num);
         h->music_id= p;
     } else {
         return;
@@ -189,12 +189,3 @@ void free_historico(Historico novo_historico) {
 
 }
 
-gpointer int_gpointer_history(int i)
-{
-    return GINT_TO_POINTER(i + OFFSET_HISTORY);
-}
-
-int gpointer_int_history(gpointer p)
-{
-    return GPOINTER_TO_INT(p) - OFFSET_HISTORY;
-}

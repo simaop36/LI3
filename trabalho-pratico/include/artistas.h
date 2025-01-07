@@ -8,12 +8,11 @@
 
 typedef struct artista *Artista;
 
-#define OFFSET_ARTISTA (INT_MAX/5)
 
 Artista create_Artista();
 int verifica_artistas(char **linha);
 gpointer *getId_Artista(Artista a);
-int getId_Artista_int(Artista a);
+//int getId_Artista_int(Artista a);
 char *getId_Artista_String(Artista a);
 
 char* getName(Artista a);
@@ -42,7 +41,5 @@ void increase_plays(size_t num, Artista a);
 
 void free_artista(Artista novo_artista);
 
-gpointer int_gpointer_artista(int i);
-int gpointer_int_artista(gpointer p);
 
 #endif
