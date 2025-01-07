@@ -69,7 +69,7 @@ gpointer getId_Musica_gpointer(musica m)
 int getId_Musica_int(musica m)
 {
     int num = GPOINTER_TO_INT(m->id);
-    return num - OFFSET_MUSICA;
+    return num;
 }
 
 char *getId_Musica_string(musica m)
@@ -116,7 +116,7 @@ gpointer getAlbum_id_gpointer(musica m)
 
 int getAlbum_id_int(musica m)
 {
-    int num = gpointer_int_album(m->album_id);
+    int num = gpointer_int(m->album_id);
     return num;
 }
 
@@ -131,8 +131,7 @@ void setId_Musica(char *id, musica m)
 {
     int num;
     if(sscanf(id,"S%d",&num) == 1){
-        gpointer p = int_gpointer_musica(num);
-        int_gpointer_musica(num);
+        gpointer p = int_gpointer(num);
         m->id= p;
     } else {
         return;
@@ -161,7 +160,7 @@ void setId_Artistas(char *id_musica, musica m)
         if (sscanf(result[j], "A%d", &num) != 1) {
             return;
         }
-        m->id_artista[j] = int_gpointer_artista(num);
+        m->id_artista[j] = int_gpointer(num);
         free(result[j]);
     }
     m->id_artista[size - 1] = NULL;
@@ -191,7 +190,7 @@ void setAlbum_id(char *album_id, musica m)
 {
     int num;
     if(sscanf(album_id,"AL%d",&num) == 1){
-        gpointer p = int_gpointer_album(num);
+        gpointer p = int_gpointer(num);
         m->album_id= p;
     } else {
         return;
@@ -210,12 +209,3 @@ void free_musica(musica m)
     free(m);
 }
 
-gpointer int_gpointer_musica(int i)
-{
-    return GINT_TO_POINTER(i + OFFSET_MUSICA);
-}
-
-int gpointer_int_musica(gpointer p)
-{
-    return GPOINTER_TO_INT(p) - OFFSET_MUSICA;
-}

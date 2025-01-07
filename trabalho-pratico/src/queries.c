@@ -76,7 +76,7 @@ char *Q1(char *ID, Joint catalogo)
         catalogo_utilizadores catU = get_catalogo_utilizadores(catalogo);
         int num;
         sscanf(ID, "U%d", &num);
-        gpointer p = GINT_TO_POINTER(num + OFFSET_USER);
+        gpointer p = GINT_TO_POINTER(num);
 
         utilizador u = get_utilizador_valido(catU, p);
         if (u == NULL)
@@ -119,7 +119,7 @@ char *Q1(char *ID, Joint catalogo)
     Catalogo_Artistas cat_artistas = get_catalogo_artistas(catalogo);
     int num;
     sscanf(ID, "A%d", &num);
-    gpointer p = GINT_TO_POINTER(num + OFFSET_ARTISTA);
+    gpointer p = GINT_TO_POINTER(num);
 
     Artista a = get_artista_valido(cat_artistas, p);
 
@@ -337,7 +337,7 @@ char *Q5(char *username, int num, Joint j, Stats s)
 
     int user_int;
     sscanf(username,"U%d",&user_int);
-    gpointer user = int_gpointer_users(user_int);
+    gpointer user = int_gpointer(user_int);
 
     if(get_utilizador_valido(u,user) == NULL){
         char *empty_response = malloc(2); // Aloca espaço para "\n" e o caractere nulo
@@ -370,7 +370,7 @@ char *Q5(char *username, int num, Joint j, Stats s)
 
     char *final_str = malloc(total_length);
     final_str[0] = '\0';
-    for (size_t i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++) {
         strcat(final_str, result[i]);
         strcat(final_str, "\n");
     }

@@ -7,12 +7,11 @@
 
 typedef struct musica *musica;
 
-#define OFFSET_MUSICA 2 * (INT_MAX/5)
 
 musica create_Musica();
 int verifica_musicas(char **linha);
 gpointer getId_Musica_gpointer(musica m);
-int getId_Musica_int(musica m);
+//int getId_Musica_int(musica m);
 char *getId_Musica_string(musica m);
 
 char *getTitle(musica m);
@@ -31,8 +30,7 @@ void setGenre(char *genre, musica m);
 void setYear(char *year, musica m);
 void setAlbum_id(char *album_id, musica m);
 void free_musica(musica m);
-gpointer int_gpointer_musica(int i);
-int gpointer_int_musica(gpointer p);
+
 
 
 #endif

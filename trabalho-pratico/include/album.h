@@ -4,12 +4,11 @@
 
 typedef struct album *Album;
 
-#define OFFSET_ALBUM 0
 
 Album create_Album();
 
 gpointer getIdAlbum_gpointer(Album a);
-int getIdAlbum_int(Album a);
+//int getIdAlbum_int(Album a);
 char *getIdAlbum_string(Album a);
 char *getTitleAlbum(Album a);
 gpointer *getArtists_id(Album a);
@@ -22,7 +21,5 @@ void setTitle_album(char *title, Album a);
 void setYear_album(int year, Album a);
 void free_album(Album a);
 
-gpointer int_gpointer_album(int i);
-int gpointer_int_album(gpointer p);
 
 #endif
