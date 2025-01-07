@@ -6,6 +6,7 @@
 #include "joint.h"
 #include "utils.h"
 #include "estatisticas.h"
+#include "segVer.h"
 
 typedef struct Catalogo_Musicas
 {
@@ -21,40 +22,37 @@ Catalogo_Musicas create_Catalogo_Musicas()
     return catalogo;
 }
 
-
-void build_musica(char **linha, void *cat,Stats stats)
+void build_musica(char **linha, void *cat, Stats stats)
 {
 
-    
     Joint joint = (Joint)cat;
     Catalogo_Musicas catalogo = get_catalogo_musicas(joint);
 
-
     if (!(verifica_musicas(linha)))
     {
-        escreve_musica("./resultados",linha);
+        escreve_musica("./resultados", linha);
     }
     else
     {
         musica m = create_Musica();
-        
+
         setId_Musica(linha[0], m);
         setTitle(linha[1], m);
         setId_Artistas(linha[2], m);
-        setAlbum_id(linha[3],m);
+        setAlbum_id(linha[3], m);
         setDuration(linha[4], m);
         setGenre(linha[5], m);
         setYear(linha[6], m);
 
         if (segVerMusica(m, joint))
-        {   
-            
+        {
+
             add_musica_valida(catalogo, m);
         }
         else
         {
             free_musica(m);
-            escreve_musica("./resultados",linha);
+            escreve_musica("./resultados", linha);
         }
     }
 }
@@ -69,17 +67,19 @@ GPtrArray *get_keys_musicas(Catalogo_Musicas catalogo)
     return catalogo->keys_musicas;
 }
 
-void build_values_musicas(Catalogo_Musicas catalogo)
+void build_keys_musicas(Catalogo_Musicas catalogo)
 {
     GHashTable *hash_table = catalogo->musicas_validas;
 
-    if (catalogo->keys_musicas != NULL) {
+    if (catalogo->keys_musicas != NULL)
+    {
         g_ptr_array_free(catalogo->keys_musicas, TRUE);
         catalogo->keys_musicas = NULL;
     }
 
     GPtrArray *keys = g_ptr_array_new();
-    if (keys == NULL) {
+    if (keys == NULL)
+    {
         fprintf(stderr, "Failed to allocate memory for GPtrArray.\n");
         return;
     }
@@ -88,26 +88,23 @@ void build_values_musicas(Catalogo_Musicas catalogo)
     gpointer key, value;
 
     g_hash_table_iter_init(&iter, hash_table);
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
+    while (g_hash_table_iter_next(&iter, &key, &value))
+    {
         g_ptr_array_add(keys, key);
     }
 
     catalogo->keys_musicas = keys;
 }
 
-
-
 musica get_musica_valida(Catalogo_Musicas catalogo, gpointer id)
 {
     return (musica)g_hash_table_lookup(catalogo->musicas_validas, id);
 }
 
-
 GHashTable *getMusicasValidas(Catalogo_Musicas musicas)
 {
     return musicas->musicas_validas;
 }
-
 
 void free_Catalogo_Musicas(Catalogo_Musicas catalogo)
 {
@@ -115,7 +112,7 @@ void free_Catalogo_Musicas(Catalogo_Musicas catalogo)
     {
         g_hash_table_unref(catalogo->musicas_validas);
     }
-    g_ptr_array_free(catalogo->keys_musicas,TRUE);
+    g_ptr_array_free(catalogo->keys_musicas, TRUE);
     free(catalogo);
 }
 
@@ -135,10 +132,11 @@ void escreve_musica(const char *dir_path, char **linha)
         perror("Erro ao abrir ficheiro musics_errors.csv");
         return;
     }
-    
+
     fseek(file_musics, 0, SEEK_END); // Move o ponteiro para o final do arquivo
-    long size = ftell(file_musics); // Obtém a posição atual do ponteiro (tamanho do arquivo)
-    if (size == 0){
+    long size = ftell(file_musics);  // Obtém a posição atual do ponteiro (tamanho do arquivo)
+    if (size == 0)
+    {
         fprintf(file_musics, "%s\n", header);
     }
 
@@ -152,8 +150,5 @@ void escreve_musica(const char *dir_path, char **linha)
             linha[6],
             linha[7]);
 
-
     fclose(file_musics);
-
-
 }

@@ -23,23 +23,26 @@ Catalogo_Artistas create_catalogo_artistas()
     return catalogo;
 }
 
-void build_Artista(char **linha,void *cat, Stats stats){
+void build_Artista(char **linha, void *cat, Stats stats)
+{
 
-    
     Catalogo_Artistas catalogo = (Catalogo_Artistas)cat;
 
-    if(verifica_artistas(linha)){
+    if (verifica_artistas(linha))
+    {
         Artista artista = create_Artista();
-        
-        setId_Artista(linha[0],artista);
-        setName(linha[1],artista);
-        setRecipe_Per_Stream(strtod(linha[3],NULL),artista);//strtod converte char* em double, NULL é o apontador para o final do numero na string
-        setId_Constituent(linha[4],artista);
-        setCountry(linha[5],artista);
-        setType(linha[6],artista);
-        add_artista_valido(catalogo,artista);
-    } else{
-        escreve_artista("./resultados",linha);
+
+        setId_Artista(linha[0], artista);
+        setName(linha[1], artista);
+        setRecipe_Per_Stream(strtod(linha[3], NULL), artista); // strtod converte char* em double, NULL é o apontador para o final do numero na string
+        setId_Constituent(linha[4], artista);
+        setCountry(linha[5], artista);
+        setType(linha[6], artista);
+        add_artista_valido(catalogo, artista);
+    }
+    else
+    {
+        escreve_artista("./resultados", linha);
     }
 }
 
@@ -53,17 +56,19 @@ GPtrArray *get_keys_artistas(Catalogo_Artistas catalogo)
     return catalogo->keys_artistas;
 }
 
-void build_values_artistas(Catalogo_Artistas catalogo)
+void build_keys_artistas(Catalogo_Artistas catalogo)
 {
     GHashTable *hash_table = catalogo->artistas_validos;
 
-    if (catalogo->keys_artistas != NULL) {
+    if (catalogo->keys_artistas != NULL)
+    {
         g_ptr_array_free(catalogo->keys_artistas, TRUE);
         catalogo->keys_artistas = NULL;
     }
 
     GPtrArray *keys = g_ptr_array_new();
-    if (keys == NULL) {
+    if (keys == NULL)
+    {
         fprintf(stderr, "Failed to allocate memory for GPtrArray.\n");
         return;
     }
@@ -72,7 +77,8 @@ void build_values_artistas(Catalogo_Artistas catalogo)
     gpointer key, value;
 
     g_hash_table_iter_init(&iter, hash_table);
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
+    while (g_hash_table_iter_next(&iter, &key, &value))
+    {
         g_ptr_array_add(keys, key);
     }
 
@@ -86,10 +92,11 @@ Artista get_artista_valido(Catalogo_Artistas catalogo, gpointer id)
 
 void free_catalogo_artistas(Catalogo_Artistas catalogo)
 {
-    if (catalogo->artistas_validos) {
+    if (catalogo->artistas_validos)
+    {
         g_hash_table_unref(catalogo->artistas_validos);
     }
-    g_ptr_array_free(catalogo->keys_artistas,TRUE);
+    g_ptr_array_free(catalogo->keys_artistas, TRUE);
     free(catalogo);
 }
 
@@ -109,10 +116,11 @@ void escreve_artista(const char *dir_path, char **linha)
         perror("Erro ao abrir ficheiro artists_errors.csv");
         return;
     }
-    
+
     fseek(file_artists, 0, SEEK_END); // Move o ponteiro para o final do arquivo
-    long size = ftell(file_artists); // Obtém a posição atual do ponteiro (tamanho do arquivo)
-    if (size == 0){
+    long size = ftell(file_artists);  // Obtém a posição atual do ponteiro (tamanho do arquivo)
+    if (size == 0)
+    {
         fprintf(file_artists, "%s\n", header);
     }
 
@@ -125,9 +133,5 @@ void escreve_artista(const char *dir_path, char **linha)
             linha[5],
             linha[6]);
 
-
     fclose(file_artists);
-
-
 }
-

@@ -6,6 +6,7 @@
 #include "catalogo_historico.h"
 #include "utils.h"
 #include "estatisticas.h"
+#include "segVer.h"
 
 typedef struct catalogo_historico
 {
@@ -22,27 +23,29 @@ Catalogo_Historico create_catalogo_historico()
     return catalogo;
 }
 
-void build_Historico(char **linha,void *cat, Stats stats){
+void build_Historico(char **linha, void *cat, Stats stats)
+{
 
-    
     Joint joint = (Joint)cat;
     Catalogo_Historico catalogo = get_catalogo_historico(joint);
-    
-    if(verifica_historico(linha))
+
+    if (verifica_historico(linha))
     {
         Historico historico = create_Historico();
-        
-        setId_Historico(linha[0],historico);
-        set_UserId(linha[1],historico);
-        set_MusicId(linha[2],historico);
-        set_Timestamp(linha[3],historico);
-        set_Duration(linha[4],historico);
-        //set_week(historico);
-        segVerHistory(historico,joint);
-        add_historico_valido(catalogo,historico);
-        //calcula_tree(stats,historico);
-    } else{
-        escreve_historico("./resultados",linha);
+
+        setId_Historico(linha[0], historico);
+        set_UserId(linha[1], historico);
+        set_MusicId(linha[2], historico);
+        set_Timestamp(linha[3], historico);
+        set_Duration(linha[4], historico);
+        // set_week(historico);
+        segVerHistory(historico, joint);
+        add_historico_valido(catalogo, historico);
+        // calcula_tree(stats,historico);
+    }
+    else
+    {
+        escreve_historico("./resultados", linha);
     }
 }
 
@@ -57,17 +60,19 @@ GPtrArray *get_keys_history(Catalogo_Historico catalogo)
     return catalogo->keys_history;
 }
 
-void build_values_history(Catalogo_Historico catalogo)
+void build_keys_history(Catalogo_Historico catalogo)
 {
     GHashTable *hash_table = catalogo->historico_validos;
 
-    if (catalogo->keys_history != NULL) {
+    if (catalogo->keys_history != NULL)
+    {
         g_ptr_array_free(catalogo->keys_history, TRUE);
         catalogo->keys_history = NULL;
     }
 
     GPtrArray *keys = g_ptr_array_new();
-    if (keys == NULL) {
+    if (keys == NULL)
+    {
         fprintf(stderr, "Failed to allocate memory for GPtrArray.\n");
         return;
     }
@@ -76,7 +81,8 @@ void build_values_history(Catalogo_Historico catalogo)
     gpointer key, value;
 
     g_hash_table_iter_init(&iter, hash_table);
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
+    while (g_hash_table_iter_next(&iter, &key, &value))
+    {
         g_ptr_array_add(keys, key);
     }
 
@@ -88,7 +94,6 @@ Historico get_historico_valido(Catalogo_Historico catalogo, gpointer id)
     return (Historico)g_hash_table_lookup(catalogo->historico_validos, id);
 }
 
-
 GHashTable *getHistoricoValidos(Catalogo_Historico historico)
 {
     return historico->historico_validos;
@@ -96,17 +101,18 @@ GHashTable *getHistoricoValidos(Catalogo_Historico historico)
 
 void free_catalogo_historico(Catalogo_Historico catalogo)
 {
-    if (catalogo->historico_validos) {
+    if (catalogo->historico_validos)
+    {
         g_hash_table_unref(catalogo->historico_validos);
     }
-    g_ptr_array_free(catalogo->keys_history,TRUE);
+    g_ptr_array_free(catalogo->keys_history, TRUE);
     free(catalogo);
 }
 
 void escreve_historico(const char *dir_path, char **linha)
 {
     const char *file_Name = "/history_errors.csv";
-    const char *header = "\"id\";\"user_id\";\"music_id\";\"timestamp\";\"duration\";\"platform\"" ;
+    const char *header = "\"id\";\"user_id\";\"music_id\";\"timestamp\";\"duration\";\"platform\"";
 
     char *history_errors = malloc(strlen(dir_path) + strlen(file_Name) + 1);
     strcpy(history_errors, dir_path);
@@ -120,10 +126,11 @@ void escreve_historico(const char *dir_path, char **linha)
         perror("Erro ao abrir ficheiro history_errors.csv");
         return;
     }
-    
+
     fseek(file_history, 0, SEEK_END); // Move o ponteiro para o final do arquivo
-    long size = ftell(file_history); // Obtém a posição atual do ponteiro (tamanho do arquivo)
-    if (size == 0){
+    long size = ftell(file_history);  // Obtém a posição atual do ponteiro (tamanho do arquivo)
+    if (size == 0)
+    {
         fprintf(file_history, "%s\n", header);
     }
 
@@ -135,9 +142,5 @@ void escreve_historico(const char *dir_path, char **linha)
             linha[4],
             linha[5]);
 
-
     fclose(file_history);
-
-
 }
-

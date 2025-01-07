@@ -7,6 +7,7 @@
 #include "joint.h"
 #include "utils.h"
 #include "estatisticas.h"
+#include "segVer.h"
 
 typedef struct catalogo_utilizadores
 {
@@ -22,40 +23,42 @@ catalogo_utilizadores create_catalogo_utilizadores()
     return catalogo;
 }
 
-void build_utilizador(char **linha,void *cat, Stats stats){
-    
+void build_utilizador(char **linha, void *cat, Stats stats)
+{
+
     Joint joint = (Joint)cat;
     catalogo_utilizadores catalogo = get_catalogo_utilizadores(joint);
 
-    if(!(verifica_utilizadores(linha)))
+    if (!(verifica_utilizadores(linha)))
     {
 
-        escreve_user("./resultados",linha);
+        escreve_user("./resultados", linha);
     }
     else
     {
         utilizador u = create_utilizador();
-        
-        set_username(linha[0],u);
-        set_email(linha[1],u);
-        set_first_name(linha[2],u);
-        set_last_name(linha[3],u);
-        set_birth_date(linha[4],u);
-        set_country(linha[5],u);
-        set_subscription_style(linha[6],u);
-        set_liked_musics_id(linha[7],u);
 
-        if(segVerUser(u,joint)){
+        set_username(linha[0], u);
+        set_email(linha[1], u);
+        set_first_name(linha[2], u);
+        set_last_name(linha[3], u);
+        set_birth_date(linha[4], u);
+        set_country(linha[5], u);
+        set_subscription_style(linha[6], u);
+        set_liked_musics_id(linha[7], u);
+
+        if (segVerUser(u, joint))
+        {
             char *bDay = get_birth_date(u);
-            set_age(bDay,u);
+            set_age(bDay, u);
             free(bDay);
-            add_utilizador_valido(catalogo,u);
+            add_utilizador_valido(catalogo, u);
         }
-        else {
+        else
+        {
             free_utilizador(u);
-            escreve_user("./resultados",linha);
+            escreve_user("./resultados", linha);
         }
-        
     }
 }
 
@@ -64,23 +67,24 @@ void add_utilizador_valido(catalogo_utilizadores catalogo, utilizador u)
     g_hash_table_insert(catalogo->utilizadores_validos, get_username_gpointer(u), u);
 }
 
-
 GPtrArray *get_keys_users(catalogo_utilizadores catalogo)
 {
     return catalogo->keys_users;
 }
 
-void build_values_users(catalogo_utilizadores catalogo)
+void build_keys_users(catalogo_utilizadores catalogo)
 {
     GHashTable *hash_table = catalogo->utilizadores_validos;
 
-    if (catalogo->keys_users != NULL) {
+    if (catalogo->keys_users != NULL)
+    {
         g_ptr_array_free(catalogo->keys_users, TRUE);
         catalogo->keys_users = NULL;
     }
 
     GPtrArray *keys = g_ptr_array_new();
-    if (keys == NULL) {
+    if (keys == NULL)
+    {
         fprintf(stderr, "Failed to allocate memory for GPtrArray.\n");
         return;
     }
@@ -89,7 +93,8 @@ void build_values_users(catalogo_utilizadores catalogo)
     gpointer key, value;
 
     g_hash_table_iter_init(&iter, hash_table);
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
+    while (g_hash_table_iter_next(&iter, &key, &value))
+    {
         g_ptr_array_add(keys, key);
     }
 
@@ -108,10 +113,11 @@ GHashTable *getUtilizadoresValidos(catalogo_utilizadores utilzadores)
 
 void free_catalogo_utilizadores(catalogo_utilizadores catalogo)
 {
-    if (catalogo->utilizadores_validos) {
+    if (catalogo->utilizadores_validos)
+    {
         g_hash_table_destroy(catalogo->utilizadores_validos);
     }
-    g_ptr_array_free(catalogo->keys_users,TRUE);
+    g_ptr_array_free(catalogo->keys_users, TRUE);
     free(catalogo);
 }
 
@@ -131,10 +137,11 @@ void escreve_user(const char *dir_path, char **linha)
         perror("Erro ao abrir ficheiro users_errors.csv");
         return;
     }
-    
+
     fseek(file_users, 0, SEEK_END); // Move o ponteiro para o final do arquivo
-    long size = ftell(file_users); // Obtém a posição atual do ponteiro (tamanho do arquivo)
-    if (size == 0){
+    long size = ftell(file_users);  // Obtém a posição atual do ponteiro (tamanho do arquivo)
+    if (size == 0)
+    {
         fprintf(file_users, "%s\n", header);
     }
 
@@ -148,8 +155,5 @@ void escreve_user(const char *dir_path, char **linha)
             linha[6],
             linha[7]);
 
-
     fclose(file_users);
-
 }
-
