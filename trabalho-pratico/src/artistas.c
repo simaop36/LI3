@@ -61,7 +61,7 @@ gpointer *getId_Artista(Artista a)
 int getId_Artista_int(Artista a)
 {
     int num = GPOINTER_TO_INT(a->id);
-    return num - OFFSET_ARTISTA;
+    return num;
 }
 
 char *getId_Artista_String(Artista a)
@@ -120,7 +120,7 @@ void setId_Artista(char *id, Artista a)
 {
     int num;
     if(sscanf(id,"A%d",&num) == 1){
-        gpointer p = GINT_TO_POINTER(num + OFFSET_ARTISTA);
+        gpointer p = GINT_TO_POINTER(num);
         a->id = p;
     } else {
         return;
@@ -160,7 +160,7 @@ void setId_Constituent(char *id_constituent, Artista a)
         if (sscanf(result[j], "A%d", &num) != 1) {
             return;
         }
-        a->id_constituent[j] = GINT_TO_POINTER(num + OFFSET_ARTISTA);
+        a->id_constituent[j] = GINT_TO_POINTER(num );
         free(result[j]);
     }
     a->id_constituent[size - 1] = NULL;
@@ -226,12 +226,3 @@ void free_artista(Artista novo_artista) {
     free(novo_artista);
 }
 
-gpointer int_gpointer_artista(int i)
-{
-    return GINT_TO_POINTER(i + OFFSET_ARTISTA);
-}
-
-int gpointer_int_artista(gpointer p)
-{
-    return GPOINTER_TO_INT(p) - OFFSET_ARTISTA;
-}

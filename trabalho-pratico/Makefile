@@ -17,7 +17,7 @@ else ifeq ($(OS),Darwin)
     ifeq ($(ARCH),x86_64)
         RECOMENDADOR_OBJ := recomendador/recomendador-macos-x86_64.o
     else ifeq ($(ARCH),arm64)
-        RECOMENDADOR_OBJ := recomendador/recomendador-macos-arm64.o
+        RECOMENDADOR_OBJ := recomendador/recomendador-arm64.o
     else
         $(warning Arquitetura não suportada em Darwin: $(ARCH))
         RECOMENDADOR_OBJ :=
@@ -30,6 +30,7 @@ endif
 
 EXEC := programa-principal
 EXEC_TEST := programa-testes
+EXEC_INTERATIVO := programa-interativo
 
 FLAGS := -O3 -g -Wall -Wextra -Wunused-value `pkg-config --cflags glib-2.0`
 FLAGS_TEST := $(FLAGS) -Wno-unused-function
@@ -52,7 +53,7 @@ LDFLAGS := `pkg-config --libs glib-2.0`
 .SUFFIXES:
 
 .PHONY: all
-all: $(EXEC) $(EXEC_TEST)
+all: $(EXEC) $(EXEC_TEST) $(EXEC_INTERATIVO)
 
 $(EXEC): $(OBJ) $(RECOMENDADOR_OBJ)
 	@$(CC) $(FLAGS) $^ $(LDFLAGS) -g  -o $@ ; echo "[Compiling] $@"
@@ -67,6 +68,9 @@ test: $(EXEC_TEST)
 	else \
 	  /usr/bin/time -v ./$(EXEC_TEST) $(DATASET_PATH); \
 	fi
+
+$(EXEC_INTERATIVO): $(OBJ_TEST) $(RECOMENDADOR_OBJ)
+	@$(CC) $(FLAGS_TEST) $^ $(LDFLAGS) -o $@ ; echo "[Compiling] $@"
 
 $(EXEC_TEST): $(OBJ_TEST) $(RECOMENDADOR_OBJ)
 	@$(CC) $(FLAGS_TEST) $^ $(LDFLAGS) -o $@ ; echo "[Compiling] $@"
@@ -87,6 +91,7 @@ leaks: $(EXEC)
 clean:
 	@rm -f $(EXEC) ; echo "[Removing] $(EXEC)"
 	@rm -f $(EXEC_TEST) ; echo "[Removing] $(EXEC_TEST)"
+	@rm -f $(EXEC_INTERATIVO) ; echo "[Removing] $(EXEC_INTERATIVO)"
 	@rm -f resultado.txt; echo "[Removing] resultado.txt"
 	@rm -rf build/ ; echo "[Removing] build/"
 	@rm -f resultados/* ; echo "[Cleaning] resultados/"

@@ -8,7 +8,6 @@
 typedef struct utilizador *utilizador;
 typedef struct generoContagem *GeneroContagem;
 
-#define OFFSET_USER 3 * (INT_MAX/5)
 
 utilizador create_utilizador();
 
@@ -20,7 +19,7 @@ GArray*getArray(utilizador u);
 
 gpointer get_username_gpointer(utilizador u);
 
-int get_username_Musica_int(utilizador u);
+//int get_username_Musica_int(utilizador u);
 
 char *get_username_string(utilizador u);
 
@@ -60,8 +59,5 @@ void set_liked_musics_id(char* liked_musics_id,utilizador u);
 
 void free_utilizador(utilizador novo_utilizador);
 
-gpointer int_gpointer_users(int i);
-
-int gpointer_int_users(gpointer p);
 
 #endif

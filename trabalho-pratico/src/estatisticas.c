@@ -86,7 +86,7 @@ void build_stats(Stats s, GPtrArray *keys_users, void *cat)
         if (array_gc->len == 0)
             continue;
 
-        for (int j = 0; j < array_gc->len; j++)
+        for (guint j = 0; j < array_gc->len; j++)
         {
             GeneroContagem gc = g_array_index(array_gc, GeneroContagem, j);
             char *genero = strdup(getGenero(gc));
@@ -144,7 +144,7 @@ void build_stats(Stats s, GPtrArray *keys_users, void *cat)
             if (array_gc->len == 0)
                 continue;
 
-            for (int j = 0; j < array_gc->len; j++)
+            for (guint j = 0; j < array_gc->len; j++)
             {
                 GeneroContagem gc = g_array_index(array_gc, GeneroContagem, j);
                 int rep = (int)getReproducoes(gc);

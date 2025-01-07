@@ -6,13 +6,12 @@
 
 typedef struct historico *Historico;
 
-#define OFFSET_HISTORY 4 * (INT_MAX/5)
 
 Historico create_Historico();
 int verifica_historico(char **linha);
 
 gpointer get_IDHistorico_gpointer(Historico h);
-int get_IDHistorico_int(Historico h);
+//int get_IDHistorico_int(Historico h);
 char *get_IDHistorico_string(Historico h);
 
 gpointer get_user_id_gpointer(Historico h);
@@ -36,9 +35,6 @@ void stringToUpper(char *str);
 
 int verifica_plataform(char* plataform);
 void free_historico(Historico novo_historico);
-
-gpointer int_gpointer_history(int i);
-int gpointer_int_history(gpointer p);
 
 
 #endif
