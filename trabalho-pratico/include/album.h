@@ -1,7 +1,6 @@
 #ifndef ALBUM_H
 #define ALBUM_H
 
-
 typedef struct album *Album;
 
 
