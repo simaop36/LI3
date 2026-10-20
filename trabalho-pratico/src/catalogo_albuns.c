@@ -92,11 +92,6 @@ Album get_album_valido(Catalogo_Albuns catalogo, gpointer id)
     return (Album)g_hash_table_lookup(catalogo->albuns_validos, id);
 }
 
-GHashTable *getAlbunsValidos(Catalogo_Albuns albuns)
-{
-    return albuns->albuns_validos;
-}
-
 void free_catalogo_albuns(Catalogo_Albuns catalogo)
 {
     if (catalogo->albuns_validos)

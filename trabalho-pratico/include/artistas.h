@@ -13,7 +13,6 @@ typedef struct artista *Artista;
 Artista create_Artista();
 int verifica_artistas(char **linha);
 gpointer *getId_Artista(Artista a);
-//int getId_Artista_int(Artista a);
 char *getId_Artista_String(Artista a);
 
 char *getName(Artista a);

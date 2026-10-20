@@ -6,8 +6,7 @@
 
 #include <glib.h>
 #include <stdio.h>
-#include "historico.h"
-// #include "catalogo_users.h"
+
 
 typedef struct generoContagem *GeneroContagem;
 
@@ -28,8 +27,6 @@ void incrementa_reproducoes_array(GArray *array, char *genero);
 void free_Array_GC(GArray *array);
 
 typedef struct estatisticas *Stats;
-
-// typedef struct catalogo_utilizadores *catalogo_utilizadores;
 
 Stats create_estatisticas();
 int **getMatriz(Stats s);

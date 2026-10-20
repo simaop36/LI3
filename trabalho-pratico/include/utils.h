@@ -11,12 +11,6 @@
 #include "catalogo_artista.h"
 #include "joint.h"
 
-//typedef struct musica *musica;
-//typedef struct utilizador *utilizador;
-//typedef struct catalogo_artistas *Catalogo_Artistas;
-//typedef struct Catalogo_Musicas *Catalogo_Musicas;
-//typedef struct catalogo_utilizadores *catalogo_utilizadores;
-//typedef struct joint *Joint;
 
 void stringToUpper(char *str);
 int valida_data(const char *data);

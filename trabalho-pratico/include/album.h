@@ -7,7 +7,6 @@ typedef struct album *Album;
 Album create_Album();
 
 gpointer getIdAlbum_gpointer(Album a);
-//int getIdAlbum_int(Album a);
 char *getIdAlbum_string(Album a);
 char *getTitleAlbum(Album a);
 gpointer *getArtists_id(Album a);

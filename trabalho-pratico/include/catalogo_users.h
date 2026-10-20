@@ -16,8 +16,6 @@ void add_utilizador_valido(catalogo_utilizadores catalogo, utilizador u);
 
 utilizador get_utilizador_valido(catalogo_utilizadores catalogo, gpointer username);
 
-// GHashTable *getUtilizadoresValidos(catalogo_utilizadores utilzadores);
-
 GPtrArray *get_keys_users(catalogo_utilizadores catalogo);
 
 void build_keys_users(catalogo_utilizadores catalogo);

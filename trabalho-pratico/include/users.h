@@ -19,8 +19,6 @@ GArray*getArray(utilizador u);
 
 gpointer get_username_gpointer(utilizador u);
 
-//int get_username_Musica_int(utilizador u);
-
 char *get_username_string(utilizador u);
 
 char* get_email(utilizador u);

@@ -11,7 +11,7 @@ Historico create_Historico();
 int verifica_historico(char **linha);
 
 gpointer get_IDHistorico_gpointer(Historico h);
-//int get_IDHistorico_int(Historico h);
+
 char *get_IDHistorico_string(Historico h);
 
 gpointer get_user_id_gpointer(Historico h);

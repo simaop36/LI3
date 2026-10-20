@@ -14,7 +14,6 @@ void add_musica_valida(Catalogo_Musicas catalogo, musica musica);
 GPtrArray *get_keys_musicas(Catalogo_Musicas catalogo);
 void build_keys_musicas(Catalogo_Musicas catalogo);
 musica get_musica_valida(Catalogo_Musicas catalogo, gpointer id);
-// GHashTable *getMusicasValidas(Catalogo_Musicas musicas);
 void free_Catalogo_Musicas(Catalogo_Musicas catalogo);
 void escreve_musica(const char *dir_path, char **linha);
 

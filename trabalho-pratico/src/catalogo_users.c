@@ -106,11 +106,6 @@ utilizador get_utilizador_valido(catalogo_utilizadores catalogo, gpointer userna
     return (utilizador)g_hash_table_lookup(catalogo->utilizadores_validos, username);
 }
 
-GHashTable *getUtilizadoresValidos(catalogo_utilizadores utilzadores)
-{
-    return utilzadores->utilizadores_validos;
-}
-
 void free_catalogo_utilizadores(catalogo_utilizadores catalogo)
 {
     if (catalogo->utilizadores_validos)

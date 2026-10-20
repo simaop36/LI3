@@ -11,7 +11,6 @@ typedef struct musica *musica;
 musica create_Musica();
 int verifica_musicas(char **linha);
 gpointer getId_Musica_gpointer(musica m);
-//int getId_Musica_int(musica m);
 char *getId_Musica_string(musica m);
 
 char *getTitle(musica m);

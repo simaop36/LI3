@@ -101,11 +101,6 @@ musica get_musica_valida(Catalogo_Musicas catalogo, gpointer id)
     return (musica)g_hash_table_lookup(catalogo->musicas_validas, id);
 }
 
-GHashTable *getMusicasValidas(Catalogo_Musicas musicas)
-{
-    return musicas->musicas_validas;
-}
-
 void free_Catalogo_Musicas(Catalogo_Musicas catalogo)
 {
     if (catalogo->musicas_validas)

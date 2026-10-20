@@ -13,7 +13,6 @@ void add_historico_valido(Catalogo_Historico catalogo, Historico historico);
 GPtrArray *get_keys_history(Catalogo_Historico catalogo);
 void build_keys_history(Catalogo_Historico catalogo);
 Historico get_historico_valido(Catalogo_Historico catalogo, gpointer id);
-// GHashTable *getHistoricoValidos(Catalogo_Historico historico);
 void free_catalogo_historico(Catalogo_Historico catalogo);
 void escreve_historico(const char *dir_path, char **linha);
 

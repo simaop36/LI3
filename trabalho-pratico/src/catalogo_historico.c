@@ -94,11 +94,6 @@ Historico get_historico_valido(Catalogo_Historico catalogo, gpointer id)
     return (Historico)g_hash_table_lookup(catalogo->historico_validos, id);
 }
 
-GHashTable *getHistoricoValidos(Catalogo_Historico historico)
-{
-    return historico->historico_validos;
-}
-
 void free_catalogo_historico(Catalogo_Historico catalogo)
 {
     if (catalogo->historico_validos)
